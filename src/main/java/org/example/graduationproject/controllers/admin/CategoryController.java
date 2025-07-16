@@ -49,8 +49,15 @@ public class CategoryController {
         model.addAttribute("size", size);
         model.addAttribute("totalPages", categoryPage.getTotalPages());
         model.addAttribute("totalElements", categoryPage.getTotalElements());
+        int lastPage = categoryPage.getTotalPages() > 0 ? categoryPage.getTotalPages() - 1 : 0;
+        model.addAttribute("lastPage", lastPage);
+        int prevPage = page > 0 ? page - 1 : 0;
+        int nextPage = (page + 1 < categoryPage.getTotalPages()) ? page + 1 : lastPage;
+        model.addAttribute("prevPage", prevPage);
+        model.addAttribute("nextPage", nextPage);
         model.addAttribute("category", new Loai());
-
+        model.addAttribute("editMode", false);
+        model.addAttribute("formAction", "/admin/category/add");
         return "admin/category";
     }
 
@@ -62,15 +69,40 @@ public class CategoryController {
     }
 
     @GetMapping("/category/edit/{id}")
-    public String editCategoryPage(@PathVariable("id") Integer id, Model model) {
+    public String editCategoryPage(@PathVariable("id") Integer id, Model model,
+                                   @RequestParam(value = "search", required = false) String search,
+                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                   @RequestParam(value = "size", defaultValue = "5") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Loai loai = loaiService.getLoaiById(id).orElse(null);
+
         model.addAttribute("username", username);
         model.addAttribute("currentPage", "category");
-        model.addAttribute("categories", loaiService.getAllLoai());
+
+        Page<Loai> categoryPage;
+        if (search != null && !search.trim().isEmpty()) {
+            categoryPage = loaiService.searchLoaiByTenPaging(search, page, size);
+            model.addAttribute("search", search);
+        } else {
+            categoryPage = loaiService.getAllLoaiPaging(page, size);
+        }
+        model.addAttribute("categories", categoryPage.getContent());
+        model.addAttribute("categoryPage", categoryPage);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", categoryPage.getTotalPages());
+        model.addAttribute("totalElements", categoryPage.getTotalElements());
+        int lastPage = categoryPage.getTotalPages() > 0 ? categoryPage.getTotalPages() - 1 : 0;
+        model.addAttribute("lastPage", lastPage);
+        int prevPage = page > 0 ? page - 1 : 0;
+        int nextPage = (page + 1 < categoryPage.getTotalPages()) ? page + 1 : lastPage;
+        model.addAttribute("prevPage", prevPage);
+        model.addAttribute("nextPage", nextPage);
+
         model.addAttribute("category", loai); // cho form sửa
         model.addAttribute("editMode", true);
+        model.addAttribute("formAction", "/admin/category/update");
         return "admin/category";
     }
 

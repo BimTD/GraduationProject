@@ -36,7 +36,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="flex flex-col md:flex-row md:items-end w-full gap-2">
-                        <form th:action="@{${editMode} ? '/admin/category/update' : '/admin/category/add'}" th:object="${category}" method="post" class="flex gap-2 items-end">
+                        <form th:action="@{${formAction}}" th:object="${category}" method="post" class="flex gap-2 items-end">
                             <input type="hidden" th:field="*{id}" />
                             <div>
                                 <label class="block mb-1">Name Category</label>
@@ -138,11 +138,11 @@
 
                         <div class="col-sm-auto mt-sm-0">
                             <div class="flex gap-2 pagination-wrap justify-content-center">
-                                <a th:href="@{/admin/category(page=${page-1},size=${size},search=${search})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
+                                <a th:href="@{/admin/category(page=${prevPage},size=${size},search=${search})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
                                     <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
                                 </a>
                                 <ul class="flex flex-wrap items-center gap-2 pagination">
-                                    <li th:each="i : ${#numbers.sequence(0, totalPages-1)}">
+                                    <li th:each="i : ${#numbers.sequence(0, lastPage)}">
                                         <a th:href="@{/admin/category(page=${i},size=${size},search=${search})}"
                                            th:text="${i+1}"
                                            th:classappend="${i == page} ? 'active bg-custom-50 border-custom-50 text-custom-500' : ''"
@@ -150,7 +150,7 @@
                                         </a>
                                     </li>
                                 </ul>
-                                <a th:href="@{/admin/category(page=${page+1},size=${size},search=${search})}" th:classappend="${page+1 >= totalPages} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
+                                <a th:href="@{/admin/category(page=${nextPage},size=${size},search=${search})}" th:classappend="${page+1 >= totalPages} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
                                     Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
                                 </a>
                             </div>
