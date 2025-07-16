@@ -1,0 +1,200 @@
+<!doctype html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Reid - login</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/fe/img/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/fe/css/plugins.css}">
+    <link rel="stylesheet" th:href="@{/fe/css/style.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/oauth2-login.css}">
+</head>
+
+<body>
+<!--header area start-->
+<header th:replace="user/fragments/header :: header"></header>
+<!--header area end-->
+<hr>
+
+<!--breadcrumbs area start-->
+<div class="breadcrumbs_area other_bread">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="#">home</a></li>
+                        <li>/</li>
+                        <li>Register</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs area end-->
+
+<!--login start-->
+<div class="customer_login">
+    <div class="container">
+        <div class="row">
+            <!--Register area start-->
+            <div class="col-lg-6 col-md-6">
+                <div class="account_form">
+                    <h2>Register</h2>
+                    <!-- Error Message -->
+                    <div th:if="${error}" class="error-message" th:text="${error}"></div>
+
+                    <!-- Success Message -->
+                    <div th:if="${message}" class="success-message" th:text="${message}"></div>
+
+                    <form th:action="@{/register}" method="post" id="registerForm">
+                        <div class="form-group">
+                            <label for="username">Username <span style="color: red;">*</span></label>
+                            <input type="text" id="username" name="username" required
+                                   th:value="${username}" placeholder="Enter username">
+                        </div>
+
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label for="email">Email <span style="color: red;">*</span></label>
+                            <input type="email" id="email" name="email" required
+                                   th:value="${email}" placeholder="Enter email">
+                        </div>
+
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label for="password">Password <span style="color: red;">*</span></label>
+                            <input type="password" id="password" name="password" required
+                                   placeholder="Enter password">
+                            <div class="password-requirements">
+                                Password must be at least 6 characters
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 20px; margin-bottom: 15px;">
+                            <label for="confirmPassword">Confirm Password <span style="color: red;">*</span></label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required
+                                   placeholder="Re-enter password">
+                        </div>
+
+                        <div style="text-align: right;">
+                            <button type="submit" class="register-btn">Register</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            <!--Register area end-->
+
+
+            <div class="col-lg-6 col-md-6">
+                <div class="account_form register">
+                    <h2>Login </h2>
+                    <div class="login-link">
+                        Already have an account?
+                    </div>
+                    <div class="login_submit" style="margin-top: 20px;">
+                        <a th:href="@{/login}" class="register-link-btn"
+                           style="display: inline-block; background: #4285f4; color: white;
+                                  padding: 12px 24px; text-decoration: none; border-radius: 4px;
+                                  font-weight: 500; transition: background 0.3s; text-align: center; width: 100%;">
+                            Sign in now
+                        </a>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <p style="color: #666; font-size: 14px;">Or</p>
+                        <a href="/oauth2/authorization/google" class="google_login_btn"
+                           style="display: inline-block; background: #4285f4; color: white;
+                                  padding: 12px 24px; text-decoration: none; border-radius: 4px;
+                                  font-weight: 500; transition: background 0.3s; margin-top: 10px;">
+                            <i class="fa fa-google" style="margin-right: 8px;"></i>
+                            Sign in with Google
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--login end-->
+<hr>
+
+<!--footer area start-->
+<footer th:replace="user/fragments/footer :: footer"></footer>
+<!--footer area end-->
+
+<script th:src="@{/fe/js/plugins.js}"></script>
+<script th:src="@{/fe/js/main.js}"></script>
+
+<script>
+    // Client-side validation
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+
+        // Clear previous error messages
+        clearErrors();
+
+        let hasError = false;
+
+        // Validate username
+        if (username.length < 3) {
+            showError('username', 'Username must be at least 3 characters');
+            hasError = true;
+        }
+
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showError('email', 'Invalid email');
+            hasError = true;
+        }
+
+        // Validate password
+        if (password.length < 6) {
+            showError('password', 'Password must be at least 6 characters');
+            hasError = true;
+        }
+
+        // Validate confirm password
+        if (password !== confirmPassword) {
+            showError('confirmPassword', 'Confirmation password does not match');
+            hasError = true;
+        }
+
+        if (hasError) {
+            e.preventDefault();
+        }
+    });
+
+    function showError(fieldId, message) {
+        const field = document.getElementById(fieldId);
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.style.fontSize = '12px';
+        errorDiv.style.marginTop = '5px';
+        errorDiv.textContent = message;
+        field.parentNode.appendChild(errorDiv);
+        field.style.borderColor = '#d32f2f';
+    }
+
+    function clearErrors() {
+        const errorMessages = document.querySelectorAll('.error-message');
+        errorMessages.forEach(error => {
+            if (error.style.fontSize === '12px') {
+                error.remove();
+            }
+        });
+
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.style.borderColor = '#ddd';
+        });
+    }
+</script>
+</body>
+</html>

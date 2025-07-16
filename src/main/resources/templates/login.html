@@ -1,0 +1,123 @@
+<!doctype html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Reid - login</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/fe/img/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/fe/css/plugins.css}">
+    <link rel="stylesheet" th:href="@{/fe/css/style.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/oauth2-login.css}">
+</head>
+
+<body>
+<!--header area start-->
+<header th:replace="user/fragments/header :: header"></header>
+<!--header area end-->
+<hr>
+
+<!--breadcrumbs area start-->
+<div class="breadcrumbs_area other_bread">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="#">home</a></li>
+                        <li>/</li>
+                        <li>login</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs area end-->
+
+<!--login start-->
+<div class="customer_login">
+    <div class="container">
+        <div class="row">
+            <!--login area start-->
+            <div class="col-lg-6 col-md-6">
+                <div class="account_form">
+                    <h2>login</h2>
+                    <form th:action="@{/login}" method="post">
+                        <p>
+                            <label>Username <span>*</span></label>
+                            <input type="text" name="username" />
+                        </p>
+                        <p>
+                            <label>Passwords <span>*</span></label>
+                            <input type="password" name="password" />
+                        </p>
+                        <div class="login_submit">
+                            <a href="#">Lost your password?</a>
+                            <label for="remember">
+                                <input id="remember" type="checkbox">
+                                Remember me
+                            </label>
+                            <button type="submit">login</button>
+
+                        </div>
+                        <div th:if="${error}" th:text="${error}" style="color:red"></div>
+                        <div th:if="${message}" th:text="${message}" style="color:green"></div>
+                    </form>
+                    
+                    <!-- Google Login Button -->
+<!--                    <div class="social_login">-->
+<!--                        <div class="divider">Hoặc đăng nhập với</div>-->
+<!--                        <a href="/oauth2/authorization/google" class="google_login_btn">-->
+<!--                            <i class="fa fa-google"></i>-->
+<!--                            Đăng nhập bằng Google-->
+<!--                        </a>-->
+<!--                    </div>-->
+                </div>
+            </div>
+            <!--login area start-->
+
+            <!--register area start-->
+            <div class="col-lg-6 col-md-6">
+                <div class="account_form register">
+                    <h2>Register </h2>
+                    <p style="margin-bottom: 20px; color: #666;">
+                        Create a new account to use the full features of the system
+                    </p>
+                    <div class="login_submit">
+                        <a th:href="@{/register}" class="register-link-btn"
+                           style="display: inline-block; background: #4285f4; color: white; 
+                                  padding: 12px 24px; text-decoration: none; border-radius: 4px; 
+                                  font-weight: 500; transition: background 0.3s; text-align: center; width: 100%;">
+                            Sign up now
+                        </a>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <p style="color: #666; font-size: 14px;">Or</p>
+                        <a href="/oauth2/authorization/google" class="google_login_btn"
+                           style="display: inline-block; background: #4285f4; color: white;
+                                  padding: 12px 24px; text-decoration: none; border-radius: 4px;
+                                  font-weight: 500; transition: background 0.3s; margin-top: 10px;">
+                            <i class="fa fa-google" style="margin-right: 8px;"></i>
+                            Sign in with Google
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!--register area end-->
+        </div>
+    </div>
+</div>
+<!--login end-->
+<hr>
+
+<!--footer area start-->
+<footer th:replace="user/fragments/footer :: footer"></footer>
+<!--footer area end-->
+
+<script th:src="@{/fe/js/plugins.js}"></script>
+<script th:src="@{/fe/js/main.js}"></script>
+</body>
+</html>

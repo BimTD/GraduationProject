@@ -1,0 +1,122 @@
+<header th:fragment="header" class="header_area">
+    <!--header top start-->
+    <div class="header_top">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 col-md-12">
+                    <div class="welcome_text">
+                        <ul>
+                            <li>Free shipping on orders over 100,000 VND</li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-12">
+                    <div class="top_right text-right">
+                        <ul>
+                            <li class="top_links"><a href="#">Account<i class="ion-chevron-down"></i></a>
+
+                            </li>
+                            <li class="language"><a href="#">Language<i class="ion-chevron-down"></i></a>
+                                <ul class="dropdown_language">
+                                    <li><a href="#">Vietnamese</a></li>
+                                    <li><a href="#">English</a></li>
+                                </ul>
+                            </li>
+                            <li class="currency"><a href="#">Suport</a>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--header top start-->
+
+    <!--header middel start-->
+    <div class="header_middel">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-3 col-md-5">
+                    <div class="logo">
+                        <a href="#"><img th:src="@{/fe/img/logo/logo.png}" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="search_bar">
+                        <form action="#">
+                            <select class="select_option" name="select">
+                                <option selected value="1">All Categories</option>
+                                <option  value="2">Accessories</option>
+                                <option  value="3">Bridge</option>
+                                <option  value="4">Hub</option>
+                                <option  value="5">Repeater</option>
+                                <option  value="6">Switch</option>
+                                <option  value="7">Video Games</option>
+                                <option  value="8">PlayStation 3</option>
+                                <option  value="9">PlayStation 4</option>
+                                <option  value="10">Xbox 360</option>
+                                <option  value="11">Xbox One</option>
+                            </select>
+                            <input placeholder="Search entire store here..." type="text">
+                            <button type="submit"><i class="ion-ios-search-strong"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 offset-md-6 offset-lg-0">
+                    <div class="cart_area">
+                        <div class="middel_links">
+                            <ul>
+                                <li><a href="#">Login</a></li>
+                                <li>/</li>
+                                <li><a href="#">Register</a></li>
+                            </ul>
+
+                        </div>
+                        <div class="cart_link">
+                            <a href="#"><i class="fa fa-shopping-basket"></i>Cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--header middel end-->
+
+    <!--header bottom satrt-->
+    <div class="header_bottom sticky-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12">
+                    <div class="header_static">
+                        <div class="main_menu_inner">
+                            <div class="main_menu">
+                                <nav>
+                                    <ul>
+                                        <li class="active"><a href="#">Home</a>
+
+                                        </li>
+                                        <li class="mega_items"><a href="#">shop</a>
+
+                                        </li>
+                                        <li><a href="#">blog</a>
+
+                                        </li>
+                                        <li><a href="#">About us</a></li>
+                                        <li><a href="#">Contact Us</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+
+                        <div class="contact_phone">
+                            <p>Call Free Support: <a href="tel:0982172169">0982172169</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--header bottom end-->
+</header>

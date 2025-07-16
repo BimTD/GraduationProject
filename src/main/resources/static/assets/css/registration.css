@@ -1,0 +1,228 @@
+/* Registration Page Styles */
+.register-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.register-form h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 0 8px rgba(66, 133, 244, 0.2);
+}
+
+.form-group input.error {
+    border-color: #d32f2f;
+    box-shadow: 0 0 8px rgba(211, 47, 47, 0.2);
+}
+
+.register-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.register-btn:hover {
+    background: linear-gradient(135deg, #3367d6 0%, #2a56c6 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+}
+
+.register-btn:active {
+    transform: translateY(0);
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.login-link a {
+    color: #4285f4;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.login-link a:hover {
+    color: #3367d6;
+    text-decoration: underline;
+}
+
+.error-message {
+    color: #d32f2f;
+    background: #ffebee;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #ffcdd2;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.success-message {
+    color: #388e3c;
+    background: #e8f5e8;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #c8e6c9;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.password-requirements {
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    border-left: 3px solid #4285f4;
+}
+
+.field-error {
+    color: #d32f2f;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .register-container {
+        margin: 20px;
+        padding: 20px;
+    }
+    
+    .register-form h2 {
+        font-size: 24px;
+    }
+    
+    .form-group input {
+        padding: 10px 12px;
+    }
+    
+    .register-btn {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-container {
+        margin: 10px;
+        padding: 15px;
+    }
+    
+    .register-form h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+}
+
+/* Loading State */
+.register-btn.loading {
+    background: #ccc;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.register-btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    margin-top: 5px;
+    height: 4px;
+    background: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.password-strength.weak .password-strength-bar {
+    background: #d32f2f;
+    width: 25%;
+}
+
+.password-strength.medium .password-strength-bar {
+    background: #f57c00;
+    width: 50%;
+}
+
+.password-strength.strong .password-strength-bar {
+    background: #388e3c;
+    width: 75%;
+}
+
+.password-strength.very-strong .password-strength-bar {
+    background: #2e7d32;
+    width: 100%;
+} 

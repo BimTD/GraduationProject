@@ -1,0 +1,56 @@
+package org.example.graduationproject.models;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table(name = "SanPham")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class SanPham {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String ten;
+    private String moTa;
+    private BigDecimal giaBan;
+    private BigDecimal giaNhap;
+    private BigDecimal khuyenMai;
+    private String tag;
+    private String huongDan;
+    private String thanhPhan;
+    private LocalDateTime ngayCapNhat;
+    private LocalDateTime ngayTao;
+    private String trangThaiSanPham;
+    private Boolean trangThaiHoatDong;
+    private Integer gioiTinh;
+
+    @ManyToOne
+    @JoinColumn(name = "Id_Loai")
+    private Loai loai;
+
+    @ManyToOne
+    @JoinColumn(name = "Id_NhanHieu")
+    private NhanHieu nhanHieu;
+
+    @ManyToOne
+    @JoinColumn(name = "Id_NhaCungCap")
+    private NhaCungCap nhaCungCap;
+
+    @OneToMany(mappedBy = "sanPham")
+    private List<ImageSanPham> images;
+
+    @OneToMany(mappedBy = "sanPham")
+    private List<SanPhamBienThe> bienThes;
+}
+
