@@ -50,115 +50,115 @@
             </div>
 
             <!-- Danh sách category -->
-            <div class="card" id="productListTable">
-                <div class="card-body">
-                    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
-                        <div class="xl:col-span-3">
-                            <div class="relative">
-                                <form th:action="@{/admin/category}" method="get" class="flex gap-2 items-center">
-                                    <div class="relative">
-                                        <input type="text" name="search" th:value="${search}" class="ltr:pl-8 rtl:pr-8 search form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Search for ..." autocomplete="off">
-                                        <button type="submit" class="absolute right-2.5 top-2.5 bg-transparent border-none p-0">
-                                            <i data-lucide="search" class="inline-block size-4 text-slate-500 dark:text-zink-200 fill-slate-100 dark:fill-zink-600"></i>
-                                        </button>
-                                    </div>
-                                    
-                                    <a th:href="@{/admin/category}"
-                                       class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
-                                        Reset
-                                    </a>
-                                </form>
+                <div class="card" id="productListTable">
+                    <div class="card-body">
+                        <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
+                            <div class="xl:col-span-3">
+                                <div class="relative">
+                                    <form th:action="@{/admin/category}" method="get" class="flex gap-2 items-center">
+                                        <div class="relative">
+                                            <input type="text" name="search" th:value="${search}" class="ltr:pl-8 rtl:pr-8 search form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Search for ..." autocomplete="off">
+                                            <button type="submit" class="absolute right-2.5 top-2.5 bg-transparent border-none p-0">
+                                                <i data-lucide="search" class="inline-block size-4 text-slate-500 dark:text-zink-200 fill-slate-100 dark:fill-zink-600"></i>
+                                            </button>
+                                        </div>
 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="!pt-1 card-body">
-                    <div class="overflow-x-auto">
-                        <table class="w-full whitespace-nowrap" id="productTable">
-                            <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
-                            <tr>
-                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code" data-sort="product_code">STT</th>
-                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name" data-sort="product_name">Category Name</th>
-                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody class="list">
-                            <tr th:each="cat, iterStat : ${categories}">
-                                <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
-                                    <span th:text="${iterStat.index + 1}"></span>
-                                </td>
-                                <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
-                                    <span th:text="${cat.ten}"></span>
-                                </td>
-                                <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 text-center align-middle">
-                                    <div class="flex justify-center items-center gap-2">
-                                        <a th:href="@{'/admin/category/edit/' + ${cat.id}}"
-                                           class="flex items-center justify-center w-8 h-8 rounded-md bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-150"
-                                           title="Edit">
-                                            <i data-lucide="pencil" class="w-4 h-4"></i>
+                                        <a th:href="@{/admin/category}"
+                                           class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
+                                            Reset
                                         </a>
-                                        <a th:href="@{'/admin/category/delete/' + ${cat.id}}"
-                                           class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"
-                                           title="Delete">
-                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr th:if="${#lists.isEmpty(categories)}">
-                                <td colspan="3" class="text-center">None.</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                    </form>
 
-                    <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
-                        <div class="grow">
-                            <p class="text-slate-500 dark:text-zink-200">
-                                Showing <b th:text="${categories.size()}"></b> of <b th:text="${totalElements}"></b> Results
-                            </p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <form th:action="@{/admin/category}" method="get" class="flex items-center gap-2">
-                                <input type="hidden" name="search" th:value="${search}" />
-                                <input type="hidden" name="page" th:value="${page}" />
-
-                                <div class="flex items-center gap-2">
-                                    <label for="size" class="whitespace-nowrap">Items per page:</label>
-                                    <select name="size" id="size" class="form-input border-slate-200" onchange="this.form.submit()">
-                                        <option th:value="5" th:selected="${size == 5}">5</option>
-                                        <option th:value="10" th:selected="${size == 10}">10</option>
-                                        <option th:value="20" th:selected="${size == 20}">20</option>
-                                        <option th:value="50" th:selected="${size == 50}">50</option>
-                                    </select>
                                 </div>
-                            </form>
-                        </div>
-
-                        <div class="col-sm-auto mt-sm-0">
-                            <div class="flex gap-2 pagination-wrap justify-content-center">
-                                <a th:href="@{/admin/category(page=${prevPage},size=${size},search=${search})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
-                                    <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
-                                </a>
-                                <ul class="flex flex-wrap items-center gap-2 pagination">
-                                    <li th:each="i : ${#numbers.sequence(0, lastPage)}">
-                                        <a th:href="@{/admin/category(page=${i},size=${size},search=${search})}"
-                                           th:text="${i+1}"
-                                           th:classappend="${i == page} ? 'active bg-custom-50 border-custom-50 text-custom-500' : ''"
-                                           class="inline-flex items-center justify-center h-8 px-3 border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 hover:bg-custom-50">
-                                        </a>
-                                    </li>
-                                </ul>
-                                <a th:href="@{/admin/category(page=${nextPage},size=${size},search=${search})}" th:classappend="${page+1 >= totalPages} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
-                                    Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
-                                </a>
                             </div>
                         </div>
                     </div>
+                    <div class="!pt-1 card-body">
+                        <div class="overflow-x-auto">
+                            <table class="w-full whitespace-nowrap" id="productTable">
+                                <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
+                                <tr>
+                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code" data-sort="product_code">STT</th>
+                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name" data-sort="product_name">Category Name</th>
+                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody class="list">
+                                <tr th:each="cat, iterStat : ${categories}">
+                                    <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                        <span th:text="${iterStat.index + 1}"></span>
+                                    </td>
+                                    <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
+                                        <span th:text="${cat.ten}"></span>
+                                    </td>
+                                    <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 text-center align-middle">
+                                        <div class="flex justify-center items-center gap-2">
+                                            <a th:href="@{'/admin/category/edit/' + ${cat.id}}"
+                                               class="flex items-center justify-center w-8 h-8 rounded-md bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-150"
+                                               title="Edit">
+                                                <i data-lucide="pencil" class="w-4 h-4"></i>
+                                            </a>
+                                            <a th:href="@{'/admin/category/delete/' + ${cat.id}}"
+                                               class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"
+                                               title="Delete">
+                                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(categories)}">
+                                    <td colspan="3" class="text-center">None.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
+                        <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
+                            <div class="grow">
+                                <p class="text-slate-500 dark:text-zink-200">
+                                    Showing <b th:text="${categories.size()}"></b> of <b th:text="${totalElements}"></b> Results
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <form th:action="@{/admin/category}" method="get" class="flex items-center gap-2">
+                                    <input type="hidden" name="search" th:value="${search}" />
+                                    <input type="hidden" name="page" th:value="${page}" />
+
+                                    <div class="flex items-center gap-2">
+                                        <label for="size" class="whitespace-nowrap">Items per page:</label>
+                                        <select name="size" id="size" class="form-input border-slate-200" onchange="this.form.submit()">
+                                            <option th:value="5" th:selected="${size == 5}">5</option>
+                                            <option th:value="10" th:selected="${size == 10}">10</option>
+                                            <option th:value="20" th:selected="${size == 20}">20</option>
+                                            <option th:value="50" th:selected="${size == 50}">50</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="col-sm-auto mt-sm-0">
+                                <div class="flex gap-2 pagination-wrap justify-content-center">
+                                    <a th:href="@{/admin/category(page=${prevPage},size=${size},search=${search})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
+                                        <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
+                                    </a>
+                                    <ul class="flex flex-wrap items-center gap-2 pagination">
+                                        <li th:each="i : ${#numbers.sequence(0, lastPage)}">
+                                            <a th:href="@{/admin/category(page=${i},size=${size},search=${search})}"
+                                               th:text="${i+1}"
+                                               th:classappend="${i == page} ? 'active bg-custom-50 border-custom-50 text-custom-500' : ''"
+                                               class="inline-flex items-center justify-center h-8 px-3 border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 hover:bg-custom-50">
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <a th:href="@{/admin/category(page=${nextPage},size=${size},search=${search})}" th:classappend="${page+1 >= totalPages} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
+                                        Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
             <!-- container-fluid -->
         </div>
         <!-- End Content -->
