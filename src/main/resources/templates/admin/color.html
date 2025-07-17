@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org"
+        lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
+<head th:replace="admin/fragments/head :: head('Color Management')"></head>
+
+<body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
+<div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
+
+    <!-- Sidebar -->
+    <div th:replace="admin/fragments/sidebar :: sidebar" ></div>
+
+    <div id="sidebar-overlay" class="absolute inset-0 z-[1002] bg-slate-500/30 hidden"></div>
+    <!-- Header -->
+    <header th:replace="admin/fragments/header :: header"></header>
+
+    <!-- Content -->
+    <div class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+        <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
+
+            <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
+                <div class="grow">
+                    <h5 class="text-16">Color</h5>
+                </div>
+                <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
+                    <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
+                        <a href="#" class="text-slate-400 dark:text-zink-200">Dashboard</a>
+                    </li>
+                    <li class="text-slate-700 dark:text-zink-100">
+                        Color
+                    </li>
+                </ul>
+            </div>
+            <!-- Form add/edit color -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="flex flex-col md:flex-row md:items-end w-full gap-2">
+                        <form th:action="@{${formAction}}" th:object="${color}" method="post" class="flex gap-2 items-end">
+                            <input type="hidden" th:field="*{id}" />
+                            <div>
+                                <label class="block mb-1">Color Name</label>
+                                <input type="text" th:field="*{maMau}" class="form-input border-slate-200" placeholder="Enter color name..." required />
+                            </div>
+                            <div>
+                                <label class="block mb-1">Category</label>
+                                <select th:field="*{loai.id}" class="form-input border-slate-200" required>
+                                    <option th:each="loai : ${loais}" th:value="${loai.id}" th:text="${loai.ten}" th:selected="${loai.id} == *{loai.id}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn bg-custom-500 text-white">
+                                <i th:if="${editMode}" data-lucide="refresh-cw" class="size-4"></i>
+                                <i th:unless="${editMode}" data-lucide="plus" class="size-4"></i>
+                            </button>
+                            <a th:if="${editMode}" th:href="@{/admin/color}" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
+                                <i data-lucide="x" class="size-4"></i>
+                            </a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Bảng danh sách color -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="overflow-x-auto">
+                        <table class="w-full whitespace-nowrap" id="colorTable">
+                            <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
+                            <tr>
+                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">STT</th>
+                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Color Name</th>
+                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Category Name</th>
+                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="color, iterStat : ${colors}">
+                                <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                    <span th:text="${iterStat.index + 1}"></span>
+                                </td>
+                                <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                    <span th:text="${color.maMau}"></span>
+                                </td>
+                                <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                    <span th:text="${color.loai.ten}"></span>
+                                </td>
+                                <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                    <div class="flex gap-3">
+                                        <a th:href="@{'/admin/color/edit/' + ${color.id}}" class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"><i data-lucide="pencil" class="size-4"></i></a>
+                                        <a th:href="@{'/admin/color/delete/' + ${color.id}}" onclick="return confirm('Bạn có chắc muốn xóa màu này?');" class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"><i data-lucide="trash-2" class="size-4"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(colors)}">
+                                <td colspan="4" class="text-center">Không có màu nào.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Content -->
+
+</div>
+
+<div th:replace="admin/fragments/script :: script"></div>
+
+</body>
+</html>
