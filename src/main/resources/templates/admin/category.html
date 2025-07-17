@@ -42,8 +42,13 @@
                                 <label class="block mb-1">Name Category</label>
                                 <input type="text" th:field="*{ten}" class="form-input border-slate-200" placeholder="Enter name..." required />
                             </div>
-                            <button type="submit" class="btn bg-custom-500 text-white" th:text="${editMode} ? 'Update' : 'Add new'"></button>
-                            <a th:if="${editMode}" th:href="@{/admin/category}" class="btn bg-gray-300 ml-2">Cancel</a>
+                            <button type="submit" class="btn bg-custom-500 text-white">
+                                <i th:if="${editMode}" data-lucide="refresh-cw" class="size-4"></i>
+                                <i th:unless="${editMode}" data-lucide="plus" class="size-4"></i>
+                            </button>
+                            <a th:if="${editMode}" th:href="@{/admin/category}" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
+                                <i data-lucide="x" class="size-4"></i>
+                            </a>
                         </form>
                     </div>
                 </div>
@@ -57,7 +62,7 @@
                                 <div class="relative">
                                     <form th:action="@{/admin/category}" method="get" class="flex gap-2 items-center">
                                         <div class="relative">
-                                            <input type="text" name="search" th:value="${search}" class="ltr:pl-8 rtl:pr-8 search form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Search for ..." autocomplete="off">
+                                            <input type="text" name="search" th:value="${search}" class="form-input border-slate-200" placeholder="Search for..." autocomplete="off">
                                             <button type="submit" class="absolute right-2.5 top-2.5 bg-transparent border-none p-0">
                                                 <i data-lucide="search" class="inline-block size-4 text-slate-500 dark:text-zink-200 fill-slate-100 dark:fill-zink-600"></i>
                                             </button>
@@ -65,7 +70,7 @@
 
                                         <a th:href="@{/admin/category}"
                                            class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
-                                            Reset
+                                            <i data-lucide="refresh-cw" class="size-4"></i>
                                         </a>
                                     </form>
 
@@ -78,9 +83,9 @@
                             <table class="w-full whitespace-nowrap" id="productTable">
                                 <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
                                 <tr>
-                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code" data-sort="product_code">STT</th>
-                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name" data-sort="product_name">Category Name</th>
-                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">Actions</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ID">STT</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 Name">Category Name</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 Action">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody class="list">
@@ -91,18 +96,11 @@
                                     <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
                                         <span th:text="${cat.ten}"></span>
                                     </td>
-                                    <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 text-center align-middle">
-                                        <div class="flex justify-center items-center gap-2">
-                                            <a th:href="@{'/admin/category/edit/' + ${cat.id}}"
-                                               class="flex items-center justify-center w-8 h-8 rounded-md bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-150"
-                                               title="Edit">
-                                                <i data-lucide="pencil" class="w-4 h-4"></i>
-                                            </a>
-                                            <a th:href="@{'/admin/category/delete/' + ${cat.id}}"
-                                               class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"
-                                               title="Delete">
-                                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                            </a>
+
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-500 Action">
+                                        <div class="flex gap-3">
+                                            <a th:href="@{'/admin/category/edit/' + ${cat.id}}" class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"><i data-lucide="pencil" class="size-4"></i></a>
+                                            <a th:href="@{'/admin/category/delete/' + ${cat.id}}" onclick="return confirm('Are you sure you want to delete?');"  class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"><i data-lucide="trash-2" class="size-4"></i></a>
                                         </div>
                                     </td>
                                 </tr>

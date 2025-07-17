@@ -34,7 +34,8 @@
             <div th:if="${error}" class="mb-4 p-3 rounded bg-red-100 text-red-800">[[${error}]]</div>
 
             <div class="mb-4">
-                <button class="btn bg-custom-500 text-white" onclick="window.location.href='?showForm=true'" th:if="${!showForm}">Thêm mới nhà cung cấp</button>
+                <button class="btn bg-custom-500 text-white" onclick="window.location.href='?showForm=true'" th:if="${!showForm}"><i data-lucide="plus" class="size-4"></i>
+                </button>
             </div>
 
             <div class="card mb-4" th:if="${showForm}">
@@ -43,25 +44,25 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <input type="hidden" th:field="*{id}" />
                             <div>
-                                <label class="block mb-1">Tên nhà cung cấp</label>
-                                <input type="text" th:field="*{ten}" class="form-input border-slate-200" placeholder="Nhập tên nhà cung cấp..." required />
+                                <label class="block mb-1">Supplier Name</label>
+                                <input type="text" th:field="*{ten}" class="form-input border-slate-200" placeholder="Enter supplier name..." required />
                             </div>
                             <div>
-                                <label class="block mb-1">Số điện thoại</label>
-                                <input type="text" th:field="*{sdt}" class="form-input border-slate-200" placeholder="Nhập số điện thoại..." required />
+                                <label class="block mb-1">Phone number</label>
+                                <input type="text" th:field="*{sdt}" class="form-input border-slate-200" placeholder="Enter phone number..." required />
                             </div>
                             <div>
-                                <label class="block mb-1">Địa chỉ</label>
-                                <input type="text" th:field="*{diaChi}" class="form-input border-slate-200" placeholder="Nhập địa chỉ..." required />
+                                <label class="block mb-1">Address</label>
+                                <input type="text" th:field="*{diaChi}" class="form-input border-slate-200" placeholder="Enter address..." required />
                             </div>
                             <div>
-                                <label class="block mb-1">Thông tin</label>
-                                <input type="text" th:field="*{thongTin}" class="form-input border-slate-200" placeholder="Nhập thông tin..." />
+                                <label class="block mb-1">Information</label>
+                                <input type="text" th:field="*{thongTin}" class="form-input border-slate-200" placeholder="Enter information..." />
                             </div>
                         </div>
                         <div>
-                            <button type="submit" class="btn bg-custom-500 text-white" th:text="${editMode} ? 'Cập nhật' : 'Thêm mới'"></button>
-                            <a href="/admin/supplier" class="btn bg-gray-300 ml-2">Hủy</a>
+                            <button type="submit" class="btn bg-custom-500 text-white" th:text="${editMode} ? 'Update' : 'Add new'"></button>
+                            <a href="/admin/supplier" class="btn bg-gray-300 ml-2">Cancel</a>
                         </div>
                     </form>
                 </div>
@@ -75,11 +76,11 @@
                             <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
                             <tr>
                                 <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">STT</th>
-                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Tên nhà cung cấp</th>
-                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Số điện thoại</th>
-                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Địa chỉ</th>
-                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Thông tin</th>
-                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Hành động</th>
+                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Supplier Name</th>
+                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Phone number</th>
+                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Address</th>
+                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Information</th>
+                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -99,23 +100,15 @@
                                 <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
                                     <span th:text="${supplier.thongTin}"></span>
                                 </td>
-                                <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 text-center align-middle">
-                                    <div class="flex justify-center items-center gap-2">
-                                        <a th:href="@{'/admin/supplier/edit/' + ${supplier.id}}"
-                                           class="flex items-center justify-center w-8 h-8 rounded-md bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-150"
-                                           title="Sửa">
-                                            <i data-lucide="pencil" class="w-4 h-4"></i>
-                                        </a>
-                                        <a th:href="@{'/admin/supplier/delete/' + ${supplier.id}}"
-                                           class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"
-                                           title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">
-                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        </a>
+                                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-500 Action">
+                                    <div class="flex gap-3">
+                                        <a th:href="@{'/admin/supplier/edit/' + ${supplier.id}}" class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"><i data-lucide="pencil" class="size-4"></i></a>
+                                        <a th:href="@{'/admin/supplier/delete/' + ${supplier.id}}" onclick="return confirm('Are you sure you want to delete?');"  class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"><i data-lucide="trash-2" class="size-4"></i></a>
                                     </div>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(suppliers)}">
-                                <td colspan="6" class="text-center">Không có nhà cung cấp nào.</td>
+                                <td colspan="6" class="text-center">None.</td>
                             </tr>
                             </tbody>
                         </table>
@@ -124,7 +117,7 @@
                     <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
                         <div class="grow">
                             <p class="text-slate-500 dark:text-zink-200">
-                                Hiển thị <b th:text="${suppliers.size()}"></b> trên tổng <b th:text="${totalElements}"></b> nhà cung cấp
+                                Showing  <b th:text="${suppliers.size()}"></b> of <b th:text="${totalElements}"></b> Results
                             </p>
                         </div>
                         <div class="flex items-center gap-2">
@@ -133,7 +126,7 @@
                                 <input type="hidden" name="page" th:value="${page}" />
 
                                 <div class="flex items-center gap-2">
-                                    <label for="size" class="whitespace-nowrap">Số lượng/trang:</label>
+                                    <label for="size" class="whitespace-nowrap">Items per page:</label>
                                     <select name="size" id="size" class="form-input border-slate-200" onchange="this.form.submit()">
                                         <option th:value="5" th:selected="${size == 5}">5</option>
                                         <option th:value="10" th:selected="${size == 10}">10</option>
@@ -147,7 +140,7 @@
                         <div class="col-sm-auto mt-sm-0">
                             <div class="flex gap-2 pagination-wrap justify-content-center">
                                 <a th:href="@{/admin/supplier(page=${prevPage},size=${size},search=${search})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
-                                    <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Trước
+                                    <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
                                 </a>
                                 <ul class="flex flex-wrap items-center gap-2 pagination">
                                     <li th:each="i : ${#numbers.sequence(0, lastPage)}">
@@ -159,7 +152,7 @@
                                     </li>
                                 </ul>
                                 <a th:href="@{/admin/supplier(page=${nextPage},size=${size},search=${search})}" th:classappend="${page+1 >= totalPages} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
-                                    Sau <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
+                                    Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
                                 </a>
                             </div>
                         </div>

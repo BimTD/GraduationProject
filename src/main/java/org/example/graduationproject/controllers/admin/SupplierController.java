@@ -4,6 +4,8 @@ import org.example.graduationproject.models.NhaCungCap;
 import org.example.graduationproject.services.NhaCungCapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ public class SupplierController {
     public String supplierPage(Model model,
                                @RequestParam(defaultValue = "") String search,
                                @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "10") int size,
+                               @RequestParam(defaultValue = "5") int size,
                                @RequestParam(value = "showForm", defaultValue = "false") boolean showForm,
                                @RequestParam(value = "editId", required = false) Integer editId) {
         Page<NhaCungCap> supplierPage;
@@ -28,6 +30,12 @@ public class SupplierController {
         } else {
             supplierPage = nhaCungCapService.getAllNhaCungCapPaging(page, size);
         }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        model.addAttribute("username", username);
+        model.addAttribute("currentPage", "supplier");
         model.addAttribute("suppliers", supplierPage.getContent());
         model.addAttribute("supplierPage", supplierPage);
         model.addAttribute("totalPages", supplierPage.getTotalPages());
@@ -63,14 +71,14 @@ public class SupplierController {
     @PostMapping("/add")
     public String addSupplier(@ModelAttribute("supplier") NhaCungCap nhaCungCap, RedirectAttributes redirectAttributes) {
         nhaCungCapService.save(nhaCungCap);
-        redirectAttributes.addFlashAttribute("success", "Thêm nhà cung cấp thành công!");
+        redirectAttributes.addFlashAttribute("success", "Supplier added successfully!");
         return "redirect:/admin/supplier";
     }
 
     @PostMapping("/update")
     public String updateSupplier(@ModelAttribute("supplier") NhaCungCap nhaCungCap, RedirectAttributes redirectAttributes) {
         nhaCungCapService.save(nhaCungCap);
-        redirectAttributes.addFlashAttribute("success", "Cập nhật nhà cung cấp thành công!");
+        redirectAttributes.addFlashAttribute("success", "Supplier update successful!");
         return "redirect:/admin/supplier";
     }
 
@@ -82,7 +90,7 @@ public class SupplierController {
     @GetMapping("/delete/{id}")
     public String deleteSupplier(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         nhaCungCapService.deleteById(id);
-        redirectAttributes.addFlashAttribute("success", "Xóa nhà cung cấp thành công!");
+        redirectAttributes.addFlashAttribute("success", "Supplier deleted successfully!");
         return "redirect:/admin/supplier";
     }
 }
