@@ -19,6 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 
 @Controller
@@ -32,15 +35,33 @@ public class ColorController {
     private LoaiRepository loaiRepository;
 
     @GetMapping("/color")
-    public String colorPage(@RequestParam(value = "editId", required = false) Integer editId, Model model) {
+    public String colorPage(@RequestParam(value = "editId", required = false) Integer editId,
+                          @RequestParam(value = "page", defaultValue = "0") int page,
+                          @RequestParam(value = "size", defaultValue = "5") int size,
+                          @RequestParam(value = "search", required = false) String search,
+                          Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         model.addAttribute("username", username);
         model.addAttribute("currentPage", "color");
         List<Loai> loais = loaiRepository.findAll();
         model.addAttribute("loais", loais);
-        List<MauSac> colors = mauSacService.findAll();
-        model.addAttribute("colors", colors);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MauSac> colorPage;
+        if (search != null && !search.isEmpty()) {
+            colorPage = mauSacService.findByMaMauContainingIgnoreCase(search, pageable);
+        } else {
+            colorPage = mauSacService.findAll(pageable);
+        }
+        model.addAttribute("colors", colorPage.getContent());
+        model.addAttribute("totalElements", colorPage.getTotalElements());
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", colorPage.getTotalPages());
+        model.addAttribute("lastPage", colorPage.getTotalPages() > 0 ? colorPage.getTotalPages() - 1 : 0);
+        model.addAttribute("prevPage", page > 0 ? page - 1 : 0);
+        model.addAttribute("nextPage", page + 1 < colorPage.getTotalPages() ? page + 1 : colorPage.getTotalPages() - 1);
+        model.addAttribute("search", search);
         boolean editMode = false;
         MauSac colorForm = new MauSac();
         String formAction = "/admin/color/add";

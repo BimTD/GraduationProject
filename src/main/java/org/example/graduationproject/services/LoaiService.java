@@ -11,38 +11,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class LoaiService {
-    @Autowired
-    private LoaiRepository loaiRepository;
 
-    public List<Loai> getAllLoai() {
-        return loaiRepository.findAll();
-    }
+public interface LoaiService {
+    List<Loai> getAllLoai();
+    Optional<Loai> getLoaiById(Integer id);
+    Loai saveLoai(Loai loai);
+    void deleteLoai(Integer id);
+    List<Loai> searchLoaiByTen(String ten);
+    Page<Loai> getAllLoaiPaging(int page, int size);
+    Page<Loai> searchLoaiByTenPaging(String ten, int page, int size);
+}
 
-    public Optional<Loai> getLoaiById(Integer id) {
-        return loaiRepository.findById(id);
-    }
-
-    public Loai saveLoai(Loai loai) {
-        return loaiRepository.save(loai);
-    }
-
-    public void deleteLoai(Integer id) {
-        loaiRepository.deleteById(id);
-    }
-
-    public List<Loai> searchLoaiByTen(String ten) {
-        return loaiRepository.findByTenContainingIgnoreCase(ten);
-    }
-
-    public Page<Loai> getAllLoaiPaging(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return loaiRepository.findAll(pageable);
-    }
-
-    public Page<Loai> searchLoaiByTenPaging(String ten, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return loaiRepository.findByTenContainingIgnoreCase(ten, pageable);
-    }
-} 

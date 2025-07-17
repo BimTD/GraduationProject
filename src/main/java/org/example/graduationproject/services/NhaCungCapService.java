@@ -9,28 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
-public class NhaCungCapService {
-    @Autowired
-    private NhaCungCapRepository nhaCungCapRepository;
-
-    public Page<NhaCungCap> getAllNhaCungCapPaging(int page, int size) {
-        return nhaCungCapRepository.findAll(PageRequest.of(page, size));
-    }
-
-    public Page<NhaCungCap> searchNhaCungCapByTenPaging(String ten, int page, int size) {
-        return nhaCungCapRepository.findByTenContainingIgnoreCase(ten, PageRequest.of(page, size));
-    }
-
-    public NhaCungCap save(NhaCungCap nhaCungCap) {
-        return nhaCungCapRepository.save(nhaCungCap);
-    }
-
-    public Optional<NhaCungCap> findById(Integer id) {
-        return nhaCungCapRepository.findById(id);
-    }
-
-    public void deleteById(Integer id) {
-        nhaCungCapRepository.deleteById(id);
-    }
+public interface NhaCungCapService {
+    Page<NhaCungCap> getAllNhaCungCapPaging(int page, int size);
+    Page<NhaCungCap> searchNhaCungCapByTenPaging(String ten, int page, int size);
+    NhaCungCap save(NhaCungCap nhaCungCap);
+    Optional<NhaCungCap> findById(Integer id);
+    void deleteById(Integer id);
 } 

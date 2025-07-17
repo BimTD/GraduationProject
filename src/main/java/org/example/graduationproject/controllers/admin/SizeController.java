@@ -21,6 +21,9 @@ import java.util.Optional;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.example.graduationproject.services.SizeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Controller
 @RequestMapping("/admin")
@@ -35,6 +38,9 @@ public class SizeController {
     @GetMapping("/size")
     public String sizePage(@RequestParam(value = "editId", required = false) Integer editId,
                           @RequestParam(value = "loaiId", required = false) Integer loaiId,
+                          @RequestParam(value = "page", defaultValue = "0") int page,
+                          @RequestParam(value = "size", defaultValue = "5") int size,
+                          @RequestParam(value = "search", required = false) String search,
                           Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -42,8 +48,22 @@ public class SizeController {
         model.addAttribute("currentPage", "size");
         List<Loai> loais = loaiRepository.findAll();
         model.addAttribute("loais", loais);
-        List<Size> sizes = sizeService.findAll();
-        model.addAttribute("sizes", sizes);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Size> sizePage;
+        if (search != null && !search.isEmpty()) {
+            sizePage = sizeService.findByTenSizeContainingIgnoreCase(search, pageable);
+        } else {
+            sizePage = sizeService.findAll(pageable);
+        }
+        model.addAttribute("sizes", sizePage.getContent());
+        model.addAttribute("totalElements", sizePage.getTotalElements());
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", sizePage.getTotalPages());
+        model.addAttribute("lastPage", sizePage.getTotalPages() > 0 ? sizePage.getTotalPages() - 1 : 0);
+        model.addAttribute("prevPage", page > 0 ? page - 1 : 0);
+        model.addAttribute("nextPage", page + 1 < sizePage.getTotalPages() ? page + 1 : sizePage.getTotalPages() - 1);
+        model.addAttribute("search", search);
         boolean editMode = false;
         Size sizeForm = new Size();
         String formAction = "/admin/size/add";

@@ -4,6 +4,8 @@ import org.example.graduationproject.models.MauSac;
 import org.example.graduationproject.repositories.MauSacRepository;
 import org.example.graduationproject.services.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,4 +27,11 @@ public class MauSacServiceImpl implements MauSacService {
 
     @Override
     public Optional<MauSac> findById(Integer id) { return mauSacRepository.findById(id); }
+
+    @Override
+    public Page<MauSac> findAll(Pageable pageable) { return mauSacRepository.findAll(pageable); }
+
+    @Override
+    public Page<MauSac> findByMaMauContainingIgnoreCase(String maMau, Pageable pageable) { return mauSacRepository.findByMaMauContainingIgnoreCase(maMau, pageable); }
 } 
+ 

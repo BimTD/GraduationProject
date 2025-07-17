@@ -86,17 +86,62 @@
                                 <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
                                     <div class="flex gap-3">
                                         <a th:href="@{'/admin/size/edit/' + ${size.id}}" class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"><i data-lucide="pencil" class="size-4"></i></a>
-                                        <a th:href="@{'/admin/size/delete/' + ${size.id}}" onclick="return confirm('Bạn có chắc muốn xóa size này?');" class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"><i data-lucide="trash-2" class="size-4"></i></a>
+                                        <a th:href="@{'/admin/size/delete/' + ${size.id}}" onclick="return confirm('Are you sure you want to delete?');" class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"><i data-lucide="trash-2" class="size-4"></i></a>
                                     </div>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(sizes)}">
-                                <td colspan="4" class="text-center">Không có size nào.</td>
+                                <td colspan="4" class="text-center">None.</td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- PHÂN TRANG -->
+                    <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
+                        <div class="grow">
+                            <p class="text-slate-500 dark:text-zink-200">
+                                Showing <b th:text="${sizes.size()}"></b> of <b th:text="${totalElements}"></b> Results
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <form th:action="@{/admin/size}" method="get" class="flex items-center gap-2">
+                                <input type="hidden" name="search" th:value="${search}" />
+                                <input type="hidden" name="page" th:value="${page}" />
+                                <div class="flex items-center gap-2">
+                                    <label for="size" class="whitespace-nowrap">Items per page:</label>
+                                    <select name="size" id="size" class="form-input border-slate-200" onchange="this.form.submit()">
+                                        <option th:value="5" th:selected="${size == 5}">5</option>
+                                        <option th:value="10" th:selected="${size == 10}">10</option>
+                                        <option th:value="20" th:selected="${size == 20}">20</option>
+                                        <option th:value="50" th:selected="${size == 50}">50</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-sm-auto mt-sm-0">
+                            <div class="flex gap-2 pagination-wrap justify-content-center">
+                                <a th:href="@{/admin/size(page=${prevPage},size=${size},search=${search})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
+                                    <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
+                                </a>
+                                <ul class="flex flex-wrap items-center gap-2 pagination">
+                                    <li th:each="i : ${#numbers.sequence(0, lastPage)}">
+                                        <a th:href="@{/admin/size(page=${i},size=${size},search=${search})}"
+                                           th:text="${i+1}"
+                                           th:classappend="${i == page} ? 'active bg-custom-50 border-custom-50 text-custom-500' : ''"
+                                           class="inline-flex items-center justify-center h-8 px-3 border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 hover:bg-custom-50">
+                                        </a>
+                                    </li>
+                                </ul>
+                                <a th:href="@{/admin/size(page=${nextPage},size=${size},search=${search})}" th:classappend="${page+1 >= totalPages} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
+                                    Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- HẾT PHÂN TRANG -->
                 </div>
+
             </div>
         </div>
     </div>

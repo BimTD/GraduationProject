@@ -9,28 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
-public class NhanHieuService {
-    @Autowired
-    private NhanHieuRepository nhanHieuRepository;
 
-    public Page<NhanHieu> getAllNhanHieuPaging(int page, int size) {
-        return nhanHieuRepository.findAll(PageRequest.of(page, size));
-    }
-
-    public Page<NhanHieu> searchNhanHieuByTenPaging(String ten, int page, int size) {
-        return nhanHieuRepository.findByTenContainingIgnoreCase(ten, PageRequest.of(page, size));
-    }
-
-    public NhanHieu save(NhanHieu nhanHieu) {
-        return nhanHieuRepository.save(nhanHieu);
-    }
-
-    public Optional<NhanHieu> findById(Integer id) {
-        return nhanHieuRepository.findById(id);
-    }
-
-    public void deleteById(Integer id) {
-        nhanHieuRepository.deleteById(id);
-    }
+public interface NhanHieuService {
+    Page<NhanHieu> getAllNhanHieuPaging(int page, int size);
+    Page<NhanHieu> searchNhanHieuByTenPaging(String ten, int page, int size);
+    NhanHieu save(NhanHieu nhanHieu);
+    Optional<NhanHieu> findById(Integer id);
+    void deleteById(Integer id);
 } 
