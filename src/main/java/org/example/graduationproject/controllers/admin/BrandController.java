@@ -21,7 +21,7 @@ public class BrandController {
     public String brandPage(Model model,
                             @RequestParam(defaultValue = "") String search,
                             @RequestParam(defaultValue = "0") int page,
-                            @RequestParam(defaultValue = "5") int size) {
+                            @RequestParam(defaultValue = "10") int size) {
         Page<NhanHieu> brandPage;
         if (!search.isEmpty()) {
             brandPage = nhanHieuService.searchNhanHieuByTenPaging(search, page, size);

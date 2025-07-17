@@ -39,7 +39,7 @@ public class SizeController {
     public String sizePage(@RequestParam(value = "editId", required = false) Integer editId,
                           @RequestParam(value = "loaiId", required = false) Integer loaiId,
                           @RequestParam(value = "page", defaultValue = "0") int page,
-                          @RequestParam(value = "size", defaultValue = "5") int size,
+                          @RequestParam(value = "size", defaultValue = "10") int pageSize,
                           @RequestParam(value = "search", required = false) String search,
                           Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -48,7 +48,7 @@ public class SizeController {
         model.addAttribute("currentPage", "size");
         List<Loai> loais = loaiRepository.findAll();
         model.addAttribute("loais", loais);
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, pageSize);
         Page<Size> sizePage;
         if (search != null && !search.isEmpty()) {
             sizePage = sizeService.findByTenSizeContainingIgnoreCase(search, pageable);
@@ -58,7 +58,7 @@ public class SizeController {
         model.addAttribute("sizes", sizePage.getContent());
         model.addAttribute("totalElements", sizePage.getTotalElements());
         model.addAttribute("page", page);
-        model.addAttribute("size", size);
+        model.addAttribute("pageSize", pageSize);
         model.addAttribute("totalPages", sizePage.getTotalPages());
         model.addAttribute("lastPage", sizePage.getTotalPages() > 0 ? sizePage.getTotalPages() - 1 : 0);
         model.addAttribute("prevPage", page > 0 ? page - 1 : 0);

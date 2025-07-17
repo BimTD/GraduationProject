@@ -21,7 +21,7 @@ public class SupplierController {
     public String supplierPage(Model model,
                                @RequestParam(defaultValue = "") String search,
                                @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "5") int size,
+                               @RequestParam(defaultValue = "10") int size,
                                @RequestParam(value = "showForm", defaultValue = "false") boolean showForm,
                                @RequestParam(value = "editId", required = false) Integer editId) {
         Page<NhaCungCap> supplierPage;

@@ -111,29 +111,29 @@
                                 <div class="flex items-center gap-2">
                                     <label for="size" class="whitespace-nowrap">Items per page:</label>
                                     <select name="size" id="size" class="form-input border-slate-200" onchange="this.form.submit()">
-                                        <option th:value="5" th:selected="${size == 5}">5</option>
-                                        <option th:value="10" th:selected="${size == 10}">10</option>
-                                        <option th:value="20" th:selected="${size == 20}">20</option>
-                                        <option th:value="50" th:selected="${size == 50}">50</option>
+                                        <option th:value="5" th:selected="${pageSize == 5}">5</option>
+                                        <option th:value="10" th:selected="${pageSize == 10}">10</option>
+                                        <option th:value="20" th:selected="${pageSize == 20}">20</option>
+                                        <option th:value="50" th:selected="${pageSize == 50}">50</option>
                                     </select>
                                 </div>
                             </form>
                         </div>
                         <div class="col-sm-auto mt-sm-0">
                             <div class="flex gap-2 pagination-wrap justify-content-center">
-                                <a th:href="@{/admin/size(page=${prevPage},size=${size},search=${search})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
+                                <a th:href="@{/admin/size(page=${prevPage},size=${pageSize},search=${search})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
                                     <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
                                 </a>
                                 <ul class="flex flex-wrap items-center gap-2 pagination">
                                     <li th:each="i : ${#numbers.sequence(0, lastPage)}">
-                                        <a th:href="@{/admin/size(page=${i},size=${size},search=${search})}"
+                                        <a th:href="@{/admin/size(page=${i},size=${pageSize},search=${search})}"
                                            th:text="${i+1}"
                                            th:classappend="${i == page} ? 'active bg-custom-50 border-custom-50 text-custom-500' : ''"
                                            class="inline-flex items-center justify-center h-8 px-3 border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 hover:bg-custom-50">
                                         </a>
                                     </li>
                                 </ul>
-                                <a th:href="@{/admin/size(page=${nextPage},size=${size},search=${search})}" th:classappend="${page+1 >= totalPages} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
+                                <a th:href="@{/admin/size(page=${nextPage},size=${pageSize},search=${search})}" th:classappend="${page+1 >= totalPages} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
                                     Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
                                 </a>
                             </div>

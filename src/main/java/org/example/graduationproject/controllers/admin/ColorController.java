@@ -37,7 +37,7 @@ public class ColorController {
     @GetMapping("/color")
     public String colorPage(@RequestParam(value = "editId", required = false) Integer editId,
                           @RequestParam(value = "page", defaultValue = "0") int page,
-                          @RequestParam(value = "size", defaultValue = "5") int size,
+                          @RequestParam(value = "size", defaultValue = "10") int size,
                           @RequestParam(value = "search", required = false) String search,
                           Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
