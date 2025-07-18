@@ -30,8 +30,124 @@
                         </li>
                     </ul>
                 </div>
-                <div>
-                    <h1>Product</h1>
+                <a  th:href="@{/admin/productForm}" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
+                    <i data-lucide="plus" class="size-4"></i>
+                </a>
+                <div class="card" id="productListTable">
+                    <div class="card-body">
+                        <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
+                            <div class="xl:col-span-3">
+                                <div class="relative">
+                                    <form  method="get" class="flex gap-2 items-center">
+                                        <div class="relative">
+                                            <input type="text" name="search" class="form-input border-slate-200" placeholder="Search for..." autocomplete="off">
+                                            <button type="submit" class="absolute right-2.5 top-2.5 bg-transparent border-none p-0">
+                                                <i data-lucide="search" class="inline-block size-4 text-slate-500 dark:text-zink-200 fill-slate-100 dark:fill-zink-600"></i>
+                                            </button>
+                                        </div>
+
+                                        <a
+                                           class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
+                                            <i data-lucide="refresh-cw" class="size-4"></i>
+                                        </a>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="!pt-1 card-body">
+                        <div class="overflow-x-auto">
+                            <table class="w-full whitespace-nowrap" id="productTable">
+                                <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
+                                <tr>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ID">STT</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 Name">Product Name</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 Action">Image</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Selling Price</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Import Price</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Status</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Active</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Brand</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Category</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Like Count</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Comment Count</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Hide/Show</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody class="list">
+                                    <tr class="bg-white dark:bg-zink-700">
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">13</td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">Áo thun Highclub Basic Tee</td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                                            <img src="/assets/images/avatar-1.png" alt="Áo" class="w-12 h-12 object-cover rounded">
+                                        </td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">400,000 VNĐ</td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">250,000 VNĐ</td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">new</span>
+                                        </td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                                            <i class="text-green-500" data-lucide="check-circle"></i>
+                                        </td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">ZERO</td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">Áo</td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">0</td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">0</td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                                            <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                                <input type="checkbox" name="toggle" id="toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                                <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                            </div>
+                                        </td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-500 Action">
+                                            <div class="flex gap-3">
+                                                <a  class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"><i data-lucide="pencil" class="size-4"></i></a>
+                                                <a  class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"><i data-lucide="trash-2" class="size-4"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
+                            <div class="grow">
+                                <p class="text-slate-500 dark:text-zink-200">Showing <b class="showing">10</b> of <b class="total-records">38</b> Results</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <form method="get" class="flex items-center gap-2">
+                                    <input type="hidden" name="search" />
+                                    <input type="hidden" name="page" />
+
+                                    <div class="flex items-center gap-2">
+                                        <label for="size" class="whitespace-nowrap">Items per page:</label>
+                                        <select name="size" id="size" class="form-input border-slate-200" onchange="this.form.submit()">
+                                            <option >5</option>
+                                            <option >10</option>
+                                            <option >20</option>
+                                            <option >50</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="col-sm-auto mt-sm-0">
+                                <div class="flex gap-2 pagination-wrap justify-content-center">
+                                    <a  class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
+                                        <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
+                                    </a>
+                                    <ul class="flex flex-wrap items-center gap-2 pagination listjs-pagination">
+                                    </ul>
+                                    <a class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
+                                        Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
             </div>
@@ -41,6 +157,24 @@
     </div>
 
     <div th:replace="admin/fragments/script :: script"></div>
+
+    <style>
+        .toggle-checkbox {
+            right: 0;
+            border-color: #6b7280;
+        }
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #f97316;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #f97316;
+        }
+        .toggle-label {
+            background-color: #6b7280;
+            transition: background-color 0.2s ease-in;
+        }
+    </style>
 
 </body>
 </html>
