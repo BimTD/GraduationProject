@@ -30,96 +30,118 @@
                     </li>
                 </ul>
             </div>
-            <div >Create Product</div>
-            <form class="bg-white rounded-lg shadow p-6 mt-4">
+            <div class="text-xl font-semibold mb-4">Create Product</div>
+            <form method="post" th:action="@{/admin/productForm}" th:object="${product}" enctype="multipart/form-data" class="bg-white rounded-lg shadow p-6 mt-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Cột trái -->
                     <div class="space-y-4">
-                        <div class="grid  gap-4 mb-4">
+                        <div class="grid gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Name</label>
-                                <input type="text" maxlength="20" class="form-input w-full" placeholder="Name">
+                                <input th:field="*{ten}" type="text" maxlength="100" class="form-input w-full" placeholder="Product Name" required>
                             </div>
                         </div>
-                        <div class="grid  gap-4 mb-4">
+                        <div class="grid gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Selling Price</label>
-                                <input type="text" maxlength="20" class="form-input w-full" placeholder="Selling Price">
+                                <input th:field="*{giaBan}" type="number" step="0.01" min="0" class="form-input w-full" placeholder="Selling Price" required>
                             </div>
                         </div>
-                        <div class="grid  gap-4 mb-4">
+                        <div class="grid gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Import Price</label>
-                                <input type="text" maxlength="20" class="form-input w-full" placeholder="Import Price">
+                                <input th:field="*{giaNhap}" type="number" step="0.01" min="0" class="form-input w-full" placeholder="Import Price" required>
                             </div>
                         </div>
-                        <div class="grid  gap-4 mb-4">
+                        <div class="grid gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Promotion</label>
-                                <input type="text" maxlength="20" class="form-input w-full" placeholder="Promotion">
+                                <input th:field="*{khuyenMai}" type="number" step="0.01" min="0" class="form-input w-full" placeholder="Promotion">
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Gender</label>
-                                <select class="form-select w-full">
-                                    <option>Nam</option>
-                                    <option>Nu</option>
-                                    <option>Phi gioi tinh</option>
+                                <select th:field="*{gioiTinh}" class="form-select w-full" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="1">Nam</option>
+                                    <option value="2">Nữ</option>
+                                    <option value="3">Phi giới tính</option>
                                 </select>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Product Images</label>
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center text-gray-400 text-sm h-40 cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4a1 1 0 011-1h8a1 1 0 011 1v12m-4 4h-4a1 1 0 01-1-1v-4h6v4a1 1 0 01-1 1z" /></svg>
-                                Drag and drop your product images or browse your product images
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Cột phải -->
-                    <div class="space-y-4">
-                        <div class="grid  gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Description</label>
-                                <input type="text" maxlength="20" class="form-input w-full" placeholder="Description">
-                            </div>
-                        </div>
-                        <div class="grid  gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Tag</label>
-                                <input type="text" maxlength="20" class="form-input w-full" placeholder="Tag">
-                            </div>
-                        </div>
-                        <div class="grid  gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Guide</label>
-                                <input type="text" maxlength="20" class="form-input w-full" placeholder="Guide">
-                            </div>
-                        </div>
-                        <div class="grid  gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Ingredient</label>
-                                <input type="text" maxlength="20" class="form-input w-full" placeholder="Ingredient">
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Category</label>
-                                <select class="form-select w-full"><option>Select Category</option></select>
+                                <select th:field="*{loai.id}" class="form-select w-full" required>
+                                    <option value="">Select Category</option>
+                                    <option th:each="loai : ${loais}" th:value="${loai.id}" th:text="${loai.ten}" th:selected="${loai.id} == *{loai.id}"></option>
+                                </select>
                             </div>
                         </div>
-                        <div class="grid gap-4">
+                        <div class="grid gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Brand</label>
+                                <select th:field="*{nhanHieu.id}" class="form-select w-full" required>
+                                    <option value="">Select Brand</option>
+                                    <option th:each="nhanHieu : ${nhanHieus}" th:value="${nhanHieu.id}" th:text="${nhanHieu.ten}" th:selected="${nhanHieu.id} == *{nhanHieu.id}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Image</label>
+                                <input type="file" name="fileImage" step="0.01" min="0" class="form-input w-full" placeholder="Promotion">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Cột phải -->
+                    <div class="space-y-4">
+                        <div class="grid gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Description</label>
+                                <textarea th:field="*{moTa}" class="form-input w-full" rows="3" placeholder="Product Description"></textarea>
+                            </div>
+                        </div>
+                        <div class="grid gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Tag</label>
+                                <input th:field="*{tag}" type="text" maxlength="100" class="form-input w-full" placeholder="Product Tags">
+                            </div>
+                        </div>
+                        <div class="grid gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Guide</label>
+                                <textarea th:field="*{huongDan}" class="form-input w-full" rows="3" placeholder="Usage Guide"></textarea>
+                            </div>
+                        </div>
+                        <div class="grid gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Ingredient</label>
+                                <textarea th:field="*{thanhPhan}" class="form-input w-full" rows="3" placeholder="Product Ingredients"></textarea>
+                            </div>
+                        </div>
+                        <div class="grid gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Supplier</label>
-                                <select class="form-select w-full"><option>Select Supplier</option></select>
+                                <select th:field="*{nhaCungCap.id}" class="form-select w-full" required>
+                                    <option value="">Select Supplier</option>
+                                    <option th:each="nhaCungCap : ${nhaCungCaps}" th:value="${nhaCungCap.id}" th:text="${nhaCungCap.ten}" th:selected="${nhaCungCap.id} == *{nhaCungCap.id}"></option>
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-between items-center mt-6">
+                <div class="flex justify-end items-center mt-6">
                     <div class="flex gap-2">
-                        <button type="button" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add new</button>
+                        <button type="submit" class="btn bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">
+                            <i data-lucide="save" class="size-4 inline mr-2"></i>
+                            Save Product
+                        </button>
+                        <a href="/admin/product" class="btn bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
+                            <i data-lucide="x" class="size-4 inline mr-2"></i>
+                            Cancel
+                        </a>
                     </div>
                 </div>
             </form>
@@ -132,23 +154,7 @@
 
 <div th:replace="admin/fragments/script :: script"></div>
 
-<style>
-    .toggle-checkbox {
-        right: 0;
-        border-color: #6b7280;
-    }
-    .toggle-checkbox:checked {
-        right: 0;
-        border-color: #f97316;
-    }
-    .toggle-checkbox:checked + .toggle-label {
-        background-color: #f97316;
-    }
-    .toggle-label {
-        background-color: #6b7280;
-        transition: background-color 0.2s ease-in;
-    }
-</style>
+
 
 </body>
 </html>
