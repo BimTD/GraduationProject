@@ -86,9 +86,7 @@ public class ProductController {
     }
 
     @PostMapping("/productForm")
-    public String addProduct(@RequestParam("file") MultipartFile[] files,
-                             @ModelAttribute SanPham sanPham,
-                             RedirectAttributes redirectAttributes) throws IOException {
+    public String addProduct() {
         return null;
     }
 
