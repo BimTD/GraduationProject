@@ -92,8 +92,8 @@ public class SanPhamServiceImpl implements SanPhamService {
         sanPham.setThanhPhan(productDTO.getThanhPhan());
         sanPham.setNgayTao(java.time.LocalDateTime.now());
         sanPham.setNgayCapNhat(java.time.LocalDateTime.now());
-        sanPham.setTrangThaiSanPham(productDTO.getTrangThaiSanPham());
-        sanPham.setTrangThaiHoatDong(productDTO.getTrangThaiHoatDong());
+        sanPham.setTrangThaiSanPham("new"); // Luôn là "Mới" khi tạo mới
+        sanPham.setTrangThaiHoatDong(true); // Luôn là true khi tạo mới
         sanPham.setGioiTinh(productDTO.getGioiTinh());
         sanPham.setLoai(loaiRepository.findById(productDTO.getLoaiId()).orElse(null));
         sanPham.setNhanHieu(nhanHieuRepository.findById(productDTO.getNhanHieuId()).orElse(null));
