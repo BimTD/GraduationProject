@@ -31,7 +31,7 @@
                 </ul>
             </div>
             <div class="text-xl font-semibold mb-4">Create Product</div>
-            <form method="post" th:action="@{/admin/productForm}" th:object="${product}" enctype="multipart/form-data" class="bg-white rounded-lg shadow p-6 mt-4">
+            <form method="post" th:action="@{/admin/productForm}" th:object="${product}" class="bg-white rounded-lg shadow p-6 mt-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Cột trái -->
                     <div class="space-y-4">
@@ -73,25 +73,27 @@
                         <div class="grid gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Category</label>
-                                <select th:field="*{loai.id}" class="form-select w-full" required>
+                                <select th:field="*{loaiId}" class="form-select w-full" required>
                                     <option value="">Select Category</option>
-                                    <option th:each="loai : ${loais}" th:value="${loai.id}" th:text="${loai.ten}" th:selected="${loai.id} == *{loai.id}"></option>
+                                    <option th:each="loai : ${loais}" th:value="${loai.id}" th:text="${loai.ten}" th:selected="${loai.id} == *{loaiId}"></option>
                                 </select>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Brand</label>
-                                <select th:field="*{nhanHieu.id}" class="form-select w-full" required>
+                                <select th:field="*{nhanHieuId}" class="form-select w-full" required>
                                     <option value="">Select Brand</option>
-                                    <option th:each="nhanHieu : ${nhanHieus}" th:value="${nhanHieu.id}" th:text="${nhanHieu.ten}" th:selected="${nhanHieu.id} == *{nhanHieu.id}"></option>
+                                    <option th:each="nhanHieu : ${nhanHieus}" th:value="${nhanHieu.id}" th:text="${nhanHieu.ten}" th:selected="${nhanHieu.id} == *{nhanHieuId}"></option>
                                 </select>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Image</label>
-                                <input type="file" name="fileImage" step="0.01" min="0" class="form-input w-full" placeholder="Promotion">
+                                <input type="hidden" name="imageUrls" id="imageUrls">
+                                <input type="file" id="uploadImage" multiple class="form-input w-full" placeholder="Promotion" required>
+                                <div id="preview"></div>
                             </div>
                         </div>
                     </div>
@@ -124,9 +126,9 @@
                         <div class="grid gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Supplier</label>
-                                <select th:field="*{nhaCungCap.id}" class="form-select w-full" required>
+                                <select th:field="*{nhaCungCapId}" class="form-select w-full" required>
                                     <option value="">Select Supplier</option>
-                                    <option th:each="nhaCungCap : ${nhaCungCaps}" th:value="${nhaCungCap.id}" th:text="${nhaCungCap.ten}" th:selected="${nhaCungCap.id} == *{nhaCungCap.id}"></option>
+                                    <option th:each="nhaCungCap : ${nhaCungCaps}" th:value="${nhaCungCap.id}" th:text="${nhaCungCap.ten}" th:selected="${nhaCungCap.id} == *{nhaCungCapId}"></option>
                                 </select>
                             </div>
                         </div>
@@ -134,7 +136,7 @@
                 </div>
                 <div class="flex justify-end items-center mt-6">
                     <div class="flex gap-2">
-                        <button type="submit" class="btn bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">
+                        <button type="submit" id="submitBtn" class="btn bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">
                             <i data-lucide="save" class="size-4 inline mr-2"></i>
                             Save Product
                         </button>
@@ -153,6 +155,77 @@
 </div>
 
 <div th:replace="admin/fragments/script :: script"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const uploadInput = document.getElementById('uploadImage');
+        const imageUrlsInput = document.getElementById('imageUrls');
+        const previewDiv = document.getElementById('preview');
+        const submitBtn = document.getElementById('submitBtn');
+
+        let urls = [];
+        let uploading = 0;
+
+        submitBtn.disabled = true;
+
+        uploadInput.addEventListener('change', function (e) {
+            const files = e.target.files;
+            urls = [];
+            imageUrlsInput.value = '';
+            previewDiv.innerHTML = '';
+            uploading = files.length;
+            submitBtn.disabled = true;
+
+            if (files.length === 0) {
+                submitBtn.disabled = true;
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                const formData = new FormData();
+                formData.append('file', files[i]);
+                formData.append('upload_preset', 'clothes');
+                formData.append('folder', 'clothes/images');
+
+                fetch('https://api.cloudinary.com/v1_1/dwl5szefn/image/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.secure_url) {
+                            urls.push(data.secure_url);
+                            imageUrlsInput.value = urls.join(',');
+                            const img = document.createElement('img');
+                            img.src = data.secure_url;
+                            img.style.width = '100px';
+                            img.style.margin = '5px';
+                            previewDiv.appendChild(img);
+                        } else {
+                            alert('Upload ảnh thất bại: ' + JSON.stringify(data));
+                        }
+                    })
+                    .catch(err => {
+                        alert('Lỗi upload ảnh: ' + err.message);
+                    })
+                    .finally(() => {
+                        uploading--;
+                        if (uploading === 0 && urls.length === files.length) {
+                            submitBtn.disabled = false;
+                        }
+                    });
+            }
+        });
+
+        document.querySelector('form').addEventListener('submit', function (e) {
+            if (urls.length === 0 || uploading > 0) {
+                alert('Vui lòng upload ít nhất 1 ảnh trước khi gửi!');
+                e.preventDefault();
+                return false;
+            }
+        });
+    });
+</script>
+
 
 
 
