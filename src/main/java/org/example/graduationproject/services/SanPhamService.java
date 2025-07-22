@@ -15,4 +15,5 @@ public interface SanPhamService {
     Boolean update(SanPham sanPham);
     SanPham save(SanPham sanPham);
     void saveProductWithUrls(ProductDTO productDTO, String imageUrls) throws Exception;
+    void updateActiveStatus(Integer id, boolean active);
 }

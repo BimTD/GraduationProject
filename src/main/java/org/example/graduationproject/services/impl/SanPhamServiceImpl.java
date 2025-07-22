@@ -54,6 +54,8 @@ public class SanPhamServiceImpl implements SanPhamService {
     @Override
     public Boolean deleteById(Integer id) {
         try {
+            // Xóa toàn bộ ảnh liên quan trước
+            imageSanPhamRepository.deleteAll(imageSanPhamRepository.findAllBySanPham_Id(id));
             this.sanPhamRepository.deleteById(id);
             return true;
         } catch (Exception e) {
@@ -78,6 +80,14 @@ public class SanPhamServiceImpl implements SanPhamService {
         return this.sanPhamRepository.save(sanPham);
     }
 
+    @Override
+    public void updateActiveStatus(Integer id, boolean active) {
+        SanPham sp = sanPhamRepository.findById(id).orElse(null);
+        if (sp != null) {
+            sp.setTrangThaiHoatDong(active);
+            sanPhamRepository.save(sp);
+        }
+    }
 
     @Override
     public void saveProductWithUrls(ProductDTO productDTO, String imageUrls) throws Exception {
@@ -92,8 +102,8 @@ public class SanPhamServiceImpl implements SanPhamService {
         sanPham.setThanhPhan(productDTO.getThanhPhan());
         sanPham.setNgayTao(java.time.LocalDateTime.now());
         sanPham.setNgayCapNhat(java.time.LocalDateTime.now());
-        sanPham.setTrangThaiSanPham("new"); // Luôn là "Mới" khi tạo mới
-        sanPham.setTrangThaiHoatDong(true); // Luôn là true khi tạo mới
+        sanPham.setTrangThaiSanPham("new");
+        sanPham.setTrangThaiHoatDong(true);
         sanPham.setGioiTinh(productDTO.getGioiTinh());
         sanPham.setLoai(loaiRepository.findById(productDTO.getLoaiId()).orElse(null));
         sanPham.setNhanHieu(nhanHieuRepository.findById(productDTO.getNhanHieuId()).orElse(null));

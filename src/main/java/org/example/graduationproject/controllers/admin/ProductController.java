@@ -49,6 +49,7 @@ public class ProductController {
 
         model.addAttribute("username", username);
         model.addAttribute("currentPage", "product");
+        model.addAttribute("products", sanPhamService.getAll());
 
         return "admin/product";
     }
@@ -70,11 +71,28 @@ public class ProductController {
     public String addProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("imageUrls") String imageUrls, RedirectAttributes redirectAttributes) {
         try {
             sanPhamService.saveProductWithUrls(productDTO, imageUrls);
-            redirectAttributes.addFlashAttribute("success", "Thêm sản phẩm thành công!");
+            redirectAttributes.addFlashAttribute("success", "Product added successfully!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Lỗi khi thêm sản phẩm: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error adding product: " + e.getMessage());
         }
         return "redirect:/admin/product";
     }
 
+    @PostMapping("/product/toggle-active/{id}")
+    @ResponseBody
+    public void toggleActiveStatus(@PathVariable("id") Integer id, @RequestBody java.util.Map<String, Boolean> body) {
+        boolean active = body.get("active");
+        sanPhamService.updateActiveStatus(id, active);
+    }
+
+    @GetMapping("/product/delete/{id}")
+    public String deleteProduct(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            sanPhamService.deleteById(id);
+            redirectAttributes.addFlashAttribute("success", "Product deleted successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error while deleting product: " + e.getMessage());
+        }
+        return "redirect:/admin/product";
+    }
 }

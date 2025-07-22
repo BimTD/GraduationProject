@@ -10,7 +10,6 @@ import java.util.List;
 
 @Repository
 public interface LoaiRepository extends JpaRepository<Loai, Integer> {
-    // Tìm kiếm theo tên (không phân biệt hoa thường)
     List<Loai> findByTenContainingIgnoreCase(String ten);
     Page<Loai> findByTenContainingIgnoreCase(String ten, Pageable pageable);
 } 

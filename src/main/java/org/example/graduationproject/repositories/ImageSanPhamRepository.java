@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ImageSanPhamRepository extends JpaRepository<ImageSanPham, Integer> {
+    java.util.List<ImageSanPham> findAllBySanPham_Id(Integer sanPhamId);
 } 
