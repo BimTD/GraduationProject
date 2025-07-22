@@ -36,6 +36,11 @@ public class SanPhamServiceImpl implements SanPhamService {
     }
 
     @Override
+    public List<SanPham> getByGioiTinh(Integer gioiTinh) {
+        return this.sanPhamRepository.findByGioiTinh(gioiTinh);
+    }
+
+    @Override
     public Boolean create(SanPham sanPham) {
         try{
             this.sanPhamRepository.save(sanPham);

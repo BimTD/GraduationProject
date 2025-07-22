@@ -6,9 +6,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.example.graduationproject.services.SanPhamService;
+import org.example.graduationproject.models.SanPham;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
 @Controller
 public class UserController {
+
+    @Autowired
+    private SanPhamService sanPhamService;
 
     @GetMapping("/home")
     public String homePage(Model model) {
@@ -29,6 +36,12 @@ public class UserController {
         } else {
             model.addAttribute("isAuthenticated", false);
         }
+
+        // Lấy danh sách sản phẩm nam (gioiTinh = 1) và nữ (gioiTinh = 2)
+        List<SanPham> sanPhamNam = sanPhamService.getByGioiTinh(1);
+        List<SanPham> sanPhamNu = sanPhamService.getByGioiTinh(2);
+        model.addAttribute("sanPhamNam", sanPhamNam);
+        model.addAttribute("sanPhamNu", sanPhamNu);
 
         return "user/home";
     }

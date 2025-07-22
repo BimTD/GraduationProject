@@ -9,6 +9,7 @@ import java.util.List;
 public interface SanPhamService {
     List<SanPham> getAll();
 
+    List<SanPham> getByGioiTinh(Integer gioiTinh);
     Boolean create(SanPham sanPham);
     SanPham findById(Integer id);
     Boolean deleteById(Integer id);
