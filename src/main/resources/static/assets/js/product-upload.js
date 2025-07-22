@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
             removeBtn.type = 'button';
             removeBtn.className = 'remove-btn';
             removeBtn.innerText = '✕';
-            removeBtn.title = 'Xóa ảnh này';
+            removeBtn.title = 'Delete this photo';
             removeBtn.onclick = function() {
                 urls.splice(idx, 1);
                 imageUrlsInput.value = urls.join(',');
@@ -63,11 +63,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         imageUrlsInput.value = urls.join(',');
                         renderPreview();
                     } else {
-                        alert('Upload ảnh thất bại: ' + JSON.stringify(data));
+                        alert('Upload photo failed: ' + JSON.stringify(data));
                     }
                 })
                 .catch(err => {
-                    alert('Lỗi upload ảnh: ' + err.message);
+                    alert('Error uploading image: ' + err.message);
                 })
                 .finally(() => {
                     uploading--;
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelector('form').addEventListener('submit', function (e) {
         if (urls.length === 0 || uploading > 0) {
-            alert('Vui lòng upload ít nhất 1 ảnh trước khi gửi!');
+            alert('Please upload at least 1 photo before submitting!');
             e.preventDefault();
             return false;
         }
