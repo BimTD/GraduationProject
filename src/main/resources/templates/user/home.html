@@ -215,7 +215,7 @@
                         <div class="tab-pane fade show active" id="" role="tabpanel">
                             <div class="product_container">
                                 <div class="row product_column3">
-                                    <div class="col-lg-3" th:each="sp : ${sanPhamNu}">
+                                    <div class="col-lg-3" th:each="sp : ${sanPhamNu}" th:if="${sp.trangThaiHoatDong}">
                                         <div class="single_product">
                                             <div class="product_thumb">
                                                 <a class="primary_img" href="#">
@@ -293,7 +293,7 @@
                         <div class="tab-pane fade show active" id="clothing" role="tabpanel">
                             <div class="product_container">
                                 <div class="row product_column3">
-                                    <div class="col-lg-3" th:each="sp : ${sanPhamNam}">
+                                    <div class="col-lg-3" th:each="sp : ${sanPhamNam}" th:if="${sp.trangThaiHoatDong}">
                                         <div class="single_product">
                                             <div class="product_thumb">
                                                 <a class="primary_img" href="#">

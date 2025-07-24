@@ -69,6 +69,7 @@
                                     <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Status</th>
                                     <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Brand</th>
                                     <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Category</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Gender</th>
                                     <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Like Count</th>
                                     <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Comment Count</th>
                                     <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Hide/Show</th>
@@ -89,6 +90,7 @@
                                         </td>
                                         <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${product.nhanHieu != null ? product.nhanHieu.ten : ''}"></td>
                                         <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${product.loai != null ? product.loai.ten : ''}"></td>
+                                        <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${product.gioiTinh == 1 ? 'Nam' : (product.gioiTinh == 2 ? 'Nữ' : 'Unisex')}"></td>
                                         <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">0</td>
                                         <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">0</td>
                                         <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
@@ -105,7 +107,7 @@
                                         </td>
                                     </tr>
                                     <tr th:if="${#lists.isEmpty(products)}">
-                                        <td colspan="13" class="text-center">Không có sản phẩm nào.</td>
+                                        <td colspan="14" class="text-center">Không có sản phẩm nào.</td>
                                     </tr>
                                 </tbody>
                             </table>
