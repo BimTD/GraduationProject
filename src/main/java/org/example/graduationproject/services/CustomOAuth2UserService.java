@@ -38,24 +38,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = oauth2User.getAttribute("email");
         String name = oauth2User.getAttribute("name");
         String provider = userRequest.getClientRegistration().getRegistrationId();
-        
-        // Tìm user theo email
+
         Optional<User> existingUser = userRepository.findByEmail(email);
         
         User user;
         if (existingUser.isPresent()) {
             user = existingUser.get();
-            // Cập nhật thông tin nếu cần
             if (user.getProvider() == null || !user.getProvider().equals(provider)) {
                 user.setProvider(provider);
                 userRepository.save(user);
             }
         } else {
-            // Tạo user mới
             user = createNewOAuth2User(email, name, provider);
         }
-        
-        // Tạo authorities từ roles của user
+
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
         for (UserRole userRole : user.getUserRoles()) {
             authorities.add(new SimpleGrantedAuthority(userRole.getRole().getName()));
@@ -64,17 +60,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new DefaultOAuth2User(
                 authorities,
                 oauth2User.getAttributes(),
-                "email" // Sử dụng email làm name attribute
+                "email"
         );
     }
     
     private User createNewOAuth2User(String email, String name, String provider) {
         User user = new User();
         user.setEmail(email);
-        user.setUsername(email); // Sử dụng email làm username
+        user.setUsername(email);
         user.setProvider(provider);
         user.setEnabled("1");
-        user.setPassword(""); // Không cần password cho OAuth2
+        user.setPassword("");
         
         user = userRepository.save(user);
         
