@@ -23,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
                 .map(userRole -> {
                     String roleName = userRole.getRole().getName();
 
-                    // Đảm bảo có tiền tố ROLE_ nếu chưa có
+                    //Có tiền tố ROLE_ nếu chưa có
                     if (!roleName.startsWith("ROLE_")) {
                         roleName = "ROLE_" + roleName;
                     }
