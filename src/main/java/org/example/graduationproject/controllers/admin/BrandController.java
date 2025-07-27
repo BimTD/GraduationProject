@@ -92,6 +92,7 @@ public class BrandController {
         return "admin/brand";
     }
 
+    // Sửa category
     @PostMapping("/update")
     public String updateBrand(@ModelAttribute("brand") NhanHieu nhanHieu, RedirectAttributes redirectAttributes) {
         nhanHieuService.save(nhanHieu);
