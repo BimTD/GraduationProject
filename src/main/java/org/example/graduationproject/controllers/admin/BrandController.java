@@ -53,6 +53,7 @@ public class BrandController {
         return "admin/brand";
     }
 
+    // Thêm category
     @PostMapping("/add")
     public String addBrand(@ModelAttribute("brand") NhanHieu nhanHieu, RedirectAttributes redirectAttributes) {
         nhanHieuService.save(nhanHieu);
