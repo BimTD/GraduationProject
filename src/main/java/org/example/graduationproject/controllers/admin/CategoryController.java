@@ -113,7 +113,6 @@ public class CategoryController {
         return "redirect:/admin/category";
     }
 
-    // Xóa category
     @GetMapping("/category/delete/{id}")
     public String deleteCategory(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         loaiService.deleteLoai(id);
