@@ -106,6 +106,7 @@ public class CategoryController {
         return "admin/category";
     }
 
+    //Cập nhật category
     @PostMapping("/category/update")
     public String updateCategory(@ModelAttribute("category") Loai loai, RedirectAttributes redirectAttributes) {
         loaiService.saveLoai(loai);
@@ -113,7 +114,6 @@ public class CategoryController {
         return "redirect:/admin/category";
     }
 
-    //Xóa category
     @GetMapping("/category/delete/{id}")
     public String deleteCategory(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         loaiService.deleteLoai(id);
