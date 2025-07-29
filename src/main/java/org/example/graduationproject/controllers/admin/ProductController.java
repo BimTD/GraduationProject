@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import org.example.graduationproject.models.SanPham;
 
 @Controller
 @RequestMapping("/admin")
@@ -61,7 +62,7 @@ public class ProductController {
         model.addAttribute("categories", categories);
         
         Page<org.example.graduationproject.models.SanPham> productPage;
-        
+
         // Xử lý logic filter và search
         if (search != null && !search.trim().isEmpty()) {
             // Có search
@@ -126,6 +127,43 @@ public class ProductController {
         model.addAttribute("nhanHieus", nhanHieus);
         List<NhaCungCap> nhaCungCaps = nhaCungCapRepository.findAll();
         model.addAttribute("nhaCungCaps", nhaCungCaps);
+        model.addAttribute("editMode", false);
+        return "admin/form-product";
+    }
+
+    @GetMapping("/product/edit/{id}")
+    public String editProductForm(@PathVariable("id") Integer id, Model model) {
+        SanPham sanPham = sanPhamService.findById(id);
+        if (sanPham == null) {
+            return "redirect:/admin/product";
+        }
+        
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(sanPham.getId());
+        productDTO.setTen(sanPham.getTen());
+        productDTO.setMoTa(sanPham.getMoTa());
+        productDTO.setGiaBan(sanPham.getGiaBan());
+        productDTO.setGiaNhap(sanPham.getGiaNhap());
+        productDTO.setKhuyenMai(sanPham.getKhuyenMai());
+        productDTO.setTag(sanPham.getTag());
+        productDTO.setHuongDan(sanPham.getHuongDan());
+        productDTO.setThanhPhan(sanPham.getThanhPhan());
+        productDTO.setGioiTinh(sanPham.getGioiTinh());
+        productDTO.setLoaiId(sanPham.getLoai() != null ? sanPham.getLoai().getId() : null);
+        productDTO.setNhanHieuId(sanPham.getNhanHieu() != null ? sanPham.getNhanHieu().getId() : null);
+        productDTO.setNhaCungCapId(sanPham.getNhaCungCap() != null ? sanPham.getNhaCungCap().getId() : null);
+        
+        model.addAttribute("product", productDTO);
+        model.addAttribute("editMode", true);
+        model.addAttribute("existingImages", sanPham.getImages());
+        
+        List<Loai> loais = loaiRepository.findAll();
+        model.addAttribute("loais", loais);
+        List<NhanHieu> nhanHieus = nhanHieuRepository.findAll();
+        model.addAttribute("nhanHieus", nhanHieus);
+        List<NhaCungCap> nhaCungCaps = nhaCungCapRepository.findAll();
+        model.addAttribute("nhaCungCaps", nhaCungCaps);
+        
         return "admin/form-product";
     }
 
@@ -138,6 +176,28 @@ public class ProductController {
             redirectAttributes.addFlashAttribute("error", "Error adding product: " + e.getMessage());
         }
         return "redirect:/admin/product";
+    }
+
+    @PostMapping("/product/update")
+    public String updateProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("imageUrls") String imageUrls, RedirectAttributes redirectAttributes) {
+        try {
+            sanPhamService.updateProductWithUrls(productDTO, imageUrls);
+            redirectAttributes.addFlashAttribute("success", "Product updated successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error updating product: " + e.getMessage());
+        }
+        return "redirect:/admin/product";
+    }
+
+    @PostMapping("/product/delete-image/{imageId}")
+    @ResponseBody
+    public String deleteImage(@PathVariable("imageId") Integer imageId) {
+        try {
+            imageSanPhamRepository.deleteById(imageId);
+            return "success";
+        } catch (Exception e) {
+            return "error: " + e.getMessage();
+        }
     }
 
     @PostMapping("/product/toggle-active/{id}")

@@ -6,7 +6,6 @@ import org.example.graduationproject.services.SanPhamService;
 import org.example.graduationproject.dto.ProductDTO;
 import org.example.graduationproject.models.ImageSanPham;
 import org.example.graduationproject.repositories.ImageSanPhamRepository;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -123,6 +122,47 @@ public class SanPhamServiceImpl implements SanPhamService {
                 image.setImageName(url.trim());
                 image.setSanPham(sanPham);
                 imageSanPhamRepository.save(image);
+            }
+        }
+    }
+
+    @Override
+    public void updateProductWithUrls(ProductDTO productDTO, String imageUrls) throws Exception {
+        SanPham sanPham = sanPhamRepository.findById(productDTO.getId()).orElse(null);
+        if (sanPham == null) {
+            throw new Exception("Product not found with id: " + productDTO.getId());
+        }
+        
+        sanPham.setTen(productDTO.getTen());
+        sanPham.setMoTa(productDTO.getMoTa());
+        sanPham.setGiaBan(productDTO.getGiaBan());
+        sanPham.setGiaNhap(productDTO.getGiaNhap());
+        sanPham.setKhuyenMai(productDTO.getKhuyenMai());
+        sanPham.setTag(productDTO.getTag());
+        sanPham.setHuongDan(productDTO.getHuongDan());
+        sanPham.setThanhPhan(productDTO.getThanhPhan());
+        sanPham.setNgayCapNhat(java.time.LocalDateTime.now());
+        sanPham.setGioiTinh(productDTO.getGioiTinh());
+        sanPham.setLoai(loaiRepository.findById(productDTO.getLoaiId()).orElse(null));
+        sanPham.setNhanHieu(nhanHieuRepository.findById(productDTO.getNhanHieuId()).orElse(null));
+        sanPham.setNhaCungCap(nhaCungCapRepository.findById(productDTO.getNhaCungCapId()).orElse(null));
+        
+        sanPham = sanPhamRepository.save(sanPham);
+        
+        // Chỉ xử lý ảnh nếu có imageUrls được cung cấp
+        if (imageUrls != null && !imageUrls.trim().isEmpty()) {
+            // Xóa tất cả ảnh cũ
+            imageSanPhamRepository.deleteAll(imageSanPhamRepository.findAllBySanPham_Id(sanPham.getId()));
+            
+            // Thêm ảnh mới
+            String[] urls = imageUrls.split(",");
+            for (String url : urls) {
+                if (!url.trim().isEmpty()) {
+                    ImageSanPham image = new ImageSanPham();
+                    image.setImageName(url.trim());
+                    image.setSanPham(sanPham);
+                    imageSanPhamRepository.save(image);
+                }
             }
         }
     }

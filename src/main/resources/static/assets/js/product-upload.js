@@ -6,8 +6,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let urls = [];
     let uploading = 0;
+    let isEditMode = document.querySelector('input[name="id"]') !== null; // Check if we're in edit mode
 
-    submitBtn.disabled = true;
+    // In edit mode, don't disable submit button initially
+    if (!isEditMode) {
+        submitBtn.disabled = true;
+    }
 
     function renderPreview() {
         previewDiv.innerHTML = '';
@@ -27,7 +31,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 urls.splice(idx, 1);
                 imageUrlsInput.value = urls.join(',');
                 renderPreview();
-                submitBtn.disabled = (urls.length === 0 || uploading > 0);
+                if (!isEditMode) {
+                    submitBtn.disabled = (urls.length === 0 || uploading > 0);
+                }
             };
 
             wrapper.appendChild(img);
@@ -36,13 +42,46 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Handle existing image removal in edit mode
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-existing-image')) {
+            const imageId = e.target.getAttribute('data-image-id');
+            const imageContainer = e.target.closest('.relative');
+            
+            if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
+                fetch(`/admin/product/delete-image/${imageId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.text())
+                .then(result => {
+                    if (result === 'success') {
+                        imageContainer.remove();
+                    } else {
+                        alert('Lỗi khi xóa ảnh: ' + result);
+                    }
+                })
+                .catch(error => {
+                    alert('Lỗi khi xóa ảnh: ' + error.message);
+                });
+            }
+        }
+    });
+
     uploadInput.addEventListener('change', function (e) {
         const files = e.target.files;
         uploading = files.length;
-        submitBtn.disabled = true;
+        
+        if (!isEditMode) {
+            submitBtn.disabled = true;
+        }
 
         if (files.length === 0) {
-            submitBtn.disabled = (urls.length === 0);
+            if (!isEditMode) {
+                submitBtn.disabled = (urls.length === 0);
+            }
             return;
         }
 
@@ -71,13 +110,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .finally(() => {
                     uploading--;
-                    submitBtn.disabled = (urls.length === 0 || uploading > 0);
+                    if (!isEditMode) {
+                        submitBtn.disabled = (urls.length === 0 || uploading > 0);
+                    }
                 });
         }
     });
 
     document.querySelector('form').addEventListener('submit', function (e) {
-        if (urls.length === 0 || uploading > 0) {
+        // In edit mode, allow submission even without new images
+        if (!isEditMode && (urls.length === 0 || uploading > 0)) {
             alert('Please upload at least 1 photo before submitting!');
             e.preventDefault();
             return false;

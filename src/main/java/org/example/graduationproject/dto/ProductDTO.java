@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class ProductDTO {
+    private Integer id;
     private String ten;
     private String moTa;
     private BigDecimal giaBan;

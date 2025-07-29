@@ -30,6 +30,14 @@
                         </li>
                     </ul>
                 </div>
+                <!-- Flash Messages -->
+                <div th:if="${success}" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                    <span th:text="${success}"></span>
+                </div>
+                <div th:if="${error}" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                    <span th:text="${error}"></span>
+                </div>
+                
                 <a  th:href="@{/admin/productForm}" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
                     <i data-lucide="plus" class="size-4"></i>
                 </a>
@@ -129,7 +137,7 @@
                                         </td>
                                         <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-500 Action">
                                             <div class="flex gap-3">
-                                                <a href="#" class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"><i data-lucide="pencil" class="size-4"></i></a>
+                                                <a th:href="@{'/admin/product/edit/' + ${product.id}}" class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"><i data-lucide="pencil" class="size-4"></i></a>
                                                 <a th:href="@{'/admin/product/delete/' + ${product.id}}" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');" class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"><i data-lucide="trash-2" class="size-4"></i></a>
                                             </div>
                                         </td>

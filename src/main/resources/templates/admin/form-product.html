@@ -30,8 +30,11 @@
                     </li>
                 </ul>
             </div>
-            <div class="text-xl font-semibold mb-4">Create Product</div>
-            <form method="post" th:action="@{/admin/productForm}" th:object="${product}" class="bg-white rounded-lg shadow p-6 mt-4">
+            <div class="text-xl font-semibold mb-4" th:text="${editMode} ? 'Edit Product' : 'Create Product'"></div>
+            <form method="post" th:action="${editMode} ? @{/admin/product/update} : @{/admin/productForm}" th:object="${product}" class="bg-white rounded-lg shadow p-6 mt-4">
+                <!-- Hidden field for product ID in edit mode -->
+                <input th:if="${editMode}" th:field="*{id}" type="hidden">
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Cột trái -->
                     <div class="space-y-4">
@@ -95,6 +98,18 @@
                                     <input type="hidden" name="imageUrls" id="imageUrls">
                                     <input type="file" id="uploadImage" multiple class="form-input w-full mb-2" accept="image/*">
                                     <div class="text-xs text-gray-500 mb-2">Select multiple images (jpg, png, ...), maximum 5MB/image.</div>
+                                    
+                                    <!-- Existing images in edit mode -->
+                                    <div th:if="${editMode and not #lists.isEmpty(existingImages)}" class="mb-4">
+                                        <h6 class="text-sm font-medium mb-2">Current Images:</h6>
+                                        <div class="flex flex-wrap gap-2">
+                                            <div th:each="image : ${existingImages}" class="relative">
+                                                <img th:src="${image.imageName}" alt="Product Image" class="w-16 h-16 object-cover rounded border">
+                                                <button type="button" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center remove-existing-image" th:data-image-id="${image.id}">×</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     <div id="preview" class="flex flex-wrap gap-3"></div>
                                 </div>
                             </div>
@@ -141,7 +156,7 @@
                     <div class="flex gap-2">
                         <button type="submit" id="submitBtn" class="btn bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">
                             <i data-lucide="save" class="size-4 inline mr-2"></i>
-                            Save Product
+                            <span th:text="${editMode} ? 'Update Product' : 'Save Product'"></span>
                         </button>
                         <a href="/admin/product" class="btn bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
                             <i data-lucide="x" class="size-4 inline mr-2"></i>
