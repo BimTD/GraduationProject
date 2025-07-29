@@ -32,4 +32,18 @@
 
 .toggle-checkbox:checked + .toggle-label {
     background: #f97316;
+}
+
+/* Pagination disabled state */
+.pagination-prev.disabled,
+.pagination-next.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.pagination-prev.disabled:hover,
+.pagination-next.disabled:hover {
+    background-color: #f8fafc !important;
+    color: #64748b !important;
 } 

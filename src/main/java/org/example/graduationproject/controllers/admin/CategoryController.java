@@ -106,7 +106,6 @@ public class CategoryController {
         return "admin/category";
     }
 
-    //Cập nhật category
     @PostMapping("/category/update")
     public String updateCategory(@ModelAttribute("category") Loai loai, RedirectAttributes redirectAttributes) {
         loaiService.saveLoai(loai);

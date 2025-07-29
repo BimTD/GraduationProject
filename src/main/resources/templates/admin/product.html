@@ -38,21 +38,49 @@
                         <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
                             <div class="xl:col-span-3">
                                 <div class="relative">
-                                    <form  method="get" class="flex gap-2 items-center">
+                                    <div class="flex gap-2 items-center">
                                         <div class="relative">
-                                            <input type="text" name="search" class="form-input border-slate-200" placeholder="Search for..." autocomplete="off">
-                                            <button type="submit" class="absolute right-2.5 top-2.5 bg-transparent border-none p-0">
+                                            <input type="text" id="searchInput" th:value="${search}" class="form-input border-slate-200" placeholder="Search for..." autocomplete="off">
+                                            <button type="button" id="searchBtn" class="absolute right-2.5 top-2.5 bg-transparent border-none p-0">
                                                 <i data-lucide="search" class="inline-block size-4 text-slate-500 dark:text-zink-200 fill-slate-100 dark:fill-zink-600"></i>
                                             </button>
                                         </div>
 
-                                        <a
+                                        <a th:href="@{/admin/product}"
                                            class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
                                             <i data-lucide="refresh-cw" class="size-4"></i>
                                         </a>
-                                    </form>
-
+                                    </div>
                                 </div>
+                            </div>
+                            
+                            <!-- Filter by Category -->
+                            <div class="xl:col-span-2">
+                                <select id="categoryFilter" class="form-input border-slate-200">
+                                    <option value="">All Categories</option>
+                                    <option th:each="category : ${categories}" 
+                                            th:value="${category.id}" 
+                                            th:text="${category.ten}"
+                                            th:selected="${categoryId == category.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <!-- Filter by Gender -->
+                            <div class="xl:col-span-2">
+                                <select id="genderFilter" class="form-input border-slate-200">
+                                    <option value="">All Genders</option>
+                                    <option value="1" th:selected="${gender == '1'}">Nam</option>
+                                    <option value="2" th:selected="${gender == '2'}">Nữ</option>
+                                    <option value="3" th:selected="${gender == '3'}">Unisex</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Filter Button -->
+                            <div class="xl:col-span-3">
+                                <button id="applyFilter" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
+                                    <i data-lucide="filter" class="size-4"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -107,7 +135,7 @@
                                         </td>
                                     </tr>
                                     <tr th:if="${#lists.isEmpty(products)}">
-                                        <td colspan="14" class="text-center">Không có sản phẩm nào.</td>
+                                        <td colspan="14" class="text-center">There are no products.</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -115,20 +143,24 @@
 
                         <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
                             <div class="grow">
-                                <p class="text-slate-500 dark:text-zink-200">Showing <b class="showing">10</b> of <b class="total-records">38</b> Results</p>
+                                <p class="text-slate-500 dark:text-zink-200">
+                                    Showing <b th:text="${products.size()}"></b> of <b th:text="${totalElements}"></b> Results
+                                </p>
                             </div>
                             <div class="flex items-center gap-2">
-                                <form method="get" class="flex items-center gap-2">
-                                    <input type="hidden" name="search" />
-                                    <input type="hidden" name="page" />
+                                <form th:action="@{/admin/product}" method="get" class="flex items-center gap-2">
+                                    <input type="hidden" name="search" th:value="${search}" />
+                                    <input type="hidden" name="categoryId" th:value="${categoryId}" />
+                                    <input type="hidden" name="gender" th:value="${gender}" />
+                                    <input type="hidden" name="page" th:value="${page}" />
 
                                     <div class="flex items-center gap-2">
                                         <label for="size" class="whitespace-nowrap">Items per page:</label>
                                         <select name="size" id="size" class="form-input border-slate-200" onchange="this.form.submit()">
-                                            <option >5</option>
-                                            <option >10</option>
-                                            <option >20</option>
-                                            <option >50</option>
+                                            <option th:value="5" th:selected="${size == 5}">5</option>
+                                            <option th:value="10" th:selected="${size == 10}">10</option>
+                                            <option th:value="20" th:selected="${size == 20}">20</option>
+                                            <option th:value="50" th:selected="${size == 50}">50</option>
                                         </select>
                                     </div>
                                 </form>
@@ -136,12 +168,19 @@
 
                             <div class="col-sm-auto mt-sm-0">
                                 <div class="flex gap-2 pagination-wrap justify-content-center">
-                                    <a  class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
+                                    <a th:href="@{/admin/product(page=${prevPage},size=${size},search=${search},categoryId=${categoryId},gender=${gender})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
                                         <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
                                     </a>
-                                    <ul class="flex flex-wrap items-center gap-2 pagination listjs-pagination">
+                                    <ul class="flex flex-wrap items-center gap-2 pagination">
+                                        <li th:each="i : ${#numbers.sequence(0, lastPage)}">
+                                            <a th:href="@{/admin/product(page=${i},size=${size},search=${search},categoryId=${categoryId},gender=${gender})}"
+                                               th:text="${i+1}"
+                                               th:classappend="${i == page} ? 'active bg-custom-50 border-custom-50 text-custom-500' : ''"
+                                               class="inline-flex items-center justify-center h-8 px-3 border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 hover:bg-custom-50">
+                                            </a>
+                                        </li>
                                     </ul>
-                                    <a class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
+                                    <a th:href="@{/admin/product(page=${nextPage},size=${size},search=${search},categoryId=${categoryId},gender=${gender})}" th:classappend="${page == lastPage} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
                                         Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
                                     </a>
                                 </div>
@@ -160,5 +199,61 @@
     <div th:replace="admin/fragments/script :: script"></div>
     <link rel="stylesheet" th:href="@{/assets/css/product-toggle-active.css}" />
     <script th:src="@{/assets/js/product-toggle-active.js}"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const applyFilterBtn = document.getElementById('applyFilter');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const genderFilter = document.getElementById('genderFilter');
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            
+            // Function to apply filters and search
+            function applyFilters() {
+                const searchValue = searchInput ? searchInput.value : '';
+                const categoryValue = categoryFilter.value;
+                const genderValue = genderFilter.value;
+                
+                // Build URL with current parameters
+                let url = '/admin/product?';
+                const params = new URLSearchParams();
+                
+                // Add search parameter
+                if (searchValue && searchValue.trim() !== '') {
+                    params.append('search', searchValue.trim());
+                }
+                
+                // Add category parameter
+                if (categoryValue && categoryValue !== '') {
+                    params.append('categoryId', categoryValue);
+                }
+                
+                // Add gender parameter
+                if (genderValue && genderValue !== '') {
+                    params.append('gender', genderValue);
+                }
+                
+                // Reset to page 0 when applying filter
+                params.append('page', '0');
+                params.append('size', '10');
+                
+                // Navigate to filtered URL
+                window.location.href = url + params.toString();
+            }
+            
+            // Apply filter button click
+            applyFilterBtn.addEventListener('click', applyFilters);
+            
+            // Search button click
+            searchBtn.addEventListener('click', applyFilters);
+            
+            // Search input enter key
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    applyFilters();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

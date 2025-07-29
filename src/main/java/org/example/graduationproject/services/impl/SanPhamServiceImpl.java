@@ -8,6 +8,8 @@ import org.example.graduationproject.models.ImageSanPham;
 import org.example.graduationproject.repositories.ImageSanPhamRepository;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.example.graduationproject.repositories.LoaiRepository;
 import org.example.graduationproject.repositories.NhanHieuRepository;
@@ -123,5 +125,48 @@ public class SanPhamServiceImpl implements SanPhamService {
                 imageSanPhamRepository.save(image);
             }
         }
+    }
+    
+    // Phân trang
+    @Override
+    public Page<SanPham> getAllPaging(int page, int size) {
+        return sanPhamRepository.findAll(PageRequest.of(page, size));
+    }
+    
+    @Override
+    public Page<SanPham> searchByTenPaging(String ten, int page, int size) {
+        return sanPhamRepository.findByTenContainingIgnoreCase(ten, PageRequest.of(page, size));
+    }
+    
+    // Filter methods
+    @Override
+    public Page<SanPham> filterByCategoryPaging(Integer categoryId, int page, int size) {
+        return sanPhamRepository.findByLoai_Id(categoryId, PageRequest.of(page, size));
+    }
+    
+    @Override
+    public Page<SanPham> filterByGenderPaging(Integer gender, int page, int size) {
+        return sanPhamRepository.findByGioiTinh(gender, PageRequest.of(page, size));
+    }
+    
+    @Override
+    public Page<SanPham> filterByCategoryAndGenderPaging(Integer categoryId, Integer gender, int page, int size) {
+        return sanPhamRepository.findByLoai_IdAndGioiTinh(categoryId, gender, PageRequest.of(page, size));
+    }
+    
+    // Search with filters
+    @Override
+    public Page<SanPham> searchByTenAndCategoryPaging(String ten, Integer categoryId, int page, int size) {
+        return sanPhamRepository.findByTenContainingIgnoreCaseAndLoai_Id(ten, categoryId, PageRequest.of(page, size));
+    }
+    
+    @Override
+    public Page<SanPham> searchByTenAndGenderPaging(String ten, Integer gender, int page, int size) {
+        return sanPhamRepository.findByTenContainingIgnoreCaseAndGioiTinh(ten, gender, PageRequest.of(page, size));
+    }
+    
+    @Override
+    public Page<SanPham> searchByTenAndCategoryAndGenderPaging(String ten, Integer categoryId, Integer gender, int page, int size) {
+        return sanPhamRepository.findByTenContainingIgnoreCaseAndLoai_IdAndGioiTinh(ten, categoryId, gender, PageRequest.of(page, size));
     }
 }

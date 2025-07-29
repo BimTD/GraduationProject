@@ -11,6 +11,7 @@ import org.example.graduationproject.repositories.ImageSanPhamRepository;
 import org.example.graduationproject.services.SanPhamService;
 import org.example.graduationproject.dto.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,13 +44,74 @@ public class ProductController {
 
 
     @GetMapping("/product")
-    public String productPage(Model model) {
+    public String productPage(Model model,
+                              @RequestParam(value = "search", required = false) String search,
+                              @RequestParam(value = "categoryId", required = false) Integer categoryId,
+                              @RequestParam(value = "gender", required = false) String gender,
+                              @RequestParam(value = "page", defaultValue = "0") int page,
+                              @RequestParam(value = "size", defaultValue = "10") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
         model.addAttribute("username", username);
         model.addAttribute("currentPage", "product");
-        model.addAttribute("products", sanPhamService.getAll());
+        
+        // Lấy danh sách categories cho filter
+        List<Loai> categories = loaiRepository.findAll();
+        model.addAttribute("categories", categories);
+        
+        Page<org.example.graduationproject.models.SanPham> productPage;
+        
+        // Xử lý logic filter và search
+        if (search != null && !search.trim().isEmpty()) {
+            // Có search
+            if (categoryId != null && gender != null && !gender.trim().isEmpty()) {
+                // Search + Category + Gender
+                productPage = sanPhamService.searchByTenAndCategoryAndGenderPaging(search, categoryId, Integer.parseInt(gender), page, size);
+            } else if (categoryId != null) {
+                // Search + Category
+                productPage = sanPhamService.searchByTenAndCategoryPaging(search, categoryId, page, size);
+            } else if (gender != null && !gender.trim().isEmpty()) {
+                // Search + Gender
+                productPage = sanPhamService.searchByTenAndGenderPaging(search, Integer.parseInt(gender), page, size);
+            } else {
+                // Chỉ search
+                productPage = sanPhamService.searchByTenPaging(search, page, size);
+            }
+            model.addAttribute("search", search);
+        } else {
+            // Không có search
+            if (categoryId != null && gender != null && !gender.trim().isEmpty()) {
+                // Category + Gender
+                productPage = sanPhamService.filterByCategoryAndGenderPaging(categoryId, Integer.parseInt(gender), page, size);
+            } else if (categoryId != null) {
+                // Chỉ Category
+                productPage = sanPhamService.filterByCategoryPaging(categoryId, page, size);
+            } else if (gender != null && !gender.trim().isEmpty()) {
+                // Chỉ Gender
+                productPage = sanPhamService.filterByGenderPaging(Integer.parseInt(gender), page, size);
+            } else {
+                // Không có filter
+                productPage = sanPhamService.getAllPaging(page, size);
+            }
+        }
+        
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("productPage", productPage);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("totalElements", productPage.getTotalElements());
+        int lastPage = productPage.getTotalPages() > 0 ? productPage.getTotalPages() - 1 : 0;
+        int prevPage = page > 0 ? page - 1 : 0;
+        int nextPage = (page + 1 < productPage.getTotalPages()) ? page + 1 : lastPage;
+        model.addAttribute("lastPage", lastPage);
+        model.addAttribute("prevPage", prevPage);
+        model.addAttribute("nextPage", nextPage);
+        
+        // Thêm các filter values vào model
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("gender", gender);
 
         return "admin/product";
     }
