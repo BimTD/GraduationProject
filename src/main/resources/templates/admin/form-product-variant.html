@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org"
+        lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
+<head th:replace="admin/fragments/head :: head('Product Variant Form')"></head>
+
+<body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
+<div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
+
+    <!-- Sidebar -->
+    <div th:replace="admin/fragments/sidebar :: sidebar" ></div>
+
+    <div id="sidebar-overlay" class="absolute inset-0 z-[1002] bg-slate-500/30 hidden"></div>
+    <!-- Header -->
+    <header th:replace="admin/fragments/header :: header"></header>
+
+    <!-- Content -->
+    <div class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+        <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
+            <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
+                <div class="grow">
+                    <h5 class="text-16" th:text="${productVariantDTO.id != null ? 'Edit Product Variations' : 'Add Product Variation'}"></h5>
+                </div>
+                <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
+                    <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
+                        <a href="#!" class="text-slate-400 dark:text-zink-200">Dashboard</a>
+                    </li>
+                    <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
+                        <a th:href="@{/admin/product-variant}" class="text-slate-400 dark:text-zink-200">Product Variant</a>
+                    </li>
+                    <li class="text-slate-700 dark:text-zink-100">
+                        <span th:text="${productVariantDTO.id != null ? 'Edit' : 'Add New'}"></span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <form th:action="${productVariantDTO.id != null ? '/admin/product-variant/edit' : '/admin/product-variant/add'}" 
+                          th:object="${productVariantDTO}" method="post" class="space-y-6">
+                        
+                        <input type="hidden" th:field="*{id}" />
+                        
+                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                            <!-- Sản Phẩm -->
+                            <div>
+                                <label for="sanPhamId" class="block text-sm font-medium text-slate-700 dark:text-zink-100 mb-2">
+                                    Product <span class="text-red-500">*</span>
+                                </label>
+                                <select th:field="*{sanPhamId}" id="sanPhamId" 
+                                        class="form-input border-slate-200 focus:border-custom-500 focus:ring-custom-500" required>
+                                    <option value="">Chọn sản phẩm</option>
+                                    <option th:each="product : ${products}" 
+                                            th:value="${product.id}" 
+                                            th:text="${product.ten}"
+                                            th:selected="${productVariantDTO.sanPhamId == product.id}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Màu Sắc -->
+                            <div>
+                                <label for="mauSacId" class="block text-sm font-medium text-slate-700 dark:text-zink-100 mb-2">
+                                    Color <span class="text-red-500">*</span>
+                                </label>
+                                <select th:field="*{mauSacId}" id="mauSacId" 
+                                        class="form-input border-slate-200 focus:border-custom-500 focus:ring-custom-500" required>
+                                    <option value="">Chọn màu sắc</option>
+                                    <option th:each="color : ${colors}" 
+                                            th:value="${color.id}" 
+                                            th:text="${color.maMau}"
+                                            th:selected="${productVariantDTO.mauSacId == color.id}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Size -->
+                            <div>
+                                <label for="sizeId" class="block text-sm font-medium text-slate-700 dark:text-zink-100 mb-2">
+                                    Size <span class="text-red-500">*</span>
+                                </label>
+                                <select th:field="*{sizeId}" id="sizeId" 
+                                        class="form-input border-slate-200 focus:border-custom-500 focus:ring-custom-500" required>
+                                    <option value="">Chọn size</option>
+                                    <option th:each="size : ${sizes}" 
+                                            th:value="${size.id}" 
+                                            th:text="${size.tenSize}"
+                                            th:selected="${productVariantDTO.sizeId == size.id}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Số Lượng Tồn -->
+                            <div>
+                                <label for="soLuongTon" class="block text-sm font-medium text-slate-700 dark:text-zink-100 mb-2">
+                                    Stock Quantity <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" th:field="*{soLuongTon}" id="soLuongTon" 
+                                       class="form-input border-slate-200 focus:border-custom-500 focus:ring-custom-500" 
+                                       placeholder="Nhập số lượng tồn" min="0" value="0" required />
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="flex justify-end items-center mt-6">
+                            <div class="flex gap-2">
+                                <button type="submit" id="submitBtn" class="btn bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">
+                                    <i data-lucide="save" class="size-4 inline mr-2"></i>
+                                    <span th:text="${productVariantDTO.id != null ? 'Update Product' : 'Save Product'}"></span>
+                                </button>
+                                <a th:href="@{/admin/product-variant}" class="btn bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
+                                    <i data-lucide="x" class="size-4 inline mr-2"></i>
+                                    Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="admin/fragments/script :: script"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.querySelector('form');
+    const sanPhamSelect = document.getElementById('sanPhamId');
+    const mauSacSelect = document.getElementById('mauSacId');
+    const sizeSelect = document.getElementById('sizeId');
+    const soLuongTonInput = document.getElementById('soLuongTon');
+
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Reset previous error states
+        [sanPhamSelect, mauSacSelect, sizeSelect, soLuongTonInput].forEach(element => {
+            element.classList.remove('border-red-500');
+        });
+
+        // Validate required fields
+        if (!sanPhamSelect.value) {
+            sanPhamSelect.classList.add('border-red-500');
+            isValid = false;
+        }
+        
+        if (!mauSacSelect.value) {
+            mauSacSelect.classList.add('border-red-500');
+            isValid = false;
+        }
+        
+        if (!sizeSelect.value) {
+            sizeSelect.classList.add('border-red-500');
+            isValid = false;
+        }
+        
+        if (!soLuongTonInput.value || parseInt(soLuongTonInput.value) < 0) {
+            soLuongTonInput.classList.add('border-red-500');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+        }
+    });
+});
+</script>
+</body>
+</html> 
