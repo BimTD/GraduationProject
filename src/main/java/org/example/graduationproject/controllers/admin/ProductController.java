@@ -7,7 +7,6 @@ import org.example.graduationproject.models.NhaCungCap;
 import org.example.graduationproject.repositories.LoaiRepository;
 import org.example.graduationproject.repositories.NhanHieuRepository;
 import org.example.graduationproject.repositories.NhaCungCapRepository;
-import org.example.graduationproject.repositories.ImageSanPhamRepository;
 import org.example.graduationproject.services.SanPhamService;
 import org.example.graduationproject.dto.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Optional;
 import org.example.graduationproject.models.SanPham;
 
 @Controller
@@ -40,10 +40,6 @@ public class ProductController {
     @Autowired
     private SanPhamService sanPhamService;
 
-    @Autowired
-    private ImageSanPhamRepository imageSanPhamRepository;
-
-
     @GetMapping("/product")
     public String productPage(Model model,
                               @RequestParam(value = "search", required = false) String search,
@@ -61,41 +57,7 @@ public class ProductController {
         List<Loai> categories = loaiRepository.findAll();
         model.addAttribute("categories", categories);
         
-        Page<org.example.graduationproject.models.SanPham> productPage;
-
-        // Xử lý logic filter và search
-        if (search != null && !search.trim().isEmpty()) {
-            // Có search
-            if (categoryId != null && gender != null && !gender.trim().isEmpty()) {
-                // Search + Category + Gender
-                productPage = sanPhamService.searchByTenAndCategoryAndGenderPaging(search, categoryId, Integer.parseInt(gender), page, size);
-            } else if (categoryId != null) {
-                // Search + Category
-                productPage = sanPhamService.searchByTenAndCategoryPaging(search, categoryId, page, size);
-            } else if (gender != null && !gender.trim().isEmpty()) {
-                // Search + Gender
-                productPage = sanPhamService.searchByTenAndGenderPaging(search, Integer.parseInt(gender), page, size);
-            } else {
-                // Chỉ search
-                productPage = sanPhamService.searchByTenPaging(search, page, size);
-            }
-            model.addAttribute("search", search);
-        } else {
-            // Không có search
-            if (categoryId != null && gender != null && !gender.trim().isEmpty()) {
-                // Category + Gender
-                productPage = sanPhamService.filterByCategoryAndGenderPaging(categoryId, Integer.parseInt(gender), page, size);
-            } else if (categoryId != null) {
-                // Chỉ Category
-                productPage = sanPhamService.filterByCategoryPaging(categoryId, page, size);
-            } else if (gender != null && !gender.trim().isEmpty()) {
-                // Chỉ Gender
-                productPage = sanPhamService.filterByGenderPaging(Integer.parseInt(gender), page, size);
-            } else {
-                // Không có filter
-                productPage = sanPhamService.getAllPaging(page, size);
-            }
-        }
+        Page<SanPham> productPage = sanPhamService.getProductsWithFilters(search, categoryId, gender, page, size);
         
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("productPage", productPage);
@@ -111,6 +73,7 @@ public class ProductController {
         model.addAttribute("nextPage", nextPage);
         
         // Thêm các filter values vào model
+        model.addAttribute("search", search);
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("gender", gender);
 
@@ -133,29 +96,19 @@ public class ProductController {
 
     @GetMapping("/product/edit/{id}")
     public String editProductForm(@PathVariable("id") Integer id, Model model) {
-        SanPham sanPham = sanPhamService.findById(id);
-        if (sanPham == null) {
+        Optional<ProductDTO> productDTOOpt = sanPhamService.getProductDTOById(id);
+        if (productDTOOpt.isEmpty()) {
             return "redirect:/admin/product";
         }
         
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(sanPham.getId());
-        productDTO.setTen(sanPham.getTen());
-        productDTO.setMoTa(sanPham.getMoTa());
-        productDTO.setGiaBan(sanPham.getGiaBan());
-        productDTO.setGiaNhap(sanPham.getGiaNhap());
-        productDTO.setKhuyenMai(sanPham.getKhuyenMai());
-        productDTO.setTag(sanPham.getTag());
-        productDTO.setHuongDan(sanPham.getHuongDan());
-        productDTO.setThanhPhan(sanPham.getThanhPhan());
-        productDTO.setGioiTinh(sanPham.getGioiTinh());
-        productDTO.setLoaiId(sanPham.getLoai() != null ? sanPham.getLoai().getId() : null);
-        productDTO.setNhanHieuId(sanPham.getNhanHieu() != null ? sanPham.getNhanHieu().getId() : null);
-        productDTO.setNhaCungCapId(sanPham.getNhaCungCap() != null ? sanPham.getNhaCungCap().getId() : null);
+        Optional<SanPham> sanPhamOpt = sanPhamService.findById(id);
+        if (sanPhamOpt.isEmpty()) {
+            return "redirect:/admin/product";
+        }
         
-        model.addAttribute("product", productDTO);
+        model.addAttribute("product", productDTOOpt.get());
         model.addAttribute("editMode", true);
-        model.addAttribute("existingImages", sanPham.getImages());
+        model.addAttribute("existingImages", sanPhamOpt.get().getImages());
         
         List<Loai> loais = loaiRepository.findAll();
         model.addAttribute("loais", loais);
@@ -193,7 +146,7 @@ public class ProductController {
     @ResponseBody
     public String deleteImage(@PathVariable("imageId") Integer imageId) {
         try {
-            imageSanPhamRepository.deleteById(imageId);
+            sanPhamService.deleteImageById(imageId);
             return "success";
         } catch (Exception e) {
             return "error: " + e.getMessage();
@@ -204,13 +157,13 @@ public class ProductController {
     @ResponseBody
     public void toggleActiveStatus(@PathVariable("id") Integer id, @RequestBody java.util.Map<String, Boolean> body) {
         boolean active = body.get("active");
-        sanPhamService.updateActiveStatus(id, active);
+        sanPhamService.toggleProductActiveStatus(id, active);
     }
 
     @GetMapping("/product/delete/{id}")
     public String deleteProduct(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
-            sanPhamService.deleteById(id);
+            sanPhamService.deleteProductById(id);
             redirectAttributes.addFlashAttribute("success", "Product deleted successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error while deleting product: " + e.getMessage());

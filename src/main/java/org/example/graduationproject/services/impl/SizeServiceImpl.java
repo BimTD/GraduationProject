@@ -20,6 +20,9 @@ public class SizeServiceImpl implements SizeService {
     public List<Size> findAll() { return sizeRepository.findAll(); }
 
     @Override
+    public List<Size> findAllWithCategory() { return sizeRepository.findAllWithCategory(); }
+
+    @Override
     public Page<Size> findAll(Pageable pageable) { return sizeRepository.findAll(pageable); }
 
     @Override

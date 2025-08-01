@@ -20,6 +20,9 @@ public class MauSacServiceImpl implements MauSacService {
     public List<MauSac> findAll() { return mauSacRepository.findAll(); }
 
     @Override
+    public List<MauSac> findAllWithCategory() { return mauSacRepository.findAllWithCategory(); }
+
+    @Override
     public MauSac save(MauSac color) { return mauSacRepository.save(color); }
 
     @Override

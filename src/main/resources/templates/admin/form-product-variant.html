@@ -67,7 +67,7 @@
                                     <option value="">Chọn màu sắc</option>
                                     <option th:each="color : ${colors}" 
                                             th:value="${color.id}" 
-                                            th:text="${color.maMau}"
+                                            th:text="${color.maMau} + ' - ' + ${color.loai != null ? color.loai.ten : 'N/A'}"
                                             th:selected="${productVariantDTO.mauSacId == color.id}">
                                     </option>
                                 </select>
@@ -83,7 +83,7 @@
                                     <option value="">Chọn size</option>
                                     <option th:each="size : ${sizes}" 
                                             th:value="${size.id}" 
-                                            th:text="${size.tenSize}"
+                                            th:text="${size.tenSize} + ' - ' + ${size.loai != null ? size.loai.ten : 'N/A'}"
                                             th:selected="${productVariantDTO.sizeId == size.id}">
                                     </option>
                                 </select>

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface SizeService {
     List<Size> findAll();
+    List<Size> findAllWithCategory();
     Size save(Size size);
     void deleteById(Integer id);
     Optional<Size> findById(Integer id);

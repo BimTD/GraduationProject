@@ -81,8 +81,8 @@
                             <tr th:each="variant, iterStat : ${variants}" class="bg-white dark:bg-zink-700">
                                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${iterStat.index + 1}"></td>
                                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${variant.sanPham.ten}"></td>
-                                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${variant.mauSac.maMau + ' ' + variant.sanPham.loai.ten}"></td>
-                                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${variant.size.tenSize + ' ' + variant.sanPham.loai.ten}"></td>
+                                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${variant.mauSac.maMau + ' - ' + (variant.mauSac.loai != null ? variant.mauSac.loai.ten : 'N/A')}"></td>
+                                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${variant.size.tenSize + ' - ' + (variant.size.loai != null ? variant.size.loai.ten : 'N/A')}"></td>
                                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${variant.soLuongTon}"></td>
                                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-500 Action">
                                     <div class="flex gap-3">
@@ -125,9 +125,17 @@
 
                         <div class="col-sm-auto mt-sm-0">
                             <div class="flex gap-2 pagination-wrap justify-content-center">
-                                <a th:href="@{/admin/product-variant(page=${currentPageNumber - 1},size=${size},search=${search})}" th:classappend="${currentPageNumber == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
+                                <a th:if="${currentPageNumber > 0}" 
+                                   th:href="@{/admin/product-variant(page=${currentPageNumber - 1},size=${size},search=${search})}" 
+                                   class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
                                     <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
                                 </a>
+
+                                <span th:if="${currentPageNumber == 0}" 
+                                      class="inline-flex items-center justify-center bg-gray-100 dark:bg-zink-600 h-8 px-3 border rounded border-slate-200 dark:border-zink-500 text-slate-400 dark:text-zink-400 cursor-not-allowed">
+                                    <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
+                                </span>
+                                
                                 <ul class="flex flex-wrap items-center gap-2 pagination">
                                     <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
                                         <a th:href="@{/admin/product-variant(page=${i},size=${size},search=${search})}"
@@ -137,9 +145,17 @@
                                         </a>
                                     </li>
                                 </ul>
-                                <a th:href="@{/admin/product-variant(page=${currentPageNumber + 1},size=${size},search=${search})}" th:classappend="${currentPageNumber == totalPages - 1} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
+
+                                <a th:if="${currentPageNumber < totalPages - 1}" 
+                                   th:href="@{/admin/product-variant(page=${currentPageNumber + 1},size=${size},search=${search})}" 
+                                   class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
                                     Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
                                 </a>
+
+                                <span th:if="${currentPageNumber == totalPages - 1}" 
+                                      class="inline-flex items-center justify-center bg-gray-100 dark:bg-zink-600 h-8 px-3 border rounded border-slate-200 dark:border-zink-500 text-slate-400 dark:text-zink-400 cursor-not-allowed">
+                                    Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
+                                </span>
                             </div>
                         </div>
                     </div>

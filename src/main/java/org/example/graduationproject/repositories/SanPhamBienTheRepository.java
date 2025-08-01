@@ -23,4 +23,24 @@ public interface SanPhamBienTheRepository extends JpaRepository<SanPhamBienThe, 
     
     @Query("SELECT spbt FROM SanPhamBienThe spbt WHERE spbt.sanPham.id = :sanPhamId")
     List<SanPhamBienThe> findBySanPhamIdWithDetails(@Param("sanPhamId") Integer sanPhamId);
+    
+    // Load SanPhamBienThe cùng với tất cả các quan hệ
+    @Query("SELECT spbt FROM SanPhamBienThe spbt " +
+           "LEFT JOIN FETCH spbt.sanPham s " +
+           "LEFT JOIN FETCH s.loai " +
+           "LEFT JOIN FETCH spbt.mauSac m " +
+           "LEFT JOIN FETCH m.loai " +
+           "LEFT JOIN FETCH spbt.size sz " +
+           "LEFT JOIN FETCH sz.loai")
+    Page<SanPhamBienThe> findAllWithDetails(Pageable pageable);
+    
+    @Query("SELECT spbt FROM SanPhamBienThe spbt " +
+           "LEFT JOIN FETCH spbt.sanPham s " +
+           "LEFT JOIN FETCH s.loai " +
+           "LEFT JOIN FETCH spbt.mauSac m " +
+           "LEFT JOIN FETCH m.loai " +
+           "LEFT JOIN FETCH spbt.size sz " +
+           "LEFT JOIN FETCH sz.loai " +
+           "WHERE spbt.sanPham.ten LIKE %:search% OR spbt.mauSac.maMau LIKE %:search% OR spbt.size.tenSize LIKE %:search% OR spbt.sanPham.loai.ten LIKE %:search%")
+    Page<SanPhamBienThe> searchByKeywordWithDetails(@Param("search") String search, Pageable pageable);
 }

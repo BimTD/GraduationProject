@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface MauSacService {
     List<MauSac> findAll();
+    List<MauSac> findAllWithCategory();
     MauSac save(MauSac color);
     void deleteById(Integer id);
     Optional<MauSac> findById(Integer id);

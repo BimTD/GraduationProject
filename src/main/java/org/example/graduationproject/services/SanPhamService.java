@@ -6,13 +6,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SanPhamService {
     List<SanPham> getAll();
 
     List<SanPham> getByGioiTinh(Integer gioiTinh);
     Boolean create(SanPham sanPham);
-    SanPham findById(Integer id);
+    Optional<SanPham> findById(Integer id);
     Boolean deleteById(Integer id);
     Boolean update(SanPham sanPham);
     SanPham save(SanPham sanPham);
@@ -33,4 +34,15 @@ public interface SanPhamService {
     Page<SanPham> searchByTenAndCategoryPaging(String ten, Integer categoryId, int page, int size);
     Page<SanPham> searchByTenAndGenderPaging(String ten, Integer gender, int page, int size);
     Page<SanPham> searchByTenAndCategoryAndGenderPaging(String ten, Integer categoryId, Integer gender, int page, int size);
+    
+    // Các method mới để xử lý business logic
+    Page<SanPham> getProductsWithFilters(String search, Integer categoryId, String gender, int page, int size);
+    
+    Optional<ProductDTO> getProductDTOById(Integer id);
+    
+    void deleteProductById(Integer id);
+    
+    void deleteImageById(Integer imageId);
+    
+    void toggleProductActiveStatus(Integer id, boolean active);
 }
