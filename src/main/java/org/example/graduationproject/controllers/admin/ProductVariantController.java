@@ -103,9 +103,9 @@ public class ProductVariantController {
     public String addProductVariant(@ModelAttribute ProductVariantDTO productVariantDTO, RedirectAttributes redirectAttributes) {
         try {
             sanPhamBienTheService.createProductVariant(productVariantDTO);
-            redirectAttributes.addFlashAttribute("success", "Thêm sản phẩm biến thể thành công!");
+            redirectAttributes.addFlashAttribute("success", "Added variant product successfully!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
         }
 
         return "redirect:/admin/product-variant";
@@ -140,9 +140,9 @@ public class ProductVariantController {
     public String editProductVariant(@ModelAttribute ProductVariantDTO productVariantDTO, RedirectAttributes redirectAttributes) {
         try {
             sanPhamBienTheService.updateProductVariant(productVariantDTO);
-            redirectAttributes.addFlashAttribute("success", "Cập nhật sản phẩm biến thể thành công!");
+            redirectAttributes.addFlashAttribute("success", "Product variation update successful!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
         }
 
         return "redirect:/admin/product-variant";
@@ -152,9 +152,9 @@ public class ProductVariantController {
     public String deleteProductVariant(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             sanPhamBienTheService.deleteProductVariantById(id);
-            redirectAttributes.addFlashAttribute("success", "Xóa sản phẩm biến thể thành công!");
+            redirectAttributes.addFlashAttribute("success", "Variant product deleted successfully!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
         }
 
         return "redirect:/admin/product-variant";
