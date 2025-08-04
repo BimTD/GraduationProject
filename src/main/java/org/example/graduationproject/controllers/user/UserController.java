@@ -37,7 +37,6 @@ public class UserController {
             model.addAttribute("isAuthenticated", false);
         }
 
-        // Lấy danh sách sản phẩm nam (gioiTinh = 1) và nữ (gioiTinh = 2)
         List<SanPham> sanPhamNam = sanPhamService.getByGioiTinh(1);
         List<SanPham> sanPhamNu = sanPhamService.getByGioiTinh(2);
         model.addAttribute("sanPhamNam", sanPhamNam);
