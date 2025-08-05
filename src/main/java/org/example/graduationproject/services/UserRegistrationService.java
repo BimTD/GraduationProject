@@ -28,17 +28,14 @@ public class UserRegistrationService {
     private PasswordEncoder passwordEncoder;
 
     public RegistrationResult registerUser(String username, String email, String password) {
-        // Kiểm tra username đã tồn tại chưa
         if (userRepository.findByUsername(username).isPresent()) {
             return new RegistrationResult(false, "Username already exists!");
         }
 
-        // Kiểm tra email đã tồn tại chưa
         if (userRepository.findByEmail(email).isPresent()) {
             return new RegistrationResult(false, "Email already in use!");
         }
 
-        // Kiểm tra độ dài password
         if (password.length() < 6) {
             return new RegistrationResult(false, "Password must be at least 6 characters!");
         }
