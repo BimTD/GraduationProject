@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
+<head th:replace="admin/fragments/head :: head('Tạo phiếu nhập hàng')">
+
+</head>
+<link th:href="@{/assets/css/import-form.css}" rel="stylesheet">
+
+<body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+<div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
+
+  <!-- Sidebar -->
+  <div th:replace="admin/fragments/sidebar :: sidebar" ></div>
+
+  <div id="sidebar-overlay" class="absolute inset-0 z-[1002] bg-slate-500/30 hidden"></div>
+  <!-- Header -->
+  <header th:replace="admin/fragments/header :: header"></header>
+
+  <!-- Content -->
+  <div class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+    <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
+      <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
+        <div class="grow">
+          <h5 class="text-16">Create a receipt</h5>
+        </div>
+        <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
+          <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
+            <a href="/admin/import" class="text-slate-400 dark:text-zink-200">Import management</a>
+          </li>
+          <li class="text-slate-700 dark:text-zink-100">
+            Create a receipt
+          </li>
+        </ul>
+      </div>
+
+      <div class="import-form-container">
+        <!-- Progress Steps -->
+        <div class="step-indicator">
+          <div class="step-item">
+            <div class="step-number active">1</div>
+            <div class="step-label active">Select a supplier</div>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-label">Select product</div>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-label">Confirm</div>
+          </div>
+        </div>
+
+        <!-- Step 1: Chọn nhà cung cấp -->
+        <div class="form-step active" id="step1">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6">Step 1: Choose a supplier</h3>
+          
+          <!-- Tìm kiếm nhà cung cấp -->
+          <div class="supplier-search">
+            <input type="text" id="supplierSearch" class="search-input" placeholder="Search for suppliers by name or email...">
+          </div>
+
+          <!-- Danh sách nhà cung cấp -->
+          <div class="supplier-grid">
+            <div th:each="supplier : ${suppliers}" 
+                 class="supplier-card"
+                 th:data-supplier-id="${supplier.id}">
+              <div class="supplier-info">
+                <h4 class="supplier-name font-semibold text-lg text-gray-800" th:text="${supplier.ten}">Supplier Name</h4>
+                                 <div class="supplier-detail" th:if="${supplier.email}">
+                   <i class="fas fa-envelope"></i>
+                   <span class="supplier-email" th:text="${supplier.email}">Email</span>
+                 </div>
+                <div class="supplier-detail">
+                  <i class="fas fa-phone"></i>
+                  <span class="supplier-phone" th:text="${supplier.sdt ?: 'No information available'}">Phone</span>
+                </div>
+                <div class="supplier-detail">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span class="supplier-address" th:text="${supplier.diaChi ?: 'No information available'}">Address</span>
+                </div>
+                <div class="supplier-detail" th:if="${supplier.thongTin}">
+                  <i class="fas fa-info-circle"></i>
+                  <span class="supplier-info-text" th:text="${supplier.thongTin}">Other information</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thông báo không có nhà cung cấp -->
+          <div class="no-suppliers" style="display: none;">
+            <i class="fas fa-search"></i>
+            <p>No suitable suppliers found</p>
+          </div>
+
+          <!-- Thông tin chi tiết nhà cung cấp -->
+          <div id="supplierDetails" style="display: none;" class="mt-8">
+            <!-- Sẽ được cập nhật bởi JavaScript -->
+          </div>
+
+          <!-- Nút điều hướng -->
+          <div class="navigation-buttons">
+            <div></div> <!-- Spacer -->
+            <button type="button" id="nextBtn" 
+                    class="btn btn-primary"
+                    disabled>
+              Continue <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Chọn sản phẩm -->
+        <div class="form-step" id="step2">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6">Step 2: Select product</h3>
+          
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+            <h4 class="text-lg font-semibold text-blue-800 mb-3">Selected Supplier</h4>
+            <div id="selectedSupplierInfo">
+              <!-- Sẽ được cập nhật bởi JavaScript -->
+            </div>
+          </div>
+
+          <!-- Form chọn sản phẩm -->
+          <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">Add products to the receipt</h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <!-- Chọn sản phẩm -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+                <select id="productSelect" class="form-select w-full">
+                  <option value="">Select product...</option>
+                  <option th:each="product : ${products}" 
+                          th:value="${product.id}" 
+                          th:data-import-price="${product.giaNhap}"
+                          th:text="${product.ten}">Product Name</option>
+                </select>
+              </div>
+              
+              <!-- Chọn biến thể -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Product Variation</label>
+                <select id="variantSelect" class="form-select w-full" disabled>
+                  <option value="">Select variant...</option>
+                </select>
+              </div>
+              
+              <!-- Giá nhập -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Import price (VND)</label>
+                <input type="text" id="importPrice" class="form-input w-full" readonly 
+                       placeholder="The input price will be displayed automatically">
+              </div>
+              
+              <!-- Số lượng -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Quantity imported</label>
+                <input type="number" id="importQuantity" class="form-input w-full" 
+                       min="1" placeholder="Enter quantity">
+              </div>
+            </div>
+            
+            <!-- Nút thêm chi tiết -->
+            <div class="flex justify-end">
+              <button type="button" id="addDetailBtn" class="btn btn-primary" disabled>
+                <i class="fas fa-plus"></i> More details
+              </button>
+            </div>
+          </div>
+
+          <!-- Danh sách chi tiết phiếu nhập -->
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">Import voucher details</h4>
+            
+            <div id="importDetailsList">
+              <div class="text-center text-gray-500 py-8">
+                <i class="fas fa-inbox text-4xl mb-2"></i>
+                <p>No products have been added to the import form yet.</p>
+              </div>
+            </div>
+            
+            <!-- Tổng tiền và ghi chú -->
+            <div id="summarySection" class="mt-6 pt-6 border-t border-gray-200" style="display: none;">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Tổng tiền -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                  <h5 class="font-semibold text-gray-800 mb-2">Total import voucher amount</h5>
+                  <div class="text-3xl font-bold text-blue-600" id="totalAmount">0 VNĐ</div>
+                </div>
+                
+                <!-- Ghi chú -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Note</label>
+                  <textarea id="importNote" class="form-textarea w-full h-20" 
+                            placeholder="Enter notes for the receipt (if any)..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dữ liệu biến thể sản phẩm (ẩn) -->
+          <div id="productVariantsData" style="display: none;">
+            <div th:each="variant : ${variants}" 
+                 th:data-product-id="${variant.sanPham.id}"
+                 th:data-variant-id="${variant.id}"
+                 th:data-color-name="${variant.mauSac.maMau}"
+                 th:data-size-name="${variant.size.tenSize}">
+            </div>
+          </div>
+
+          <div class="navigation-buttons">
+            <button type="button" id="prevBtn" class="btn btn-secondary">
+              <i class="fas fa-arrow-left"></i> Come back
+            </button>
+            <button type="button" id="nextBtnStep2" class="btn btn-primary" disabled>
+              Continue <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Xác nhận -->
+        <div class="form-step" id="step3">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6">Step 3: Confirm information</h3>
+          
+          <!-- Thông tin nhà cung cấp -->
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+            <h4 class="text-lg font-semibold text-blue-800 mb-3">Supplier information</h4>
+            <div id="confirmSupplierInfo">
+              <!-- Sẽ được cập nhật bởi JavaScript -->
+            </div>
+          </div>
+
+          <!-- Tóm tắt sản phẩm -->
+          <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">Summary of imported products</h4>
+            <div id="confirmProductsList">
+              <!-- Sẽ được cập nhật bởi JavaScript -->
+            </div>
+            
+            <!-- Tổng tiền và ghi chú -->
+            <div class="mt-6 pt-6 border-t border-gray-200">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h5 class="font-semibold text-gray-800 mb-2">Total import voucher amount</h5>
+                  <div class="text-3xl font-bold text-blue-600" id="confirmTotalAmount">0 VNĐ</div>
+                </div>
+                
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h5 class="font-semibold text-gray-800 mb-2">Notee</h5>
+                  <div id="confirmNote" class="text-gray-600">No notes</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons">
+            <button type="button" id="prevBtnStep3" class="btn btn-secondary">
+              <i class="fas fa-arrow-left"></i> Come back
+            </button>
+            <button type="button" id="completeBtn" class="btn btn-success">
+              <i class="fas fa-check"></i> Complete import
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/assets/js/layout.js}"></script>
+<script th:src="@{/assets/js/import-form.js}"></script>
+
+</body>
+</html> 

@@ -7,9 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface NhaCungCapService {
+    List<NhaCungCap> getAllNhaCungCap();
     Page<NhaCungCap> getAllNhaCungCapPaging(int page, int size);
     Page<NhaCungCap> searchNhaCungCapByTenPaging(String ten, int page, int size);
     NhaCungCap save(NhaCungCap nhaCungCap);

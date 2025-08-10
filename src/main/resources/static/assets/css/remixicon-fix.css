@@ -1,0 +1,16 @@
+@font-face {
+    font-family: 'remixicon';
+    src: url('/assets/css/remixicona57d.eot') format('embedded-opentype'),
+         url('/assets/css/remixicona57d.woff2') format('woff2'),
+         url('/assets/css/remixicona57d.woff') format('woff'),
+         url('/assets/css/remixicona57d.ttf') format('truetype'),
+         url('/assets/images/remixicona57d.svg#remixicon') format('svg');
+    font-display: swap;
+}
+
+[class^="ri-"], [class*=" ri-"] {
+    font-family: 'remixicon' !important;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+} 

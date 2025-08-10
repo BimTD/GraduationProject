@@ -21,6 +21,7 @@ public class NhaCungCap {
     private Integer id;
 
     private String ten;
+    private String email;
     private String sdt;
     private String thongTin;
     private String diaChi;

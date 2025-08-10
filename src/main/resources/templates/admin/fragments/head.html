@@ -6,6 +6,19 @@
     <meta content="Themesdesign" name="author">
 
     <script th:src="@{/assets/js/layout.js}"></script>
+    <script th:src="@{/assets/libs/lucide/umd/lucide.js}"></script>
     <link th:href="@{/assets/css/tailwind2.css}" rel="stylesheet">
+    <link th:href="@{/assets/css/remixicon-fix.css}" rel="stylesheet">
     <link th:href="@{/assets/css/custom-logo.css}" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script>
+        // Khởi tạo Lucide icons khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </head>
