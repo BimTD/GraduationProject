@@ -88,8 +88,12 @@
                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${phieu.nguoiLapPhieu}"></td>
                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-500 Action">
                   <div class="flex gap-3">
-                    <a  class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"><i data-lucide="eye" class="size-4"></i></a>
-                    <a  onclick="return confirm('Are you sure you want to delete this product?');" class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"><i data-lucide="trash-2" class="size-4"></i></a>
+                    <a th:href="@{/admin/import/{id}(id=${phieu.id})}" class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"><i data-lucide="eye" class="size-4"></i></a>
+                    <form th:action="@{/admin/import/{id}/delete(id=${phieu.id})}" method="post" onsubmit="return confirm('Bạn chắc chắn muốn xóa phiếu này? Hành động sẽ hoàn tác tồn kho đã cộng.');">
+                      <button type="submit" class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150">
+                        <i data-lucide="trash-2" class="size-4"></i>
+                      </button>
+                    </form>
                   </div>
                 </td>
               </tr>

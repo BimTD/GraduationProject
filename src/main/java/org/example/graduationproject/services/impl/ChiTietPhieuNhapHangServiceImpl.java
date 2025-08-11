@@ -37,7 +37,6 @@ public class ChiTietPhieuNhapHangServiceImpl implements ChiTietPhieuNhapHangServ
     
     @Override
     public List<ChiTietPhieuNhapHang> findByPhieuNhapHangId(Integer phieuNhapHangId) {
-        // TODO: Implement this method when needed
-        return chiTietPhieuNhapHangRepository.findAll();
+        return chiTietPhieuNhapHangRepository.findByPhieuNhapHang_Id(phieuNhapHangId);
     }
 } 

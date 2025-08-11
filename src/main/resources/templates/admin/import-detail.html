@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
+<head th:replace="admin/fragments/head :: head('Chi tiết phiếu nhập')"></head>
+
+<body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
+<div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
+
+  <div th:replace="admin/fragments/sidebar :: sidebar"></div>
+  <div id="sidebar-overlay" class="absolute inset-0 z-[1002] bg-slate-500/30 hidden"></div>
+  <header th:replace="admin/fragments/header :: header"></header>
+
+  <div class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+    <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
+      <div class="flex flex-col gap-3 py-4 md:flex-row md:items-center print:hidden">
+        <div class="grow">
+          <div class="flex items-center gap-3">
+            <h2 class="text-xl md:text-2xl font-semibold">Phiếu nhập</h2>
+            <span class="inline-flex items-center gap-1 text-sm px-2 py-1 rounded bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100">
+              <i data-lucide="hash" class="size-4"></i>
+              <span th:text="${phieu.soChungTu}">PN-XXXX</span>
+            </span>
+          </div>
+          <p class="text-slate-500 dark:text-zink-200 mt-1">
+            Ngày tạo: <span th:text="${#temporals.format(phieu.ngayTao, 'dd/MM/yyyy HH:mm')}"></span>
+          </p>
+        </div>
+        <div class="shrink-0 flex gap-2">
+          <a th:href="@{/admin/import}" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
+            <i data-lucide="arrow-left" class="size-4"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="text-sm text-slate-500 dark:text-zink-200">Tổng tiền</div>
+            <div class="text-2xl font-bold text-blue-600 mt-1" th:text="${#numbers.formatDecimal(phieu.tongTien, 0, 'COMMA', 0, 'COMMA')} + ' VNĐ'"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="text-sm text-slate-500 dark:text-zink-200">Số dòng chi tiết</div>
+            <div class="text-2xl font-bold mt-1" th:text="${#lists.size(details)}"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="text-sm text-slate-500 dark:text-zink-200">Người lập phiếu</div>
+            <div class="text-2xl font-bold mt-1" th:text="${phieu.nguoiLapPhieu}"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Header cards -->
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 mt-4">
+        <div class="lg:col-span-6">
+          <div class="card h-full">
+            <div class="card-body">
+              <div class="flex items-center justify-between mb-3">
+                <h6 class="font-semibold">Thông tin phiếu</h6>
+                <span class="text-xs px-2 py-1 rounded bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100">Mã: <span th:text="${phieu.soChungTu}"></span></span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <div class="text-sm text-slate-500 dark:text-zink-200">Ngày tạo</div>
+                  <div class="font-medium" th:text="${#temporals.format(phieu.ngayTao, 'dd/MM/yyyy HH:mm')}"></div>
+                </div>
+                <div>
+                  <div class="text-sm text-slate-500 dark:text-zink-200">Tổng tiền</div>
+                  <div class="font-medium" th:text="${#numbers.formatDecimal(phieu.tongTien, 0, 'COMMA', 0, 'COMMA')} + ' VNĐ'"></div>
+                </div>
+                <div class="md:col-span-2">
+                  <div class="text-sm text-slate-500 dark:text-zink-200">Ghi chú</div>
+                  <div class="font-medium" th:text="${phieu.ghiChu} ?: 'Không có'"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6">
+          <div class="card h-full">
+            <div class="card-body">
+              <h6 class="mb-3 font-semibold">Nhà cung cấp</h6>
+              <div class="flex items-start gap-4">
+                <div class="inline-flex items-center justify-center rounded-full bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100 size-12">
+                  <i data-lucide="building-2" class="size-5"></i>
+                </div>
+                <div class="grow grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                  <div>
+                    <div class="text-sm text-slate-500 dark:text-zink-200">Tên</div>
+                    <div class="font-medium" th:text="${phieu.nhaCungCap != null ? phieu.nhaCungCap.ten : 'N/A'}"></div>
+                  </div>
+                  <div>
+                    <div class="text-sm text-slate-500 dark:text-zink-200">Email</div>
+                    <div class="font-medium" th:text="${phieu.nhaCungCap != null ? phieu.nhaCungCap.email : 'N/A'}"></div>
+                  </div>
+                  <div>
+                    <div class="text-sm text-slate-500 dark:text-zink-200">SĐT</div>
+                    <div class="font-medium" th:text="${phieu.nhaCungCap != null ? phieu.nhaCungCap.sdt : 'N/A'}"></div>
+                  </div>
+                  <div class="md:col-span-2">
+                    <div class="text-sm text-slate-500 dark:text-zink-200">Địa chỉ</div>
+                    <div class="font-medium" th:text="${phieu.nhaCungCap != null ? phieu.nhaCungCap.diaChi : 'N/A'}"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="card mt-4">
+        <div class="card-body">
+          <div class="flex items-center justify-between mb-3">
+            <h6 class="font-semibold">Chi tiết sản phẩm nhập</h6>
+            <span class="text-xs px-2 py-1 rounded bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100" th:text="${#lists.size(details)} + ' dòng'"></span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full whitespace-nowrap">
+              <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
+              <tr>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">#</th>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Sản phẩm</th>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Biến thể</th>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Số lượng</th>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 text-right">Thành tiền</th>
+              </tr>
+              </thead>
+              <tbody class="list">
+              <tr th:if="${#lists.isEmpty(details)}" class="hover:bg-slate-50 dark:hover:bg-zink-600/50">
+                <td colspan="5" class="px-3.5 py-2.5 text-center border-b border-slate-200 dark:border-zink-500">Không có chi tiết</td>
+              </tr>
+              <tr th:each="ct, stat : ${details}" class="hover:bg-slate-50 dark:hover:bg-zink-600/50">
+                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${stat.count}"></td>
+                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                  <div class="font-medium" th:text="${ct.sanPhamBienThe != null && ct.sanPhamBienThe.sanPham != null ? ct.sanPhamBienThe.sanPham.ten : 'N/A'}"></div>
+                </td>
+                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                  <div class="inline-flex items-center gap-2">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100 text-xs" th:text="${ct.sanPhamBienThe != null && ct.sanPhamBienThe.mauSac != null ? ct.sanPhamBienThe.mauSac.maMau : 'N/A'}"></span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100 text-xs" th:text="${ct.sanPhamBienThe != null && ct.sanPhamBienThe.size != null ? ct.sanPhamBienThe.size.tenSize : 'N/A'}"></span>
+                  </div>
+                </td>
+                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                  <span class="inline-flex items-center justify-center min-w-10 px-2 py-0.5 rounded bg-blue-50 text-blue-600 text-sm" th:text="${ct.soLuongNhap}"></span>
+                </td>
+                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 text-right" th:text="${#numbers.formatDecimal(ct.thanhTienNhap, 0, 'COMMA', 0, 'COMMA')} + ' VNĐ'"></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div th:replace="admin/fragments/script :: script"></div>
+</div>
+
+</body>
+</html>
+
+

@@ -130,7 +130,9 @@ public class ImportController {
             // 3. Calculate total amount
             BigDecimal totalAmount = BigDecimal.ZERO;
             for (ImportDetailDTO detail : request.getDetails()) {
-                BigDecimal price = new BigDecimal(detail.getImportPrice().replaceAll("[^\\d.]", ""));
+                String numeric = detail.getImportPrice() != null ? detail.getImportPrice().replaceAll("[^\\d]", "") : "0";
+                if (numeric.isEmpty()) numeric = "0";
+                BigDecimal price = new BigDecimal(numeric);
                 totalAmount = totalAmount.add(price.multiply(BigDecimal.valueOf(detail.getQuantity())));
             }
             
@@ -158,7 +160,9 @@ public class ImportController {
                 // Create ChiTietPhieuNhapHang
                 ChiTietPhieuNhapHang chiTiet = new ChiTietPhieuNhapHang();
                 chiTiet.setSoLuongNhap(detail.getQuantity());
-                BigDecimal price = new BigDecimal(detail.getImportPrice().replaceAll("[^\\d.]", ""));
+                String numericDetail = detail.getImportPrice() != null ? detail.getImportPrice().replaceAll("[^\\d]", "") : "0";
+                if (numericDetail.isEmpty()) numericDetail = "0";
+                BigDecimal price = new BigDecimal(numericDetail);
                 chiTiet.setThanhTienNhap(price.multiply(BigDecimal.valueOf(detail.getQuantity())));
                 chiTiet.setPhieuNhapHang(phieuNhapHang);
                 chiTiet.setSanPhamBienThe(variant);
@@ -182,6 +186,45 @@ public class ImportController {
             response.put("message", "Có lỗi xảy ra: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
+    }
+    
+    @GetMapping("/import/{id}")
+    public String viewImportDetail(@PathVariable("id") Integer id, Model model) {
+        Optional<PhieuNhapHang> phieuOpt = phieuNhapHangService.findById(id);
+        if (phieuOpt.isEmpty()) {
+            return "redirect:/admin/import";
+        }
+        PhieuNhapHang phieu = phieuOpt.get();
+        List<ChiTietPhieuNhapHang> details = chiTietPhieuNhapHangService.findByPhieuNhapHangId(id);
+        
+        model.addAttribute("currentPage", "import");
+        model.addAttribute("phieu", phieu);
+        model.addAttribute("details", details);
+        
+        return "admin/import-detail";
+    }
+    
+    @PostMapping("/import/{id}/delete")
+    @Transactional
+    public String deleteImport(@PathVariable("id") Integer id) {
+        Optional<PhieuNhapHang> phieuOpt = phieuNhapHangService.findById(id);
+        if (phieuOpt.isEmpty()) {
+            return "redirect:/admin/import";
+        }
+        // Rollback tồn kho từ các chi tiết
+        List<ChiTietPhieuNhapHang> details = chiTietPhieuNhapHangService.findByPhieuNhapHangId(id);
+        for (ChiTietPhieuNhapHang ct : details) {
+            if (ct.getSanPhamBienThe() != null) {
+                SanPhamBienThe variant = ct.getSanPhamBienThe();
+                int currentQuantity = variant.getSoLuongTon() != null ? variant.getSoLuongTon() : 0;
+                int newQuantity = currentQuantity - (ct.getSoLuongNhap() != null ? ct.getSoLuongNhap() : 0);
+                variant.setSoLuongTon(Math.max(newQuantity, 0));
+                sanPhamBienTheService.saveSanPhamBienThe(variant);
+            }
+        }
+        // Xóa phiếu (cascade sẽ xóa chi tiết)
+        phieuNhapHangService.deleteById(id);
+        return "redirect:/admin/import";
     }
     
     private String getCurrentUsername() {
