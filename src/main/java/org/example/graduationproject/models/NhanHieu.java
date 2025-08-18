@@ -21,7 +21,9 @@ public class NhanHieu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String ten;
+    
     private LocalDateTime dateCreate;
 
     @OneToMany(mappedBy = "nhanHieu")

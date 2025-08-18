@@ -25,19 +25,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username", unique = true, columnDefinition = "NVARCHAR(255)")
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", columnDefinition = "NVARCHAR(255)")
     private String password;
 
-    @Column(name = "enabled")
+    @Column(name = "enabled", columnDefinition = "NVARCHAR(10)")
     private String enabled;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, columnDefinition = "NVARCHAR(255)")
     private String email;
 
-    @Column(name = "provider")
+    @Column(name = "provider", columnDefinition = "NVARCHAR(50)")
     private String provider;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)

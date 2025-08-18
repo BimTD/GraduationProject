@@ -17,6 +17,7 @@ public class ImageSanPham {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String imageName;
 
     @ManyToOne

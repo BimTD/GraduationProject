@@ -20,6 +20,7 @@ public class Loai {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String ten;
 
     @OneToMany(mappedBy = "loai", cascade = CascadeType.ALL, orphanRemoval = true)
