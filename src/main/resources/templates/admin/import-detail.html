@@ -29,6 +29,16 @@
           <a th:href="@{/admin/import}" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
             <i data-lucide="arrow-left" class="size-4"></i>
           </a>
+          <a th:href="@{/admin/import/{id}/export(id=${phieu.id})}" 
+             class="btn bg-green-500 text-white hover:bg-green-600 transition-all px-4 py-2 rounded flex items-center gap-2">
+            <i data-lucide="download" class="size-4"></i>
+            <span>Xuất Excel</span>
+          </a>
+          <a th:href="@{/admin/import/{id}/export-pdf(id=${phieu.id})}" 
+             class="btn bg-red-500 text-white hover:bg-red-600 transition-all px-4 py-2 rounded flex items-center gap-2">
+            <i data-lucide="file-text" class="size-4"></i>
+            <span>Xuất PDF</span>
+          </a>
         </div>
       </div>
 

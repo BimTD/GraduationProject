@@ -66,6 +66,6 @@ public class UserController {
         model.addAttribute("sanPhamNamTheoLoai", sanPhamNamTheoLoai);
         model.addAttribute("sanPhamNuTheoLoai", sanPhamNuTheoLoai);
 
-        return "user/home1";
+        return "user/home";
     }
 }

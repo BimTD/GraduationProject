@@ -12,7 +12,11 @@ import org.example.graduationproject.services.SanPhamService;
 import org.example.graduationproject.services.SanPhamBienTheService;
 import org.example.graduationproject.services.PhieuNhapHangService;
 import org.example.graduationproject.services.ChiTietPhieuNhapHangService;
+import org.example.graduationproject.services.ExcelExportService;
+import org.example.graduationproject.services.PdfExportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -49,6 +53,12 @@ public class ImportController {
     
     @Autowired
     private ChiTietPhieuNhapHangService chiTietPhieuNhapHangService;
+    
+    @Autowired
+    private ExcelExportService excelExportService;
+    
+    @Autowired
+    private PdfExportService pdfExportService;
 
     @GetMapping("/import")
     public String importPage(Model model,
@@ -233,5 +243,61 @@ public class ImportController {
             return authentication.getName();
         }
         return "Unknown";
+    }
+    
+    @GetMapping("/import/{id}/export")
+    public ResponseEntity<byte[]> exportImportDetailToExcel(@PathVariable("id") Integer id) {
+        try {
+            Optional<PhieuNhapHang> phieuOpt = phieuNhapHangService.findById(id);
+            if (phieuOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            PhieuNhapHang phieu = phieuOpt.get();
+            List<ChiTietPhieuNhapHang> details = chiTietPhieuNhapHangService.findByPhieuNhapHangId(id);
+            
+            byte[] excelContent = excelExportService.exportImportDetailToExcel(phieu, details);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", 
+                "phieu-nhap-" + phieu.getSoChungTu() + ".xlsx");
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(excelContent);
+                    
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    @GetMapping("/import/{id}/export-pdf")
+    public ResponseEntity<byte[]> exportImportDetailToPdf(@PathVariable("id") Integer id) {
+        try {
+            Optional<PhieuNhapHang> phieuOpt = phieuNhapHangService.findById(id);
+            if (phieuOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            PhieuNhapHang phieu = phieuOpt.get();
+            List<ChiTietPhieuNhapHang> details = chiTietPhieuNhapHangService.findByPhieuNhapHangId(id);
+            
+            byte[] pdfContent = pdfExportService.exportImportDetailToPdf(phieu, details);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", 
+                "phieu-nhap-" + phieu.getSoChungTu() + ".pdf");
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(pdfContent);
+                    
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
