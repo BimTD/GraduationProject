@@ -43,4 +43,7 @@ public interface SanPhamBienTheRepository extends JpaRepository<SanPhamBienThe, 
            "LEFT JOIN FETCH sz.loai " +
            "WHERE spbt.sanPham.ten LIKE %:search% OR spbt.mauSac.maMau LIKE %:search% OR spbt.size.tenSize LIKE %:search% OR spbt.sanPham.loai.ten LIKE %:search%")
     Page<SanPhamBienThe> searchByKeywordWithDetails(@Param("search") String search, Pageable pageable);
+    
+    // Phương thức mới để kiểm tra biến thể đã tồn tại
+    boolean existsBySanPhamIdAndMauSacIdAndSizeId(Integer sanPhamId, Integer mauSacId, Integer sizeId);
 }

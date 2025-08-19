@@ -1,5 +1,6 @@
 package org.example.graduationproject.controllers.admin;
 
+import org.example.graduationproject.dto.BulkProductVariantDTO;
 import org.example.graduationproject.dto.ProductVariantDTO;
 import org.example.graduationproject.models.*;
 import org.example.graduationproject.repositories.SanPhamRepository;
@@ -155,6 +156,66 @@ public class ProductVariantController {
             redirectAttributes.addFlashAttribute("success", "Variant product deleted successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
+        }
+
+        return "redirect:/admin/product-variant";
+    }
+    
+    // Thêm endpoint mới để hiển thị form tạo biến thể hàng loạt
+    @GetMapping("/product-variant/bulk-add")
+    public String bulkAddProductVariantForm(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        model.addAttribute("username", username);
+        model.addAttribute("currentPage", "product-variant");
+
+        List<SanPham> products = sanPhamRepository.findAll();
+
+        BulkProductVariantDTO bulkDTO = new BulkProductVariantDTO();
+        bulkDTO.setSoLuongTon(0);
+        
+        model.addAttribute("products", products);
+        model.addAttribute("bulkDTO", bulkDTO);
+
+        return "admin/bulk-product-variant";
+    }
+    
+    // Endpoint mới để lấy màu sắc và size phù hợp với sản phẩm (AJAX)
+    @GetMapping("/product-variant/get-available-options/{sanPhamId}")
+    @ResponseBody
+    public BulkProductVariantDTO getAvailableOptions(@PathVariable Integer sanPhamId) {
+        return sanPhamBienTheService.getAvailableColorsAndSizesForProduct(sanPhamId);
+    }
+    
+    // Endpoint để xử lý tạo biến thể hàng loạt
+    @PostMapping("/product-variant/bulk-add")
+    public String bulkAddProductVariant(@ModelAttribute BulkProductVariantDTO bulkDTO, RedirectAttributes redirectAttributes) {
+        try {
+            BulkProductVariantDTO.BulkCreateResult result = sanPhamBienTheService.createBulkProductVariantsWithResult(bulkDTO);
+            
+            // Tạo thông báo chi tiết
+            StringBuilder successMessage = new StringBuilder();
+            successMessage.append(result.getMessage()).append("\n");
+            
+            if (result.getCreatedNew() > 0) {
+                successMessage.append("\n✅ Biến thể được tạo mới:\n");
+                for (String variant : result.getCreatedVariants()) {
+                    successMessage.append("• ").append(variant).append("\n");
+                }
+            }
+            
+            if (result.getAlreadyExists() > 0) {
+                successMessage.append("\n⚠️ Biến thể đã tồn tại:\n");
+                for (String variant : result.getExistingVariants()) {
+                    successMessage.append("• ").append(variant).append("\n");
+                }
+            }
+            
+            redirectAttributes.addFlashAttribute("success", successMessage.toString());
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
         }
 
         return "redirect:/admin/product-variant";

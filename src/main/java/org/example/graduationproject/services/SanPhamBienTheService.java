@@ -1,5 +1,6 @@
 package org.example.graduationproject.services;
 
+import org.example.graduationproject.dto.BulkProductVariantDTO;
 import org.example.graduationproject.dto.ProductVariantDTO;
 import org.example.graduationproject.models.SanPhamBienThe;
 import org.springframework.data.domain.Page;
@@ -37,4 +38,16 @@ public interface SanPhamBienTheService {
     Optional<ProductVariantDTO> getProductVariantDTOById(Integer id);
     
     void deleteProductVariantById(Integer id);
+    
+    // Phương thức mới để tạo biến thể hàng loạt
+    List<SanPhamBienThe> createBulkProductVariants(BulkProductVariantDTO bulkDTO);
+    
+    // Phương thức mới để tạo biến thể hàng loạt và trả về kết quả chi tiết
+    BulkProductVariantDTO.BulkCreateResult createBulkProductVariantsWithResult(BulkProductVariantDTO bulkDTO);
+    
+    // Phương thức để kiểm tra biến thể đã tồn tại
+    boolean existsProductVariant(Integer sanPhamId, Integer mauSacId, Integer sizeId);
+    
+    // Phương thức mới để lấy màu sắc và size phù hợp với sản phẩm
+    BulkProductVariantDTO getAvailableColorsAndSizesForProduct(Integer sanPhamId);
 } 
