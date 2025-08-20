@@ -1,21 +1,23 @@
 package org.example.graduationproject.controllers.user;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.example.graduationproject.controllers.BaseController;
+import org.example.graduationproject.models.SanPham;
+import org.example.graduationproject.models.Loai;
+import org.example.graduationproject.services.SanPhamService;
+import org.example.graduationproject.services.LoaiService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.example.graduationproject.services.SanPhamService;
-import org.example.graduationproject.services.LoaiService;
-import org.example.graduationproject.models.SanPham;
-import org.example.graduationproject.models.Loai;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
 @Controller
-public class UserController {
+@RequestMapping("/home")
+public class UserController extends BaseController {
 
     @Autowired
     private SanPhamService sanPhamService;
@@ -23,27 +25,8 @@ public class UserController {
     @Autowired
     private LoaiService loaiService;
 
-    @GetMapping("/home")
+    @GetMapping
     public String homePage(Model model) {
-        // Xử lý authentication
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated() &&
-                !authentication.getName().equals("anonymousUser")) {
-
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof org.springframework.security.core.userdetails.UserDetails) {
-                model.addAttribute("username", ((org.springframework.security.core.userdetails.UserDetails) principal).getUsername());
-            } else if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User) {
-                model.addAttribute("username", ((org.springframework.security.oauth2.core.user.OAuth2User) principal).getAttribute("email"));
-            } else {
-                model.addAttribute("username", authentication.getName());
-            }
-            model.addAttribute("isAuthenticated", true);
-        } else {
-            model.addAttribute("isAuthenticated", false);
-        }
-
         // Lấy tất cả loại sản phẩm
         List<Loai> allLoai = loaiService.getAllLoai();
 
@@ -54,18 +37,22 @@ public class UserController {
         for (Loai loai : allLoai) {
             String tenLoai = loai.getTen().toLowerCase();
             
-            // Lấy sản phẩm nam theo loại
+            // Lấy sản phẩm nam theo loại (giới tính = 1)
             List<SanPham> spNamTheoLoai = sanPhamService.filterByCategoryAndGenderPaging(loai.getId(), 1, 0, 100).getContent();
             sanPhamNamTheoLoai.put(tenLoai, spNamTheoLoai);
             
-            // Lấy sản phẩm nữ theo loại
+            // Lấy sản phẩm nữ theo loại (giới tính = 2)
             List<SanPham> spNuTheoLoai = sanPhamService.filterByCategoryAndGenderPaging(loai.getId(), 2, 0, 100).getContent();
             sanPhamNuTheoLoai.put(tenLoai, spNuTheoLoai);
         }
         
         model.addAttribute("sanPhamNamTheoLoai", sanPhamNamTheoLoai);
         model.addAttribute("sanPhamNuTheoLoai", sanPhamNuTheoLoai);
-
+        
+        // Cũng cung cấp danh sách sản phẩm đơn giản
+        List<SanPham> products = sanPhamService.getAll();
+        model.addAttribute("products", products);
+        
         return "user/home";
     }
 }

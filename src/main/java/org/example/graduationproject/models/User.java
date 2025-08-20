@@ -40,6 +40,15 @@ public class User {
     @Column(name = "provider", columnDefinition = "NVARCHAR(50)")
     private String provider;
 
+    @Column(name = "ho_ten", columnDefinition = "NVARCHAR(255)")
+    private String hoTen;
+
+    @Column(name = "so_dien_thoai", columnDefinition = "NVARCHAR(20)")
+    private String soDienThoai;
+
+    @Column(name = "dia_chi", columnDefinition = "NVARCHAR(500)")
+    private String diaChi;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<UserRole> userRoles;
 }

@@ -9,29 +9,25 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "ChiTietHoaDon")
+@Table(name = "ChiTietGioHang")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChiTietHoaDon {
+public class ChiTietGioHang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer soLuong;
-
-    private BigDecimal thanhTien;
-
     @ManyToOne
-    @JoinColumn(name = "Id_HoaDon")
-    private HoaDon hoaDon;
+    @JoinColumn(name = "Id_GioHang")
+    private GioHang gioHang;
 
     @ManyToOne
     @JoinColumn(name = "Id_SanPhamBienThe")
     private SanPhamBienThe sanPhamBienThe;
+
+    private Integer soLuong;
+    private BigDecimal giaBan;
+    private BigDecimal thanhTien;
 }
-
-
-
-

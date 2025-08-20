@@ -48,7 +48,14 @@
   }
 
   function formatPrice(v){
-    try{ return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(v); }catch(e){ return v; }
+    try{ 
+      return new Intl.NumberFormat('vi-VN', { 
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0 
+      }).format(v) + ' VNĐ'; 
+    }catch(e){ 
+      return v + ' VNĐ'; 
+    }
   }
 
   function updateStock(){
@@ -134,6 +141,97 @@
       updateStock();
     });
   }
+
+  // Add to cart functionality
+  document.getElementById('qv-add').addEventListener('click', function() {
+    if (!qvData) {
+      alert('Vui lòng chọn sản phẩm');
+      return;
+    }
+
+    const sizeId = sizeEl.value;
+    const colorId = colorEl.value;
+    const quantity = parseInt(qtyEl.value);
+
+    if (!sizeId || !colorId) {
+      alert('Vui lòng chọn size và màu sắc');
+      return;
+    }
+
+    if (quantity <= 0) {
+      alert('Số lượng phải lớn hơn 0');
+      return;
+    }
+
+    // Tìm biến thể sản phẩm phù hợp
+    const variant = qvData.variants.find(v => 
+      String(v.sizeId) === String(sizeId) && String(v.colorId) === String(colorId)
+    );
+
+    if (!variant) {
+      alert('Không tìm thấy biến thể sản phẩm');
+      return;
+    }
+
+    if (quantity > variant.stock) {
+      alert('Số lượng vượt quá tồn kho');
+      return;
+    }
+
+    // Gửi request add to cart
+    const addToCartData = {
+      productId: variant.id, // Sử dụng ID của biến thể, không phải sản phẩm
+      sizeId: parseInt(sizeId),
+      colorId: parseInt(colorId),
+      quantity: quantity
+    };
+
+    fetch('/api/cart/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(addToCartData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message);
+        // Đóng modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modal_box'));
+        if (modal) {
+          modal.hide();
+        }
+        // Cập nhật số lượng giỏ hàng
+        updateCartCount();
+      } else {
+        alert(data.message || 'Có lỗi xảy ra');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Có lỗi xảy ra khi thêm vào giỏ hàng');
+    });
+  });
+
+  // Function to update cart count
+  function updateCartCount() {
+    fetch('/api/cart/count')
+      .then(response => response.json())
+      .then(data => {
+        // Cập nhật hiển thị số lượng giỏ hàng nếu có
+        const cartCountElement = document.querySelector('.cart_count');
+        if (cartCountElement) {
+          cartCountElement.textContent = data.count;
+        }
+      })
+      .catch(error => {
+        console.error('Error updating cart count:', error);
+      });
+  }
+
+  // Update cart count when page loads
+  updateCartCount();
 })();
 
 

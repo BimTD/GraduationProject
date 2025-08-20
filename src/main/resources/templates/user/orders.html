@@ -1,0 +1,173 @@
+<!doctype html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="user/fragments/head :: head">
+    <link rel="stylesheet" th:href="@{/fe/css/orders.css}">
+</head>
+
+<body>
+<!--header area start-->
+<header th:replace="user/fragments/header :: header"></header>
+<!--header area end-->
+
+<!--breadcrumbs area start-->
+<div class="breadcrumbs_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="/home">home</a></li>
+                        <li>Đơn hàng của tôi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs area end-->
+
+<!--orders area start -->
+<div class="orders_area">
+    <div class="container">
+        <div class="orders_container">
+            <style>
+                .orders_area { margin-top: 24px; margin-bottom: 64px; }
+            </style>
+            <div class="orders_header">
+                <h2>Đơn hàng của tôi</h2>
+                <p>Xem lịch sử và trạng thái các đơn hàng của bạn</p>
+            </div>
+            
+            <style>
+                .orders_table .table { width: 100%; border-collapse: collapse; }
+                .orders_table th, .orders_table td { padding: 8px 10px; border-bottom: 1px solid #eee; white-space: nowrap; }
+                .orders_table thead th { font-weight: 600; background: #fafafa; }
+                .orders_table .status-badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; display: inline-block; }
+                .orders_table .btn-xs { padding: 4px 8px; font-size: 12px; line-height: 1; }
+                .table-responsive { overflow-x: auto; }
+            </style>
+
+            <div class="orders_table" th:if="${orders != null and !orders.isEmpty()}">
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã</th>
+                                <th>Ngày đặt</th>
+                                <th>Trạng thái</th>
+                                <th>Số SP</th>
+                                <th>Tổng</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${orders}">
+                                <td>
+                                    <a th:href="@{'/orders/' + ${order.id}}" th:text="'#' + ${order.id}">#123</a>
+                                </td>
+                                <td th:text="${#temporals.format(order.ngayTao, 'dd/MM/yyyy HH:mm')}">01/01/2024</td>
+                                <td>
+                                    <span class="status-badge" th:class="${'status-' + #strings.toLowerCase(order.trangThai)}" th:text="${order.trangThai}">PENDING</span>
+                                </td>
+                                <td th:text="${order.chiTietHoaDons != null ? order.chiTietHoaDons.size() : 0}">2</td>
+                                <td th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">500,000 VNĐ</td>
+                                <td>
+                                    <a th:href="@{'/orders/' + ${order.id}}" class="btn btn-view btn-xs" title="Xem chi tiết">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <button th:if="${order.trangThai == 'PENDING'}" th:onclick="'cancelOrder(' + ${order.id} + ')'" class="btn btn-cancel btn-xs" title="Hủy đơn hàng">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="empty_orders" th:if="${orders == null or orders.isEmpty()}">
+                <i class="fa fa-shopping-bag"></i>
+                <h3>Bạn chưa có đơn hàng nào</h3>
+                <p>Hãy mua sắm và tạo đơn hàng đầu tiên của bạn!</p>
+                <a href="/home" class="btn btn-primary">Mua sắm ngay</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--orders area end -->
+
+<!--footer area start-->
+<footer th:replace="user/fragments/footer :: footer"></footer>
+<!--footer area end-->
+
+<script th:src="@{fe/js/plugins.js}"></script>
+<script th:src="@{fe/js/main.js}"></script>
+<script>
+// Hàm hủy đơn hàng
+function cancelOrder(orderId) {
+    if (confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
+        fetch(`/orders/${orderId}/cancel`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(data.message, 'success');
+                // Reload trang sau 1 giây
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Có lỗi xảy ra khi hủy đơn hàng', 'error');
+        });
+    }
+}
+
+// Hàm hiển thị thông báo
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-message">${message}</span>
+            <button class="notification-close">&times;</button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
+    
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', () => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    });
+}
+</script>
+</body>
+</html>

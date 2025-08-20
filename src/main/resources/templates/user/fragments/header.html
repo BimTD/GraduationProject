@@ -40,7 +40,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-3 col-md-5">
                     <div class="logo">
-                        <a href="#"><img th:src="@{/fe/img/logo/logo.png}" alt=""></a>
+                        <a th:href="@{/home}"><img th:src="@{/fe/img/logo/logo.png}" alt=""></a>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12">
@@ -67,15 +67,19 @@
                 <div class="col-lg-3 col-md-6 offset-md-6 offset-lg-0">
                     <div class="cart_area">
                         <div class="middel_links">
-                            <ul>
-                                <li><a href="#">Login</a></li>
+                            <ul th:if="${!isAuthenticated}">
+                                <li><a th:href="@{/login}">Login</a></li>
                                 <li>/</li>
-                                <li><a href="#">Register</a></li>
+                                <li><a th:href="@{/register}">Register</a></li>
                             </ul>
-
+                            <ul th:if="${isAuthenticated}">
+                                <li><span th:text="${username}">Xin chào, User</span></li>
+                                <li>/</li>
+                                <li><a th:href="@{/logout}" style="color: #ff4444;">Logout</a></li>
+                            </ul>
                         </div>
                         <div class="cart_link">
-                            <a href="#"><i class="fa fa-shopping-basket"></i>Cart</a>
+                            <a th:href="@{/cart}"><i class="fa fa-shopping-basket"></i>Cart <span class="cart_count" th:if="${isAuthenticated}">0</span></a>
                         </div>
                     </div>
                 </div>
@@ -94,15 +98,10 @@
                             <div class="main_menu">
                                 <nav>
                                     <ul>
-                                        <li class="active"><a href="#">Home</a>
-
-                                        </li>
-                                        <li class="mega_items"><a href="#">shop</a>
-
-                                        </li>
-                                        <li><a href="#">blog</a>
-
-                                        </li>
+                                        <li class="active"><a th:href="@{/home}">Home</a></li>
+                                        <li><a th:href="@{/home}">Shop</a></li>
+                                        <li th:if="${isAuthenticated}"><a th:href="@{/orders}">Đơn hàng</a></li>
+                                        <li><a href="#">Blog</a></li>
                                         <li><a href="#">About us</a></li>
                                         <li><a href="#">Contact Us</a></li>
                                     </ul>

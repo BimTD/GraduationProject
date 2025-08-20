@@ -1,0 +1,219 @@
+    <!doctype html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="user/fragments/head :: head">
+    <link rel="stylesheet" th:href="@{/fe/css/order-detail.css}">
+</head>
+
+<body>
+<!--header area start-->
+<header th:replace="user/fragments/header :: header"></header>
+<!--header area end-->
+
+<!--breadcrumbs area start-->
+<div class="breadcrumbs_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="/home">home</a></li>
+                        <li><a href="/orders">Đơn hàng</a></li>
+                        <li>Chi tiết đơn hàng #<span th:text="${order.id}">123</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs area end-->
+
+<!--order detail area start -->
+<div class="order_detail_area">
+    <div class="container">
+        <div class="order_detail_container">
+            <style>
+                .order_detail_area { margin-top: 24px; margin-bottom: 64px; }
+            </style>
+            <div class="order_detail_header">
+                <h2>Chi tiết đơn hàng</h2>
+                <p>Thông tin chi tiết về đơn hàng #<span th:text="${order.id}">123</span></p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="order_items_section">
+                        <div style="margin: 16px 0;" class="section_header">
+                            <h3 style="font-size: 20px">SẢN PHẨM ĐÃ ĐẶT</h3>
+                        </div>
+                        <style>
+                            .order_items_table .table { width: 100%; border-collapse: collapse; }
+                            .order_items_table th, .order_items_table td { padding: 8px 10px; border-bottom: 1px solid #eee; }
+                            .order_items_table thead th { font-weight: 600; background: #fafafa; }
+                            .table-responsive { overflow-x: auto; }
+                        </style>
+                        <div class="order_items_table table-responsive" th:if="${order.chiTietHoaDons != null and !order.chiTietHoaDons.isEmpty()}">
+                            <table class="table table-sm table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th>Size</th>
+                                        <th>Màu</th>
+                                        <th>SL</th>
+                                        <th>Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${order.chiTietHoaDons}">
+                                        <td>
+                                            <div style="display:flex;align-items:center;gap:8px;min-width:220px;">
+                                                <img th:if="${item.sanPhamBienThe.sanPham.images != null and !item.sanPhamBienThe.sanPham.images.isEmpty()}" 
+                                                     th:src="${item.sanPhamBienThe.sanPham.images[0].imageName}" 
+                                                     th:alt="${item.sanPhamBienThe.sanPham.ten}"
+                                                     style="width:40px;height:40px;object-fit:cover;border-radius:4px;">
+                                                <span th:text="${item.sanPhamBienThe.sanPham.ten}">Tên sản phẩm</span>
+                                            </div>
+                                        </td>
+                                        <td th:text="${item.sanPhamBienThe.size.tenSize}">M</td>
+                                        <td th:text="${item.sanPhamBienThe.mauSac.maMau}">Đỏ</td>
+                                        <td th:text="${item.soLuong}">1</td>
+                                        <td th:text="${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">100,000 VNĐ</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="order_summary">
+                        <style>
+                            .order_summary .summary_card { border: 1px solid #eee; border-radius: 8px; background: #fff; padding: 12px; }
+                            .order_summary .summary_header h3 { font-size: 16px; margin: 0 0 8px; font-weight: 600; }
+                            .order_summary .summary_row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 14px; }
+                            .order_summary .summary_label { color: #666; }
+                            .order_summary .summary_total { display: flex; justify-content: space-between; padding-top: 8px; font-weight: 600; font-size: 15px; }
+                            .order_summary .summary_amount { color: #111; }
+                            .order_summary .summary_actions .btn-block { width: 100%; margin-top: 8px; }
+                            .order_summary .summary_divider { border: 0; border-top: 1px dashed #e5e5e5; margin: 8px 0; }
+                        </style>
+                        <div class="summary_card">
+                            <div class="summary_header">
+                                <h3>THÔNG TIN ĐƠN HÀNG</h3>
+                            </div>
+                            <div class="summary_body">
+                                <div class="summary_row">
+                                    <span class="summary_label">Mã đơn</span>
+                                    <span class="summary_value" th:text="'#' + ${order.id}">#123</span>
+                                </div>
+                                <div class="summary_row">
+                                    <span class="summary_label">Ngày đặt</span>
+                                    <span class="summary_value" th:text="${#temporals.format(order.ngayTao, 'dd/MM/yyyy HH:mm')}">01/01/2024</span>
+                                </div>
+                                <div class="summary_row">
+                                    <span class="summary_label">Trạng thái</span>
+                                    <span class="summary_value">
+                                        <span class="status-badge" th:class="${'status-' + #strings.toLowerCase(order.trangThai)}" th:text="${order.trangThai}">PENDING</span>
+                                    </span>
+                                </div>
+                                <div class="summary_row">
+                                    <span class="summary_label">Thanh toán</span>
+                                    <span class="summary_value" th:text="${order.loaiThanhToan}">Tiền mặt</span>
+                                </div>
+                                <hr class="summary_divider" />
+                                <div class="summary_total">
+                                    <span class="summary_label">Tổng tiền</span>
+                                    <span class="summary_amount" th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">500,000 VNĐ</span>
+                                </div>
+                            </div>
+                            <div class="summary_actions">
+                                <a href="/orders" class="btn btn-outline-primary btn-block">
+                                    <i class="fa fa-arrow-left"></i> Quay lại danh sách
+                                </a>
+                                <button th:if="${order.trangThai == 'PENDING'}" th:onclick="'cancelOrder(' + ${order.id} + ')'" class="btn btn-outline-danger btn-block">
+                                    <i class="fa fa-times"></i> Hủy đơn hàng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--order detail area end -->
+
+<!--footer area start-->
+<footer th:replace="user/fragments/footer :: footer"></footer>
+<!--footer area end-->
+
+<script th:src="@{fe/js/plugins.js}"></script>
+<script th:src="@{fe/js/main.js}"></script>
+<script>
+// Hàm hủy đơn hàng
+function cancelOrder(orderId) {
+    if (confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
+        fetch(`/orders/${orderId}/cancel`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(data.message, 'success');
+                // Reload trang sau 1 giây
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Có lỗi xảy ra khi hủy đơn hàng', 'error');
+        });
+    }
+}
+
+// Hàm hiển thị thông báo
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-message">${message}</span>
+            <button class="notification-close">&times;</button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
+    
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', () => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    });
+}
+</script>
+</body>
+</html>

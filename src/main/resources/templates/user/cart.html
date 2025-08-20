@@ -1,0 +1,613 @@
+<!doctype html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="user/fragments/head :: head">
+</head>
+
+<body>
+<!--header area start-->
+<header th:fragment="header" class="header_area">
+    <!--header top start-->
+    <div class="header_top">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 col-md-12">
+                    <div class="welcome_text">
+                        <ul>
+                            <li>Free shipping on orders over 100,000 VND</li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-12">
+                    <div class="top_right text-right">
+                        <ul>
+                            <li class="top_links"><a href="#">Account<i class="ion-chevron-down"></i></a>
+
+                            </li>
+                            <li class="language"><a href="#">Language<i class="ion-chevron-down"></i></a>
+                                <ul class="dropdown_language">
+                                    <li><a href="#">Vietnamese</a></li>
+                                    <li><a href="#">English</a></li>
+                                </ul>
+                            </li>
+                            <li class="currency"><a href="#">Suport</a>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--header top start-->
+
+    <!--header middel start-->
+    <div class="header_middel">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-3 col-md-5">
+                    <div class="logo">
+                        <a href="#"><img th:src="@{/fe/img/logo/logo.png}" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="search_bar">
+                        <form action="#">
+                            <select class="select_option" name="select">
+                                <option selected value="1">All Categories</option>
+                                <option  value="2">Accessories</option>
+                                <option  value="3">Bridge</option>
+                                <option  value="4">Hub</option>
+                                <option  value="5">Repeater</option>
+                                <option  value="6">Switch</option>
+                                <option  value="7">Video Games</option>
+                                <option  value="8">PlayStation 3</option>
+                                <option  value="9">PlayStation 4</option>
+                                <option  value="10">Xbox 360</option>
+                                <option  value="11">Xbox One</option>
+                            </select>
+                            <input placeholder="Search entire store here..." type="text">
+                            <button type="submit"><i class="ion-ios-search-strong"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 offset-md-6 offset-lg-0">
+                    <div class="cart_area">
+                        <div class="middel_links">
+                            <ul th:if="${!isAuthenticated}">
+                                <li><a th:href="@{/login}">Login</a></li>
+                                <li>/</li>
+                                <li><a th:href="@{/register}">Register</a></li>
+                            </ul>
+                            <ul th:if="${isAuthenticated}">
+                                <li><span th:text="${username}">Xin chào, User</span></li>
+                                <li>/</li>
+                                <li><a th:href="@{/logout}" style="color: #ff4444;">Logout</a></li>
+                            </ul>
+                        </div>
+                        <div class="cart_link">
+                            <a href="/cart"><i class="fa fa-shopping-basket"></i>Cart <span class="cart_count" th:if="${isAuthenticated}">0</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--header middel end-->
+
+    <!--header bottom satrt-->
+    <div class="header_bottom sticky-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12">
+                    <div class="header_static">
+                        <div class="main_menu_inner">
+                            <div class="main_menu">
+                                <nav>
+                                    <ul>
+                                        <li class="active"><a href="#">Home</a>
+
+                                        </li>
+                                        <li class="mega_items"><a href="#">shop</a>
+
+                                        </li>
+                                        <li><a href="#">blog</a>
+
+                                        </li>
+                                        <li><a href="#">About us</a></li>
+                                        <li><a href="#">Contact Us</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+
+                        <div class="contact_phone">
+                            <p>Call Free Support: <a href="tel:0982172169">0982172169</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--header bottom end-->
+</header>
+<!--header area end-->
+
+<!--breadcrumbs area start-->
+<div class="breadcrumbs_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="/home">home</a></li>
+                        <li>Giỏ hàng</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs area end-->
+
+<!--shopping cart area start -->
+<div class="shopping_cart_area mt-60">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="table_desc">
+                    <div class="cart_page table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="product_remove">Xóa</th>
+                                    <th class="product_thumb">Hình ảnh</th>
+                                    <th class="product_name">Sản phẩm</th>
+                                    <th class="product-price">Giá</th>
+                                    <th class="product_quantity">Số lượng</th>
+                                    <th class="product_total">Tổng tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody th:if="${cart != null and cart.chiTietGioHangs != null and !cart.chiTietGioHangs.isEmpty()}">
+                                <tr th:each="item : ${cart.chiTietGioHangs}" th:attr="data-item-id=${item.id}">
+                                    <td class="product_remove">
+                                        <a href="#" class="remove-item" th:attr="data-item-id=${item.id}">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                    <td class="product_thumb">
+                                        <a th:href="@{'/product-details/' + ${item.sanPhamBienThe.sanPham.id}}">
+                                            <img th:if="${item.sanPhamBienThe.sanPham.images != null and !item.sanPhamBienThe.sanPham.images.isEmpty()}" 
+                                                 th:src="${item.sanPhamBienThe.sanPham.images[0].imageName}" 
+                                                 th:alt="${item.sanPhamBienThe.sanPham.ten}" style="width: 80px; height: 80px; object-fit: cover;">
+                                        </a>
+                                    </td>
+                                    <td class="product_name">
+                                        <a th:href="@{'/product-details/' + ${item.sanPhamBienThe.sanPham.id}}" 
+                                           th:text="${item.sanPhamBienThe.sanPham.ten}"></a>
+                                        <br>
+                                        <small>
+                                            Size: <span th:text="${item.sanPhamBienThe.size.tenSize}"></span> | 
+                                            Màu: <span th:text="${item.sanPhamBienThe.mauSac.maMau}"></span>
+                                        </small>
+                                    </td>
+                                    <td class="product-price">
+                                        <span th:text="${#numbers.formatDecimal(item.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                                    </td>
+                                    <td class="product_quantity">
+                                        <input type="number" th:value="${item.soLuong}" min="1" 
+                                               th:max="${item.sanPhamBienThe.soLuongTon}" 
+                                               class="quantity-input" 
+                                               th:attr="data-item-id=${item.id}">
+                                    </td>
+                                    <td class="product_total">
+                                        <span th:text="${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tbody th:if="${cart == null or cart.chiTietGioHangs == null or cart.chiTietGioHangs.isEmpty()}" id="empty-cart-body">
+                                <tr>
+                                    <td colspan="6" class="text-center" >
+                                        <p>Giỏ hàng trống</p>
+                                        <a style="background: #ff6a28; color: white" href="/home" class="btn btn-primary">Tiếp tục mua sắm</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--shopping cart area start -->
+        <div class="coupon_area" th:if="${cart != null and cart.chiTietGioHangs != null and !cart.chiTietGioHangs.isEmpty()}">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="coupon_code left">
+                        <h3 style="color: white">Mã giảm giá</h3>
+                        <div class="coupon_inner">
+                            <p>Nhập mã giảm giá nếu bạn có</p>
+                            <input placeholder="Mã giảm giá" type="text">
+                            <button type="submit">Áp dụng</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="coupon_code right">
+                        <h3 style="color: white">Tổng giỏ hàng</h3>
+                        <div class="coupon_inner">
+                            <div class="cart_subtotal">
+                                <p>Tổng tiền <span th:text="${#numbers.formatDecimal(#aggregates.sum(cart.chiTietGioHangs.![thanhTien]), 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span></p>
+                            </div>
+                            <div class="cart_total">
+                                <p>Tổng cộng <span th:text="${#numbers.formatDecimal(#aggregates.sum(cart.chiTietGioHangs.![thanhTien]), 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span></p>
+                            </div>
+                            <div class="checkout_btn">
+                                <a href="/checkout" class="btn btn-primary">Thanh toán</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--shopping cart area end -->
+
+<!--footer area start-->
+<footer th:replace="user/fragments/footer :: footer"></footer>
+<!--footer area end-->
+
+<script th:src="@{fe/js/plugins.js}"></script>
+<script th:src="@{fe/js/main.js}"></script>
+<script>
+// ===== GLOBAL FUNCTIONS =====
+
+// Hàm hiển thị thông báo
+function showNotification(message, type) {
+    // Tạo notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-message">${message}</span>
+            <button class="notification-close">&times;</button>
+        </div>
+    `;
+    
+    // Thêm vào body
+    document.body.appendChild(notification);
+    
+    // Hiển thị notification
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    // Tự động ẩn sau 3 giây
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+    
+    // Xử lý nút đóng
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', () => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    });
+}
+
+// Hàm format tiền tệ
+function formatCurrency(amount) {
+    if (isNaN(amount) || amount <= 0) {
+        return '0 VNĐ';
+    }
+    return new Intl.NumberFormat('vi-VN', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(amount) + ' VNĐ';
+}
+
+// Hàm cập nhật thành tiền của một item
+function updateItemTotal(itemId, quantity) {
+    const row = document.querySelector(`tr[data-item-id="${itemId}"]`);
+    if (row) {
+        const priceElement = row.querySelector('.product-price span');
+        const totalElement = row.querySelector('.product_total span');
+        
+        if (priceElement && totalElement) {
+            // Lấy giá từ text content của span trong td.product-price
+            const priceText = priceElement.textContent;
+            const price = parseFloat(priceText.replace(/[^\d]/g, ''));
+            
+            console.log('Price text:', priceText); // Debug log
+            console.log('Parsed price:', price); // Debug log
+            console.log('Quantity:', quantity); // Debug log
+            
+            if (!isNaN(price)) {
+                const total = price * quantity;
+                totalElement.textContent = formatCurrency(total);
+                console.log('New total:', total); // Debug log
+                
+                // Force DOM update
+                totalElement.style.display = 'none';
+                totalElement.offsetHeight; // Trigger reflow
+                totalElement.style.display = '';
+            }
+        }
+    }
+}
+
+// Hàm xóa row khỏi bảng
+function removeCartRow(itemId) {
+    const row = document.querySelector(`tr[data-item-id="${itemId}"]`);
+    if (row) {
+        // Thêm class để trigger animation
+        row.classList.add('removing');
+        row.style.animation = 'fadeOut 0.3s ease';
+        
+        setTimeout(() => {
+            if (row.parentNode) {
+                row.parentNode.removeChild(row);
+                // Cập nhật UI ngay lập tức
+                updateCartTotal();
+                checkEmptyCart();
+            }
+        }, 300);
+    }
+}
+
+// Hàm cập nhật tổng tiền giỏ hàng
+function updateCartTotal() {
+    const totalElements = document.querySelectorAll('.product_total span');
+    let total = 0;
+    
+    totalElements.forEach(element => {
+        const priceText = element.textContent;
+        const price = parseFloat(priceText.replace(/[^\d]/g, ''));
+        if (!isNaN(price)) {
+            total += price;
+        }
+    });
+    
+    console.log('Calculating total from elements:', totalElements.length);
+    console.log('Total calculated:', total);
+    
+    // Cập nhật tổng tiền
+    const subtotalElement = document.querySelector('.cart_subtotal span');
+    const totalElement = document.querySelector('.cart_total span');
+    
+    if (subtotalElement) {
+        subtotalElement.textContent = formatCurrency(total);
+        console.log('Updated subtotal:', subtotalElement.textContent);
+    }
+    if (totalElement) {
+        totalElement.textContent = formatCurrency(total);
+        console.log('Updated total:', totalElement.textContent);
+    }
+    
+    // Cập nhật số lượng item trong header cart count
+    updateCartCount();
+}
+
+// Hàm cập nhật số lượng item trong header
+function updateCartCount() {
+    const rows = document.querySelectorAll('tbody tr[data-item-id]');
+    const cartCountElement = document.querySelector('.cart_count');
+    if (cartCountElement) {
+        cartCountElement.textContent = rows.length;
+        console.log('Updated cart count:', rows.length);
+    }
+}
+
+// Hàm kiểm tra giỏ hàng trống
+function checkEmptyCart() {
+    const rows = document.querySelectorAll('tbody tr[data-item-id]');
+    console.log('Checking empty cart, current rows:', rows.length);
+    
+    if (rows.length === 0) {
+        // Hiển thị thông báo giỏ hàng trống
+        const tbody = document.querySelector('tbody');
+        if (tbody) {
+            // Xóa tất cả rows hiện tại
+            const existingRows = tbody.querySelectorAll('tr');
+            existingRows.forEach(row => row.remove());
+            
+            // Thêm row giỏ hàng trống
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = `
+                <td colspan="6" class="text-center">
+                    <p>Giỏ hàng trống</p>
+                    <a href="/home" class="btn btn-primary">Tiếp tục mua sắm</a>
+                </td>
+            `;
+            tbody.appendChild(emptyRow);
+        }
+        
+        // Ẩn phần coupon và tổng tiền
+        const couponArea = document.querySelector('.coupon_area');
+        if (couponArea) {
+            couponArea.style.display = 'none';
+        }
+    }
+}
+
+// ===== EVENT LISTENERS =====
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, setting up event listeners...');
+    
+    // Xử lý cập nhật số lượng
+    document.querySelectorAll('.quantity-input').forEach(function(input) {
+        input.addEventListener('change', function() {
+            const itemId = this.getAttribute('data-item-id');
+            const quantity = parseInt(this.value);
+            
+            if (quantity > 0) {
+                updateCartItemQuantity(itemId, quantity);
+            } else {
+                showNotification('Số lượng phải lớn hơn 0', 'error');
+                this.value = 1; // Reset về 1 nếu nhập sai
+            }
+        });
+        
+        // Xử lý khi người dùng nhập trực tiếp
+        input.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            if (value <= 0) {
+                this.style.borderColor = '#dc3545';
+            } else {
+                this.style.borderColor = '#ddd';
+            }
+        });
+    });
+
+    // Xử lý xóa item
+    document.querySelectorAll('.remove-item').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const itemId = this.getAttribute('data-item-id');
+            if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+                removeCartItem(itemId);
+            }
+        });
+    });
+    
+    console.log('Event listeners set up successfully');
+});
+
+// ===== API FUNCTIONS =====
+
+function updateCartItemQuantity(itemId, quantity) {
+    console.log('Updating cart item quantity:', itemId, quantity);
+    
+    // Đảm bảo itemId và quantity là số
+    const numericItemId = parseInt(itemId);
+    const numericQuantity = parseInt(quantity);
+    
+    if (isNaN(numericItemId) || isNaN(numericQuantity)) {
+        showNotification('Dữ liệu không hợp lệ', 'error');
+        return;
+    }
+    
+    // Hiển thị loading
+    const input = document.querySelector(`input[data-item-id="${itemId}"]`);
+    if (input) {
+        input.disabled = true;
+        input.style.opacity = '0.6';
+    }
+    
+    fetch('/api/cart/update-quantity', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            itemId: numericItemId,
+            quantity: numericQuantity
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Update response:', data);
+        
+        if (data.success) {
+            // Hiển thị thông báo thành công
+            showNotification('Cập nhật số lượng thành công!', 'success');
+            
+            // Cập nhật thành tiền của item này
+            updateItemTotal(itemId, numericQuantity);
+            
+            // Cập nhật tổng tiền giỏ hàng
+            updateCartTotal();
+            
+            // Reset input
+            if (input) {
+                input.disabled = false;
+                input.style.opacity = '1';
+            }
+        } else {
+            showNotification(data.message || 'Có lỗi xảy ra', 'error');
+            // Reset input về giá trị cũ
+            if (input) {
+                input.disabled = false;
+                input.style.opacity = '1';
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Có lỗi xảy ra khi cập nhật số lượng', 'error');
+        // Reset input
+        if (input) {
+            input.disabled = false;
+            input.style.opacity = '1';
+        }
+    });
+}
+
+function removeCartItem(itemId) {
+    console.log('Removing cart item:', itemId);
+    
+    // Đảm bảo itemId là số
+    const numericItemId = parseInt(itemId);
+    
+    if (isNaN(numericItemId)) {
+        showNotification('ID sản phẩm không hợp lệ', 'error');
+        return;
+    }
+    
+    // Hiển thị loading
+    const removeLink = document.querySelector(`a[data-item-id="${itemId}"]`);
+    if (removeLink) {
+        removeLink.style.pointerEvents = 'none';
+        removeLink.style.opacity = '0.6';
+    }
+    
+    fetch('/api/cart/remove', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            itemId: numericItemId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Remove response:', data);
+        
+        if (data.success) {
+            showNotification('Đã xóa sản phẩm khỏi giỏ hàng!', 'success');
+            
+            // Xóa row khỏi bảng
+            removeCartRow(itemId);
+        } else {
+            showNotification(data.message || 'Có lỗi xảy ra', 'error');
+            // Reset link
+            if (removeLink) {
+                removeLink.style.pointerEvents = 'auto';
+                removeLink.style.opacity = '1';
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Có lỗi xảy ra khi xóa sản phẩm', 'error');
+        // Reset link
+        if (removeLink) {
+            removeLink.style.pointerEvents = 'auto';
+            removeLink.style.opacity = '1';
+        }
+    });
+}
+</script>
+</body>
+</html>

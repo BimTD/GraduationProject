@@ -15,9 +15,117 @@
 
 <body>
 <!--header area start-->
-<header th:replace="user/fragments/header :: header"></header>
+<header class="header_area">
+    <!--header top start-->
+    <div class="header_top">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 col-md-12">
+                    <div class="welcome_text">
+                        <ul>
+                            <li>Free shipping on orders over 100,000 VNĐ</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-12">
+                    <div class="top_right text-right">
+                        <ul>
+                            <li class="top_links"><a href="#">Account<i class="ion-chevron-down"></i></a></li>
+                            <li class="language"><a href="#">Language<i class="ion-chevron-down"></i></a>
+                                <ul class="dropdown_language">
+                                    <li><a href="#">Vietnamese</a></li>
+                                    <li><a href="#">English</a></li>
+                                </ul>
+                            </li>
+                            <li class="currency"><a href="#">Suport</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--header top start-->
+
+    <!--header middel start-->
+    <div class="header_middel">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-3 col-md-5">
+                    <div class="logo">
+                        <a href="/home"><img th:src="@{/fe/img/logo/logo.png}" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="search_bar">
+                        <form action="#">
+                            <select class="select_option" name="select">
+                                <option selected value="1">All Categories</option>
+                                <option value="2">Accessories</option>
+                                <option value="3">Bridge</option>
+                                <option value="4">Hub</option>
+                                <option value="5">Repeater</option>
+                                <option value="6">Switch</option>
+                                <option value="7">Video Games</option>
+                                <option value="8">PlayStation 3</option>
+                                <option value="9">PlayStation 4</option>
+                                <option value="10">Xbox 360</option>
+                                <option value="11">Xbox One</option>
+                            </select>
+                            <input placeholder="Search entire store here..." type="text">
+                            <button type="submit"><i class="ion-ios-search-strong"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 offset-md-6 offset-lg-0">
+                    <div class="cart_area">
+                        <div class="middel_links">
+                            <ul>
+                                <li><a th:href="@{/login}">Login</a></li>
+                                <li>/</li>
+                                <li><a th:href="@{/register}">Register</a></li>
+                            </ul>
+                        </div>
+                        <div class="cart_link">
+                            <a href="/home"><i class="fa fa-home"></i>Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--header middel end-->
+
+    <!--header bottom satrt-->
+    <div class="header_bottom sticky-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12">
+                    <div class="header_static">
+                        <div class="main_menu_inner">
+                            <div class="main_menu">
+                                <nav>
+                                    <ul>
+                                        <li><a th:href="@{/home}">Home</a></li>
+                                        <li><a th:href="@{/home}">Shop</a></li>
+                                        <li><a href="#">Blog</a></li>
+                                        <li><a href="#">About us</a></li>
+                                        <li><a href="#">Contact Us</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+
+                        <div class="contact_phone">
+                            <p>Call Free Support: <a href="tel:0982172169">0982172169</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--header bottom end-->
+</header>
 <!--header area end-->
-<hr>
 
 <!--breadcrumbs area start-->
 <div class="breadcrumbs_area other_bread">
@@ -26,7 +134,7 @@
             <div class="col-12">
                 <div class="breadcrumb_content">
                     <ul>
-                        <li><a href="#">home</a></li>
+                        <li><a th:href="@{/home}">home</a></li>
                         <li>/</li>
                         <li>login</li>
                     </ul>
@@ -48,11 +156,11 @@
                     <form th:action="@{/login}" method="post">
                         <p>
                             <label>Username <span>*</span></label>
-                            <input type="text" name="username" />
+                            <input type="text" name="username" required />
                         </p>
                         <p>
                             <label>Passwords <span>*</span></label>
-                            <input type="password" name="password" />
+                            <input type="password" name="password" required />
                         </p>
                         <div class="login_submit">
                             <a href="#">Lost your password?</a>
@@ -61,10 +169,9 @@
                                 Remember me
                             </label>
                             <button type="submit">login</button>
-
                         </div>
-                        <div th:if="${error}" th:text="${error}" style="color:red"></div>
-                        <div th:if="${message}" th:text="${message}" style="color:green"></div>
+                        <div th:if="${error}" th:text="${error}" style="color:red; margin-top: 10px; text-align: center;"></div>
+                        <div th:if="${message}" th:text="${message}" style="color:green; margin-top: 10px; text-align: center;"></div>
                     </form>
                 </div>
             </div>
@@ -102,7 +209,6 @@
     </div>
 </div>
 <!--login end-->
-<hr>
 
 <!--footer area start-->
 <footer th:replace="user/fragments/footer :: footer"></footer>

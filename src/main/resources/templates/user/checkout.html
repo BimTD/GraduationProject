@@ -1,0 +1,332 @@
+<!doctype html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="user/fragments/head :: head"></head>
+
+<body>
+<!--header area start-->
+<header th:replace="user/fragments/header :: header"></header>
+<!--header area end-->
+
+<!--breadcrumbs area start-->
+<div class="breadcrumbs_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="/home">home</a></li>
+                        <li><a href="/cart">Giỏ hàng</a></li>
+                        <li>Thanh toán</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs area end-->
+
+<!--checkout area start -->
+<div class="checkout_area">
+    <div class="container">
+        <div class="checkout_container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="billing_details">
+                        <div class="billing_header">
+                            <h3>THÔNG TIN THANH TOÁN</h3>
+                        </div>
+                        <form id="checkout-form">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Họ <span>*</span></label>
+                                        <input type="text" id="ho" name="ho" 
+                                               th:value="${user.hoTen != null ? user.hoTen.split(' ')[0] : ''}" 
+                                               placeholder="Nhập họ" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Tên <span>*</span></label>
+                                        <input type="text" id="ten" name="ten" 
+                                               th:value="${user.hoTen != null ? user.hoTen.split(' ').length > 1 ? user.hoTen.split(' ')[1] : '' : ''}" 
+                                               placeholder="Nhập tên" required>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>Tên công ty</label>
+                                        <input type="text" id="tenCongTy" name="tenCongTy" 
+                                               placeholder="Nhập tên công ty (không bắt buộc)">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>Quốc gia <span>*</span></label>
+                                        <select id="quocGia" name="quocGia" required>
+                                            <option value="Vietnam" selected>Việt Nam</option>
+                                            <option value="USA">Hoa Kỳ</option>
+                                            <option value="UK">Anh</option>
+                                            <option value="Japan">Nhật Bản</option>
+                                            <option value="Korea">Hàn Quốc</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>Địa chỉ <span>*</span></label>
+                                        <input type="text" id="diaChi1" name="diaChi1" 
+                                               th:value="${user.diaChi}" 
+                                               placeholder="Số nhà và tên đường" required>
+                                        <input type="text" id="diaChi2" name="diaChi2" 
+                                               placeholder="Căn hộ, phòng, đơn vị (không bắt buộc)" 
+                                               style="margin-top: 10px;">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Thành phố <span>*</span></label>
+                                        <input type="text" id="thanhPho" name="thanhPho" 
+                                               placeholder="Nhập thành phố" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Tỉnh / Huyện <span>*</span></label>
+                                        <input type="text" id="tinhHuyen" name="tinhHuyen" 
+                                               placeholder="Nhập tỉnh/huyện" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Số điện thoại <span>*</span></label>
+                                        <input type="tel" id="soDienThoai" name="soDienThoai" 
+                                               th:value="${user.soDienThoai}" 
+                                               placeholder="Nhập số điện thoại" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Email <span>*</span></label>
+                                        <input type="email" id="email" name="email" 
+                                               th:value="${user.email}" 
+                                               placeholder="Nhập email" required>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>Ghi chú</label>
+                                        <textarea id="ghiChu" name="ghiChu" rows="3" 
+                                                  placeholder="Ghi chú về đơn hàng (không bắt buộc)"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="order_summary">
+                        <div class="order_header">
+                            <h3>ĐƠN HÀNG CỦA BẠN</h3>
+                        </div>
+                        
+                        <div class="order_items" th:if="${cart != null and cart.chiTietGioHangs != null}">
+                            <div class="order_item" th:each="item : ${cart.chiTietGioHangs}">
+                                <div class="item_info">
+                                    <div class="item_name" th:text="${item.sanPhamBienThe.sanPham.ten}">Tên sản phẩm</div>
+                                    <div class="item_quantity" th:text="'× ' + ${item.soLuong}">× 1</div>
+                                </div>
+                                <div class="item_price" th:text="${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">100,000 VNĐ</div>
+                            </div>
+                        </div>
+                        
+                        <div class="order_total">
+                            <div class="total_row">
+                                <span>Tạm tính:</span>
+                                <span th:text="${#numbers.formatDecimal(#aggregates.sum(cart.chiTietGioHangs.![thanhTien]), 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                            </div>
+                            <div class="total_row shipping">
+                                <span>Phí giao hàng:</span>
+                                <span id="shipping-fee">Miễn phí</span>
+                            </div>
+                            <div class="total_row total">
+                                <span>Tổng cộng:</span>
+                                <span id="total-amount" th:text="${#numbers.formatDecimal(#aggregates.sum(cart.chiTietGioHangs.![thanhTien]), 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="payment_section">
+                            <div class="account_option">
+                                <input type="radio" id="createAccount" name="createAccount" value="true">
+                                <label for="createAccount">Tạo tài khoản?</label>
+                            </div>
+                            
+                            <div class="payment_method">
+                                <label>Phương thức thanh toán:</label>
+                                <div class="payment_option">
+                                    <input type="radio" id="cash" name="loaiThanhToan" value="CASH" checked>
+                                    <label for="cash">Tiền mặt khi nhận hàng</label>
+                                </div>
+                                <div class="payment_option">
+                                    <input type="radio" id="bank" name="loaiThanhToan" value="BANK_TRANSFER">
+                                    <label for="bank">Chuyển khoản ngân hàng</label>
+                                </div>
+                                <div class="payment_option">
+                                    <input type="radio" id="card" name="loaiThanhToan" value="CREDIT_CARD">
+                                    <label for="card">Thẻ tín dụng</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="checkout_btn">
+                            <button type="button" id="place-order-btn" class="btn-checkout">
+                                ĐẶT HÀNG NGAY
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--checkout area end -->
+
+<!--footer area start-->
+<footer th:replace="user/fragments/footer :: footer"></footer>
+<!--footer area end-->
+
+<script th:src="@{fe/js/plugins.js}"></script>
+<script th:src="@{fe/js/main.js}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const placeOrderBtn = document.getElementById('place-order-btn');
+    const checkoutForm = document.getElementById('checkout-form');
+    
+    // Xử lý đặt hàng
+    placeOrderBtn.addEventListener('click', function() {
+        if (!validateForm()) {
+            return;
+        }
+        
+        // Disable button để tránh double click
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.textContent = 'Đang xử lý...';
+        
+        // Lấy dữ liệu từ form
+        const formData = {
+            ho: document.getElementById('ho').value,
+            ten: document.getElementById('ten').value,
+            tenCongTy: document.getElementById('tenCongTy').value,
+            quocGia: document.getElementById('quocGia').value,
+            diaChi1: document.getElementById('diaChi1').value,
+            diaChi2: document.getElementById('diaChi2').value,
+            thanhPho: document.getElementById('thanhPho').value,
+            tinhHuyen: document.getElementById('tinhHuyen').value,
+            soDienThoai: document.getElementById('soDienThoai').value,
+            email: document.getElementById('email').value,
+            ghiChu: document.getElementById('ghiChu').value,
+            loaiThanhToan: document.querySelector('input[name="loaiThanhToan"]:checked').value,
+            phiGiaoHang: 0, // Phí giao hàng miễn phí
+            tongTien: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, ''))
+        };
+        
+        // Gọi API đặt hàng
+        fetch('/checkout/process', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hiển thị thông báo thành công
+                showNotification(data.message, 'success');
+                
+                // Chuyển hướng đến trang đơn hàng sau 2 giây
+                setTimeout(() => {
+                    window.location.href = '/orders/' + data.orderId;
+                }, 2000);
+            } else {
+                showNotification(data.message, 'error');
+                // Reset button
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.textContent = 'Đặt hàng ngay';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Có lỗi xảy ra khi đặt hàng', 'error');
+            // Reset button
+            placeOrderBtn.disabled = false;
+            placeOrderBtn.textContent = 'Đặt hàng ngay';
+        });
+    });
+    
+    // Validate form
+    function validateForm() {
+        const requiredFields = ['ho', 'ten', 'soDienThoai', 'diaChi1', 'thanhPho', 'tinhHuyen'];
+        
+        for (let field of requiredFields) {
+            const value = document.getElementById(field).value.trim();
+            if (!value) {
+                showNotification('Vui lòng điền đầy đủ thông tin bắt buộc', 'error');
+                document.getElementById(field).focus();
+                return false;
+            }
+        }
+        
+        // Validate số điện thoại
+        const phone = document.getElementById('soDienThoai').value;
+        if (!/^[0-9]{10,11}$/.test(phone)) {
+            showNotification('Số điện thoại không hợp lệ', 'error');
+            document.getElementById('soDienThoai').focus();
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Hàm hiển thị thông báo
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+                <button class="notification-close">&times;</button>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 5000);
+        
+        const closeBtn = notification.querySelector('.notification-close');
+        closeBtn.addEventListener('click', () => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        });
+    }
+});
+</script>
+</body>
+</html>
