@@ -35,6 +35,15 @@ public class HoaDon {
     @Column(columnDefinition = "NVARCHAR(MAX)")
     private String daLayTien;
 
+    @Column(columnDefinition = "NVARCHAR(MAX)")
+    private String diaChiGiaoHang;
+
+    @Column(columnDefinition = "NVARCHAR(MAX)")
+    private String tenNguoiNhan;
+
+    @Column(columnDefinition = "NVARCHAR(MAX)")
+    private String soDienThoaiGiaoHang;
+
     private BigDecimal tongTien;
 
     @ManyToOne

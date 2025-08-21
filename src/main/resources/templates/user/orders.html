@@ -1,13 +1,13 @@
 <!doctype html>
 <html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
 
-<head th:replace="user/fragments/head :: head">
+<head th:replace="~{user/fragments/head :: head}">
     <link rel="stylesheet" th:href="@{/fe/css/orders.css}">
 </head>
 
 <body>
 <!--header area start-->
-<header th:replace="user/fragments/header :: header"></header>
+<header th:replace="~{user/fragments/header :: header}"></header>
 <!--header area end-->
 
 <!--breadcrumbs area start-->
@@ -32,7 +32,25 @@
     <div class="container">
         <div class="orders_container">
             <style>
-                .orders_area { margin-top: 24px; margin-bottom: 64px; }
+                .orders_area { 
+                    margin-top: 24px; 
+                    margin-bottom: 64px; 
+                }
+                
+                /* Tránh flickering và load liên tục */
+                body {
+                    overflow-x: hidden;
+                }
+                
+                .orders_table {
+                    will-change: auto;
+                }
+                
+                /* Tối ưu hiệu suất */
+                .status-badge {
+                    will-change: auto;
+                    transform: translateZ(0);
+                }
             </style>
             <div class="orders_header">
                 <h2>Đơn hàng của tôi</h2>
@@ -43,7 +61,47 @@
                 .orders_table .table { width: 100%; border-collapse: collapse; }
                 .orders_table th, .orders_table td { padding: 8px 10px; border-bottom: 1px solid #eee; white-space: nowrap; }
                 .orders_table thead th { font-weight: 600; background: #fafafa; }
-                .orders_table .status-badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; display: inline-block; }
+                .orders_table .status-badge { 
+                    padding: 4px 12px; 
+                    border-radius: 20px; 
+                    font-size: 12px; 
+                    font-weight: 500;
+                    display: inline-block; 
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+                
+                /* Màu sắc cho từng trạng thái */
+                .orders_table .status-pending {
+                    background-color: #fef3c7;
+                    color: #92400e;
+                    border: 1px solid #fbbf24;
+                }
+                
+                .orders_table .status-confirmed {
+                    background-color: #dbeafe;
+                    color: #1e40af;
+                    border: 1px solid #60a5fa;
+                }
+                
+                .orders_table .status-shipping {
+                    background-color: #e9d5ff;
+                    color: #7c3aed;
+                    border: 1px solid #a78bfa;
+                }
+                
+                .orders_table .status-completed {
+                    background-color: #d1fae5;
+                    color: #065f46;
+                    border: 1px solid #34d399;
+                }
+                
+                .orders_table .status-cancelled {
+                    background-color: #fee2e2;
+                    color: #991b1b;
+                    border: 1px solid #f87171;
+                }
+                
                 .orders_table .btn-xs { padding: 4px 8px; font-size: 12px; line-height: 1; }
                 .table-responsive { overflow-x: auto; }
             </style>
@@ -68,7 +126,11 @@
                                 </td>
                                 <td th:text="${#temporals.format(order.ngayTao, 'dd/MM/yyyy HH:mm')}">01/01/2024</td>
                                 <td>
-                                    <span class="status-badge" th:class="${'status-' + #strings.toLowerCase(order.trangThai)}" th:text="${order.trangThai}">PENDING</span>
+                                    <span class="status-badge" 
+                                          th:text="${order.trangThai}"
+                                          th:classappend="${order.trangThai == 'PENDING' ? ' status-pending' : (order.trangThai == 'CONFIRMED' ? ' status-confirmed' : (order.trangThai == 'SHIPPING' ? ' status-shipping' : (order.trangThai == 'COMPLETED' ? ' status-completed' : ' status-cancelled')))}">
+                                        PENDING
+                                    </span>
                                 </td>
                                 <td th:text="${order.chiTietHoaDons != null ? order.chiTietHoaDons.size() : 0}">2</td>
                                 <td th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">500,000 VNĐ</td>
@@ -98,7 +160,7 @@
 <!--orders area end -->
 
 <!--footer area start-->
-<footer th:replace="user/fragments/footer :: footer"></footer>
+<footer th:replace="~{user/fragments/footer :: footer}"></footer>
 <!--footer area end-->
 
 <script th:src="@{fe/js/plugins.js}"></script>
@@ -117,10 +179,10 @@ function cancelOrder(orderId) {
         .then(data => {
             if (data.success) {
                 showNotification(data.message, 'success');
-                // Reload trang sau 1 giây
+                // Reload trang sau 2 giây để tránh load liên tục
                 setTimeout(() => {
-                    location.reload();
-                }, 1000);
+                    window.location.href = '/orders';
+                }, 2000);
             } else {
                 showNotification(data.message, 'error');
             }

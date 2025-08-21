@@ -132,6 +132,63 @@ public class OrderAdminController {
 		}
 		return "redirect:/admin/order";
 	}
+
+	@PostMapping("/order/{id}/update-status")
+	public String updateOrderStatus(@PathVariable("id") Integer id, 
+								   @RequestParam("newStatus") String newStatus,
+								   RedirectAttributes redirectAttributes) {
+		HoaDon hoaDon = hoaDonService.getOrderById(id);
+		if (hoaDon == null) {
+			redirectAttributes.addFlashAttribute("error", "Không tìm thấy đơn hàng.");
+			return "redirect:/admin/order";
+		}
+
+		String currentStatus = hoaDon.getTrangThai();
+		
+		// Kiểm tra logic chuyển trạng thái
+		if ("PENDING".equalsIgnoreCase(currentStatus) && "CONFIRMED".equalsIgnoreCase(newStatus)) {
+			// Chuyển từ PENDING sang CONFIRMED - cần kiểm tra tồn kho
+			if (!hoaDonService.updateOrderStatus(id, newStatus)) {
+				redirectAttributes.addFlashAttribute("error", "Không thể cập nhật trạng thái đơn hàng #" + id + ". Không đủ tồn kho hoặc thay đổi trạng thái không hợp lệ.");
+				return "redirect:/admin/order";
+			}
+		} else if ("CONFIRMED".equalsIgnoreCase(currentStatus) && "CANCELLED".equalsIgnoreCase(newStatus)) {
+			// Chuyển từ CONFIRMED sang CANCELLED - cần hoàn lại tồn kho
+			if (hoaDonService.updateOrderStatusAndRestoreStock(id, newStatus)) {
+				redirectAttributes.addFlashAttribute("success", "Đã cập nhật trạng thái đơn hàng #" + id + " thành " + newStatus + " và hoàn lại tồn kho.");
+			} else {
+				redirectAttributes.addFlashAttribute("error", "Không thể cập nhật trạng thái đơn hàng #" + id + ".");
+			}
+			return "redirect:/admin/order";
+		} else {
+			// Các trường hợp khác - cập nhật bình thường
+			if (hoaDonService.updateOrderStatus(id, newStatus)) {
+				redirectAttributes.addFlashAttribute("success", "Đã cập nhật trạng thái đơn hàng #" + id + " thành " + newStatus + ".");
+			} else {
+				redirectAttributes.addFlashAttribute("error", "Không thể cập nhật trạng thái đơn hàng #" + id + ".");
+			}
+		}
+
+
+
+		return "redirect:/admin/order";
+	}
+
+	@GetMapping("/order/{id}")
+	public String orderDetail(@PathVariable("id") Integer id, Model model) {
+		HoaDon hoaDon = hoaDonService.getOrderById(id);
+		if (hoaDon == null) {
+			return "redirect:/admin/order";
+		}
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication != null ? authentication.getName() : "admin";
+		model.addAttribute("username", username);
+		model.addAttribute("currentPage", "order");
+		model.addAttribute("order", hoaDon);
+
+		return "admin/order-detail";
+	}
 }
 
 

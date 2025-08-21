@@ -1,11 +1,11 @@
 <!doctype html>
 <html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
 
-<head th:replace="user/fragments/head :: head"></head>
+<head th:replace="~{user/fragments/head :: head}"></head>
 
 <body>
 <!--header area start-->
-<header th:replace="user/fragments/header :: header"></header>
+<header th:replace="~{user/fragments/header :: header}"></header>
 <!--header area end-->
 
 <!--breadcrumbs area start-->
@@ -194,7 +194,7 @@
 <!--checkout area end -->
 
 <!--footer area start-->
-<footer th:replace="user/fragments/footer :: footer"></footer>
+<footer th:replace="~{user/fragments/footer :: footer}"></footer>
 <!--footer area end-->
 
 <script th:src="@{fe/js/plugins.js}"></script>
@@ -229,7 +229,17 @@ document.addEventListener('DOMContentLoaded', function() {
             ghiChu: document.getElementById('ghiChu').value,
             loaiThanhToan: document.querySelector('input[name="loaiThanhToan"]:checked').value,
             phiGiaoHang: 0, // Phí giao hàng miễn phí
-            tongTien: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, ''))
+            tongTien: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, '')),
+            
+            // Tạo địa chỉ giao hàng đầy đủ
+            diaChiGiaoHang: document.getElementById('diaChi1').value + 
+                           (document.getElementById('diaChi2').value ? ', ' + document.getElementById('diaChi2').value : '') + 
+                           ', ' + document.getElementById('thanhPho').value + 
+                           ', ' + document.getElementById('tinhHuyen').value + 
+                           ', ' + document.getElementById('quocGia').value,
+            
+            // Tên người nhận
+            tenNguoiNhan: document.getElementById('ho').value + ' ' + document.getElementById('ten').value
         };
         
         // Gọi API đặt hàng

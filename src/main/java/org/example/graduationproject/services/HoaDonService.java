@@ -24,6 +24,11 @@ public interface HoaDonService {
     // Cập nhật trạng thái hóa đơn
     boolean updateOrderStatus(Integer orderId, String newStatus);
     
+    boolean updateOrderStatusAndRestoreStock(Integer orderId, String newStatus);
+    
+    // Lưu hóa đơn
+    HoaDon saveOrder(HoaDon hoaDon);
+    
     // Hủy hóa đơn
     boolean cancelOrder(User user, Integer orderId);
 }

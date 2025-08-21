@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
+<head th:replace="~{admin/fragments/head :: head('Chi tiết đơn hàng')}"></head>
+
+<body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
+<div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
+
+  <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+  <div id="sidebar-overlay" class="absolute inset-0 z-[1002] bg-slate-500/30 hidden"></div>
+  <header th:replace="~{admin/fragments/header :: header}"></header>
+
+  <div class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+    <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
+      <div class="flex flex-col gap-3 py-4 md:flex-row md:items-center print:hidden">
+        <div class="grow">
+          <div class="flex items-center gap-3">
+            <h2 class="text-xl md:text-2xl font-semibold">Đơn hàng</h2>
+            <span class="inline-flex items-center gap-1 text-sm px-2 py-1 rounded bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100">
+              <i data-lucide="hash" class="size-4"></i>
+              <span th:text="${'#' + order.id}">#XXXX</span>
+            </span>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                  th:text="${order.trangThai}"
+                  th:classappend="${order.trangThai == 'PENDING' ? ' bg-yellow-100 text-yellow-800' : (order.trangThai == 'CONFIRMED' ? ' bg-sky-100 text-sky-800' : (order.trangThai == 'SHIPPING' ? ' bg-violet-100 text-violet-800' : (order.trangThai == 'COMPLETED' ? ' bg-emerald-100 text-emerald-800' : ' bg-red-100 text-red-800')))}">
+            </span>
+          </div>
+          <p class="text-slate-500 dark:text-zink-200 mt-1">
+            Ngày đặt: <span th:text="${#temporals.format(order.ngayTao, 'dd/MM/yyyy HH:mm')}"></span>
+          </p>
+        </div>
+        <div class="shrink-0 flex gap-2">
+          <a th:href="@{/admin/order}" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
+            <i data-lucide="arrow-left" class="size-4"></i>
+          </a>
+          <a th:href="@{/admin/order/{id}/export-pdf(id=${order.id})}" 
+             class="btn bg-red-500 text-white hover:bg-red-600 transition-all px-4 py-2 rounded flex items-center gap-2">
+            <i data-lucide="file-text" class="size-4"></i>
+            <span>Xuất PDF</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-5">
+        <div class="card">
+          <div class="card-body">
+            <div class="text-sm text-slate-500 dark:text-zink-200">Tổng tiền</div>
+            <div class="text-2xl font-bold text-blue-600 mt-1" th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'COMMA')} + ' VNĐ'"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="text-sm text-slate-500 dark:text-zink-200">Số sản phẩm</div>
+            <div class="text-2xl font-bold mt-1" th:text="${#lists.size(order.chiTietHoaDons)}"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="text-sm text-slate-500 dark:text-zink-200">Phương thức TT</div>
+            <div class="text-2xl font-bold mt-1" th:text="${order.loaiThanhToan}"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="text-sm text-slate-500 dark:text-zink-200">Trạng thái</div>
+            <div class="text-2xl font-bold mt-1" th:text="${order.trangThai}"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="text-sm text-slate-500 dark:text-zink-200">Đã lấy tiền</div>
+            <div class="text-2xl font-bold mt-1">
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                    th:text="${order.trangThai == 'COMPLETED' ? 'Đã lấy' : 'Chưa lấy'}"
+                    th:classappend="${order.trangThai == 'COMPLETED' ? ' bg-green-100 text-green-800' : ' bg-red-100 text-red-800'}">
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Header cards -->
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 mt-4">
+        <div class="lg:col-span-6">
+          <div class="card h-full">
+            <div class="card-body">
+              <div class="flex items-center justify-between mb-3">
+                <h6 class="font-semibold">Thông tin đơn hàng</h6>
+                <span class="text-xs px-2 py-1 rounded bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100">Mã: <span th:text="${'#' + order.id}"></span></span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <div class="text-sm text-slate-500 dark:text-zink-200">Ngày đặt</div>
+                  <div class="font-medium" th:text="${#temporals.format(order.ngayTao, 'dd/MM/yyyy HH:mm')}"></div>
+                </div>
+                <div>
+                  <div class="text-sm text-slate-500 dark:text-zink-200">Tổng tiền</div>
+                  <div class="font-medium" th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'COMMA')} + ' VNĐ'"></div>
+                </div>
+                <div>
+                  <div class="text-sm text-slate-500 dark:text-zink-200">Phương thức TT</div>
+                  <div class="font-medium" th:text="${order.loaiThanhToan}"></div>
+                </div>
+                <div>
+                  <div class="text-sm text-slate-500 dark:text-zink-200">Trạng thái</div>
+                  <div class="font-medium">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                          th:text="${order.trangThai}"
+                          th:classappend="${order.trangThai == 'PENDING' ? ' bg-yellow-100 text-yellow-800' : (order.trangThai == 'CONFIRMED' ? ' bg-sky-100 text-sky-800' : (order.trangThai == 'SHIPPING' ? ' bg-violet-100 text-violet-800' : (order.trangThai == 'COMPLETED' ? ' bg-emerald-100 text-emerald-800' : ' bg-red-100 text-red-800')))}">
+                    </span>
+                  </div>
+                </div>
+                                 <div>
+                   <div class="text-sm text-slate-500 dark:text-zink-200">Đã lấy tiền</div>
+                   <div class="font-medium">
+                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                           th:text="${order.trangThai == 'COMPLETED' ? 'Đã lấy' : 'Chưa lấy'}"
+                           th:classappend="${order.trangThai == 'COMPLETED' ? ' bg-green-100 text-green-800' : ' bg-red-100 text-red-800'}">
+                     </span>
+                   </div>
+                 </div>
+                 <div>
+                   <div class="text-sm text-slate-500 dark:text-zink-200">Ghi chú</div>
+                   <div class="font-medium" th:text="${order.ghiChu != null and order.ghiChu != '' ? order.ghiChu : 'Không có'}"></div>
+                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6">
+          <div class="card h-full">
+            <div class="card-body">
+              <h6 class="mb-3 font-semibold">Thông tin khách hàng</h6>
+              <div class="flex items-start gap-4">
+                <div class="inline-flex items-center justify-center rounded-full bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100 size-12">
+                  <i data-lucide="user" class="size-5"></i>
+                </div>
+                <div class="grow grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                  <div>
+                    <div class="text-sm text-slate-500 dark:text-zink-200">Họ tên</div>
+                    <div class="font-medium" th:text="${order.user != null ? (order.user.hoTen != null && order.user.hoTen != '' ? order.user.hoTen : order.user.username) : 'Guest'}"></div>
+                  </div>
+                  <div>
+                    <div class="text-sm text-slate-500 dark:text-zink-200">Email</div>
+                    <div class="font-medium" th:text="${order.user != null ? order.user.email : 'N/A'}"></div>
+                  </div>
+                  <div>
+                    <div class="text-sm text-slate-500 dark:text-zink-200">SĐT</div>
+                    <div class="font-medium" th:text="${order.user != null ? (order.user.soDienThoai != null ? order.user.soDienThoai : 'N/A') : 'N/A'}"></div>
+                  </div>
+                  <div>
+                    <div class="text-sm text-slate-500 dark:text-zink-200">Username</div>
+                    <div class="font-medium" th:text="${order.user != null ? order.user.username : 'Guest'}"></div>
+                  </div>
+                                     <div class="md:col-span-2">
+                     <div class="text-sm text-slate-500 dark:text-zink-200">Địa chỉ</div>
+                     <div class="font-medium" th:text="${order.user != null ? (order.user.diaChi != null ? order.user.diaChi : 'Không có') : 'N/A'}"></div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+
+       <!-- Thông tin giao hàng -->
+       <div class="card mt-4">
+         <div class="card-body">
+           <h6 class="mb-3 font-semibold">Thông tin giao hàng</h6>
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+             <div>
+               <div class="text-sm text-slate-500 dark:text-zink-200">Tên người nhận</div>
+               <div class="font-medium" th:text="${order.tenNguoiNhan != null and order.tenNguoiNhan != '' ? order.tenNguoiNhan : 'N/A'}"></div>
+             </div>
+             <div>
+               <div class="text-sm text-slate-500 dark:text-zink-200">SĐT giao hàng</div>
+               <div class="font-medium" th:text="${order.soDienThoaiGiaoHang != null and order.soDienThoaiGiaoHang != '' ? order.soDienThoaiGiaoHang : 'N/A'}"></div>
+             </div>
+             <div class="md:col-span-2">
+               <div class="text-sm text-slate-500 dark:text-zink-200">Địa chỉ giao hàng</div>
+               <div class="font-medium" th:text="${order.diaChiGiaoHang != null and order.diaChiGiaoHang != '' ? order.diaChiGiaoHang : 'N/A'}"></div>
+             </div>
+           </div>
+         </div>
+       </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="card mt-4">
+        <div class="card-body">
+          <div class="flex items-center justify-between mb-3">
+            <h6 class="font-semibold">Chi tiết sản phẩm</h6>
+            <span class="text-xs px-2 py-1 rounded bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100" th:text="${#lists.size(order.chiTietHoaDons)} + ' sản phẩm'"></span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full whitespace-nowrap">
+              <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
+              <tr>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">#</th>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Sản phẩm</th>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Biến thể</th>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Đơn giá</th>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Số lượng</th>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Tồn kho</th>
+                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 text-right">Thành tiền</th>
+              </tr>
+              </thead>
+              <tbody class="list">
+              <tr th:if="${#lists.isEmpty(order.chiTietHoaDons)}" class="hover:bg-slate-50 dark:hover:bg-zink-600/50">
+                <td colspan="7" class="px-3.5 py-2.5 text-center border-b border-slate-200 dark:border-zink-500">Không có chi tiết</td>
+              </tr>
+              <tr th:each="ct, stat : ${order.chiTietHoaDons}" class="hover:bg-slate-50 dark:hover:bg-zink-600/50">
+                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${stat.count}"></td>
+                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                  <div class="font-medium" th:text="${ct.sanPhamBienThe != null && ct.sanPhamBienThe.sanPham != null ? ct.sanPhamBienThe.sanPham.ten : 'N/A'}"></div>
+                                     <div class="text-sm text-slate-500" th:text="${ct.sanPhamBienThe != null && ct.sanPhamBienThe.sanPham != null ? ct.sanPhamBienThe.sanPham.nhanHieu != null ? ct.sanPhamBienThe.sanPham.nhanHieu.ten : '' : ''}"></div>
+                </td>
+                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                  <div class="inline-flex items-center gap-2">
+                                         <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100 text-xs" th:text="${ct.sanPhamBienThe != null && ct.sanPhamBienThe.mauSac != null ? ct.sanPhamBienThe.mauSac.maMau : 'N/A'}"></span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zink-600 text-slate-700 dark:text-zink-100 text-xs" th:text="${ct.sanPhamBienThe != null && ct.sanPhamBienThe.size != null ? ct.sanPhamBienThe.size.tenSize : 'N/A'}"></span>
+                  </div>
+                </td>
+                                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                   <span class="font-medium" th:text="${#numbers.formatDecimal(ct.thanhTien / ct.soLuong, 0, 'COMMA', 0, 'COMMA')} + ' VNĐ'"></span>
+                 </td>
+                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                  <span class="inline-flex items-center justify-center min-w-10 px-2 py-0.5 rounded bg-blue-50 text-blue-600 text-sm" th:text="${ct.soLuong}"></span>
+                </td>
+                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                  <span class="inline-flex items-center justify-center min-w-10 px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-sm" th:text="${ct.sanPhamBienThe != null ? ct.sanPhamBienThe.soLuongTon : 'N/A'}"></span>
+                </td>
+                <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 text-right" th:text="${#numbers.formatDecimal(ct.thanhTien, 0, 'COMMA', 0, 'COMMA')} + ' VNĐ'"></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="card mt-4">
+        <div class="card-body">
+          <h6 class="mb-3 font-semibold">Tổng kết đơn hàng</h6>
+          <div class="flex justify-end">
+            <div class="w-64 space-y-2">
+              <div class="flex justify-between">
+                <span class="text-slate-500 dark:text-zink-200">Tổng tiền hàng:</span>
+                <span class="font-medium" th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'COMMA')} + ' VNĐ'"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500 dark:text-zink-200">Phí vận chuyển:</span>
+                <span class="font-medium">0 VNĐ</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500 dark:text-zink-200">Giảm giá:</span>
+                <span class="font-medium">0 VNĐ</span>
+              </div>
+              <div class="border-t pt-2">
+                <div class="flex justify-between text-lg font-bold">
+                  <span>Tổng cộng:</span>
+                  <span class="text-blue-600" th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'COMMA')} + ' VNĐ'"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div th:replace="~{admin/fragments/script :: script}"></div>
+</div>
+
+</body>
+</html>

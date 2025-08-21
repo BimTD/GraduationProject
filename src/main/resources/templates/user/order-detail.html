@@ -1,13 +1,13 @@
     <!doctype html>
 <html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
 
-<head th:replace="user/fragments/head :: head">
+<head th:replace="~{user/fragments/head :: head}">
     <link rel="stylesheet" th:href="@{/fe/css/order-detail.css}">
 </head>
 
 <body>
 <!--header area start-->
-<header th:replace="user/fragments/header :: header"></header>
+<header th:replace="~{user/fragments/header :: header}"></header>
 <!--header area end-->
 
 <!--breadcrumbs area start-->
@@ -126,6 +126,28 @@
                                     <span class="summary_amount" th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">500,000 VNĐ</span>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Thông tin giao hàng -->
+                        <div class="summary_card" style="margin-top: 16px;">
+                            <div class="summary_header">
+                                <h3>THÔNG TIN GIAO HÀNG</h3>
+                            </div>
+                            <div class="summary_body">
+                                <div class="summary_row">
+                                    <span class="summary_label">Người nhận</span>
+                                    <span class="summary_value" th:text="${order.tenNguoiNhan != null and order.tenNguoiNhan != '' ? order.tenNguoiNhan : 'N/A'}">Nguyễn Văn A</span>
+                                </div>
+                                <div class="summary_row">
+                                    <span class="summary_label">SĐT</span>
+                                    <span class="summary_value" th:text="${order.soDienThoaiGiaoHang != null and order.soDienThoaiGiaoHang != '' ? order.soDienThoaiGiaoHang : 'N/A'}">0123456789</span>
+                                </div>
+                                <div class="summary_row">
+                                    <span class="summary_label">Địa chỉ</span>
+                                    <span class="summary_value" th:text="${order.diaChiGiaoHang != null and order.diaChiGiaoHang != '' ? order.diaChiGiaoHang : 'N/A'}" style="text-align: right; max-width: 200px;">123 Đường ABC, Quận 1, TP.HCM</span>
+                                </div>
+                            </div>
+                        </div>
                             <div class="summary_actions">
                                 <a href="/orders" class="btn btn-outline-primary btn-block">
                                     <i class="fa fa-arrow-left"></i> Quay lại danh sách
@@ -144,7 +166,7 @@
 <!--order detail area end -->
 
 <!--footer area start-->
-<footer th:replace="user/fragments/footer :: footer"></footer>
+<footer th:replace="~{user/fragments/footer :: footer}"></footer>
 <!--footer area end-->
 
 <script th:src="@{fe/js/plugins.js}"></script>

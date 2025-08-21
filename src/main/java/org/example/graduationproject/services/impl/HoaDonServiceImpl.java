@@ -51,6 +51,11 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDon.setLoaiThanhToan(checkoutDTO.getLoaiThanhToan());
         hoaDon.setDaLayTien("NO"); // NO, YES
         
+        // Lưu thông tin địa chỉ giao hàng
+        hoaDon.setDiaChiGiaoHang(checkoutDTO.getDiaChiGiaoHang());
+        hoaDon.setTenNguoiNhan(checkoutDTO.getTenNguoiNhan());
+        hoaDon.setSoDienThoaiGiaoHang(checkoutDTO.getSoDienThoai());
+        
         // Tính tổng tiền
         BigDecimal tongTien = activeCart.getChiTietGioHangs().stream()
                 .map(ChiTietGioHang::getThanhTien)
@@ -152,6 +157,64 @@ public class HoaDonServiceImpl implements HoaDonService {
             }
 
             hoaDon.setTrangThai(newStatus);
+            
+            // Cập nhật trường daLayTien khi trạng thái là COMPLETED
+            if ("COMPLETED".equalsIgnoreCase(newStatus)) {
+                hoaDon.setDaLayTien("YES");
+            }
+            
+            hoaDonRepository.save(hoaDon);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional
+    public boolean updateOrderStatusAndRestoreStock(Integer orderId, String newStatus) {
+        HoaDon hoaDon = hoaDonRepository.findById(orderId).orElse(null);
+        if (hoaDon != null) {
+            String currentStatus = hoaDon.getTrangThai();
+
+            // Nếu chuyển từ CONFIRMED sang CANCELLED thì hoàn lại tồn kho
+            if ("CONFIRMED".equalsIgnoreCase(currentStatus) && "CANCELLED".equalsIgnoreCase(newStatus)) {
+                List<ChiTietHoaDon> chiTietList = chiTietHoaDonRepository.findByHoaDon(hoaDon);
+
+                // Gom số lượng theo từng biến thể để hoàn lại tồn kho
+                Map<Integer, Integer> variantIdToRestoreQty = new HashMap<>();
+                for (ChiTietHoaDon cthd : chiTietList) {
+                    if (cthd.getSanPhamBienThe() == null) continue;
+                    Integer variantId = cthd.getSanPhamBienThe().getId();
+                    if (variantId == null) continue;
+                    int restore = cthd.getSoLuong() != null ? cthd.getSoLuong() : 0;
+                    variantIdToRestoreQty.merge(variantId, restore, Integer::sum);
+                }
+
+                // Hoàn lại tồn kho
+                List<org.example.graduationproject.models.SanPhamBienThe> toUpdate = new ArrayList<>();
+                for (Map.Entry<Integer, Integer> entry : variantIdToRestoreQty.entrySet()) {
+                    org.example.graduationproject.models.SanPhamBienThe variant = sanPhamBienTheRepository.findById(entry.getKey()).orElse(null);
+                    if (variant != null) {
+                        int stock = variant.getSoLuongTon() != null ? variant.getSoLuongTon() : 0;
+                        int restore = entry.getValue() != null ? entry.getValue() : 0;
+                        variant.setSoLuongTon(stock + restore);
+                        toUpdate.add(variant);
+                    }
+                }
+
+                // Cập nhật tồn kho
+                if (!toUpdate.isEmpty()) {
+                    sanPhamBienTheRepository.saveAll(toUpdate);
+                }
+            }
+
+            hoaDon.setTrangThai(newStatus);
+            
+            // Cập nhật trường daLayTien khi trạng thái là COMPLETED
+            if ("COMPLETED".equalsIgnoreCase(newStatus)) {
+                hoaDon.setDaLayTien("YES");
+            }
+            
             hoaDonRepository.save(hoaDon);
             return true;
         }
@@ -168,5 +231,10 @@ public class HoaDonServiceImpl implements HoaDonService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public HoaDon saveOrder(HoaDon hoaDon) {
+        return hoaDonRepository.save(hoaDon);
     }
 }
