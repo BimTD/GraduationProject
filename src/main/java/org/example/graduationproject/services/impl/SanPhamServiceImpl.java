@@ -1,19 +1,29 @@
 package org.example.graduationproject.services.impl;
 
-import org.example.graduationproject.models.SanPham;
-import org.example.graduationproject.repositories.SanPhamRepository;
-import org.example.graduationproject.services.SanPhamService;
+import org.example.graduationproject.models.*;
 import org.example.graduationproject.dto.ProductDTO;
-import org.example.graduationproject.models.ImageSanPham;
-import org.example.graduationproject.repositories.ImageSanPhamRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
+import org.example.graduationproject.repositories.SanPhamRepository;
 import org.example.graduationproject.repositories.LoaiRepository;
 import org.example.graduationproject.repositories.NhanHieuRepository;
 import org.example.graduationproject.repositories.NhaCungCapRepository;
+import org.example.graduationproject.repositories.ImageSanPhamRepository;
+import org.example.graduationproject.services.SanPhamService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Join;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +41,9 @@ public class SanPhamServiceImpl implements SanPhamService {
     private NhanHieuRepository nhanHieuRepository;
     @Autowired
     private NhaCungCapRepository nhaCungCapRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public List<SanPham> getAll() {
@@ -213,39 +226,87 @@ public class SanPhamServiceImpl implements SanPhamService {
     
     @Override
     public Page<SanPham> getProductsWithFilters(String search, Integer categoryId, String gender, int page, int size) {
-        // Xử lý logic filter và search
+        // Sử dụng JPA Criteria API để tạo dynamic query
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<SanPham> query = cb.createQuery(SanPham.class);
+        Root<SanPham> root = query.from(SanPham.class);
+        
+        // Tạo danh sách các điều kiện (predicates) sử dụng helper method
+        List<Predicate> predicates = createPredicates(cb, root, search, categoryId, gender);
+        
+        // Kết hợp tất cả điều kiện bằng AND
+        if (!predicates.isEmpty()) {
+            query.where(predicates.toArray(new Predicate[0]));
+        }
+        
+        // Sắp xếp theo tên sản phẩm
+        query.orderBy(cb.asc(root.get("ten")));
+        
+        // Thực hiện truy vấn để đếm tổng số bản ghi
+        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+        Root<SanPham> countRoot = countQuery.from(SanPham.class);
+        
+        // Sử dụng helper method để tạo predicates cho count query
+        List<Predicate> countPredicates = createPredicates(cb, countRoot, search, categoryId, gender);
+        
+        if (!countPredicates.isEmpty()) {
+            countQuery.where(countPredicates.toArray(new Predicate[0]));
+        }
+        countQuery.select(cb.count(countRoot));
+        
+        // Thực hiện count query
+        Long totalElements = entityManager.createQuery(countQuery).getSingleResult();
+        
+        // Thực hiện query chính với phân trang
+        TypedQuery<SanPham> typedQuery = entityManager.createQuery(query);
+        typedQuery.setFirstResult(page * size);
+        typedQuery.setMaxResults(size);
+        
+        List<SanPham> content = typedQuery.getResultList();
+        
+        // Tạo Page object
+        Pageable pageable = PageRequest.of(page, size);
+        return new PageImpl<>(content, pageable, totalElements);
+    }
+    
+    /**
+     * Helper method để tạo danh sách predicates cho cả query chính và count query
+     */
+    private List<Predicate> createPredicates(CriteriaBuilder cb, Root<SanPham> root, 
+                                           String search, Integer categoryId, String gender) {
+        List<Predicate> predicates = new ArrayList<>();
+        
+        // 1. Điều kiện tìm kiếm theo tên sản phẩm và mô tả
         if (search != null && !search.trim().isEmpty()) {
-            // Có search
-            if (categoryId != null && gender != null && !gender.trim().isEmpty()) {
-                // Search + Category + Gender
-                return searchByTenAndCategoryAndGenderPaging(search, categoryId, Integer.parseInt(gender), page, size);
-            } else if (categoryId != null) {
-                // Search + Category
-                return searchByTenAndCategoryPaging(search, categoryId, page, size);
-            } else if (gender != null && !gender.trim().isEmpty()) {
-                // Search + Gender
-                return searchByTenAndGenderPaging(search, Integer.parseInt(gender), page, size);
-            } else {
-                // Chỉ search
-                return searchByTenPaging(search, page, size);
-            }
-        } else {
-            // Không có search
-            if (categoryId != null && gender != null && !gender.trim().isEmpty()) {
-                // Category + Gender
-                return filterByCategoryAndGenderPaging(categoryId, Integer.parseInt(gender), page, size);
-            } else if (categoryId != null) {
-                // Chỉ Category
-                return filterByCategoryPaging(categoryId, page, size);
-            } else if (gender != null && !gender.trim().isEmpty()) {
-                // Chỉ Gender
-                return filterByGenderPaging(Integer.parseInt(gender), page, size);
-            } else {
-                // Không có filter
-                return getAllPaging(page, size);
+            String searchTerm = "%" + search.trim().toLowerCase() + "%";
+            predicates.add(cb.or(
+                cb.like(cb.lower(root.get("ten")), searchTerm),
+                cb.like(cb.lower(root.get("moTa")), searchTerm)
+            ));
+        }
+        
+        // 2. Điều kiện lọc theo danh mục (category)
+        if (categoryId != null) {
+            Join<SanPham, Loai> loaiJoin = root.join("loai");
+            predicates.add(cb.equal(loaiJoin.get("id"), categoryId));
+        }
+        
+        // 3. Điều kiện lọc theo giới tính
+        if (gender != null && !gender.trim().isEmpty()) {
+            try {
+                Integer genderValue = Integer.parseInt(gender);
+                predicates.add(cb.equal(root.get("gioiTinh"), genderValue));
+            } catch (NumberFormatException e) {
+                // Bỏ qua nếu gender không phải số
             }
         }
+        
+        // 4. Điều kiện chỉ hiển thị sản phẩm đang hoạt động
+        predicates.add(cb.equal(root.get("trangThaiHoatDong"), true));
+        
+        return predicates;
     }
+
     
     @Override
     public Optional<ProductDTO> getProductDTOById(Integer id) {
