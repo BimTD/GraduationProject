@@ -1,6 +1,8 @@
 package org.example.graduationproject.services;
 
 import org.example.graduationproject.dto.CheckoutDTO;
+import org.example.graduationproject.dto.OrderResponseDTO;
+import org.example.graduationproject.dto.CancelOrderDTO;
 import org.example.graduationproject.models.GioHang;
 import org.example.graduationproject.models.HoaDon;
 import org.example.graduationproject.models.User;
@@ -31,4 +33,9 @@ public interface HoaDonService {
     
     // Hủy hóa đơn
     boolean cancelOrder(User user, Integer orderId);
+    
+    // Business logic methods for controller
+    OrderResponseDTO getUserOrdersWithValidation();
+    OrderResponseDTO getUserOrderDetailWithValidation(Integer orderId);
+    OrderResponseDTO cancelOrderWithValidation(CancelOrderDTO cancelOrderDTO);
 }

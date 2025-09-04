@@ -1,5 +1,6 @@
 package org.example.graduationproject.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class ChiTietHoaDon {
 
     @ManyToOne
     @JoinColumn(name = "Id_HoaDon")
+    @JsonBackReference
     private HoaDon hoaDon;
 
     @ManyToOne

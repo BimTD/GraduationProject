@@ -1,5 +1,6 @@
 package org.example.graduationproject.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class ImageSanPham {
 
     @ManyToOne
     @JoinColumn(name = "IdSanPham")
+    @JsonBackReference
     private SanPham sanPham;
 }
 

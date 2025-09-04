@@ -258,8 +258,8 @@
 <footer th:replace="~{user/fragments/footer :: footer}"></footer>
 <!--footer area end-->
 
-<script th:src="@{fe/js/plugins.js}"></script>
-<script th:src="@{fe/js/main.js}"></script>
+<script th:src="@{/fe/js/plugins.js}"></script>
+<script th:src="@{/fe/js/main.js}"></script>
 <script>
 // ===== GLOBAL FUNCTIONS =====
 
@@ -400,12 +400,18 @@ function updateCartTotal() {
 
 // Hàm cập nhật số lượng item trong header
 function updateCartCount() {
-    const rows = document.querySelectorAll('tbody tr[data-item-id]');
-    const cartCountElement = document.querySelector('.cart_count');
-    if (cartCountElement) {
-        cartCountElement.textContent = rows.length;
-        console.log('Updated cart count:', rows.length);
-    }
+    fetch('/api/cart/count')
+        .then(response => response.json())
+        .then(data => {
+            const cartCountElement = document.querySelector('.cart_count');
+            if (cartCountElement && data.success) {
+                cartCountElement.textContent = data.data || 0;
+                console.log('Updated cart count:', data.data);
+            }
+        })
+        .catch(error => {
+            console.error('Error updating cart count:', error);
+        });
 }
 
 // Hàm kiểm tra giỏ hàng trống

@@ -1,5 +1,7 @@
 package org.example.graduationproject.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,9 +50,11 @@ public class HoaDon {
 
     @ManyToOne
     @JoinColumn(name = "Id_User")
+    @JsonBackReference
     private User user;
 
     @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<ChiTietHoaDon> chiTietHoaDons;
 }
 

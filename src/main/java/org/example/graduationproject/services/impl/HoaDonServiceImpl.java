@@ -1,10 +1,16 @@
 package org.example.graduationproject.services.impl;
 
 import org.example.graduationproject.dto.CheckoutDTO;
+import org.example.graduationproject.dto.OrderResponseDTO;
+import org.example.graduationproject.dto.CancelOrderDTO;
+import org.example.graduationproject.exceptions.AuthenticationException;
+import org.example.graduationproject.exceptions.ResourceNotFoundException;
+import org.example.graduationproject.exceptions.ValidationException;
 import org.example.graduationproject.models.*;
 import org.example.graduationproject.repositories.ChiTietHoaDonRepository;
 import org.example.graduationproject.repositories.HoaDonRepository;
 import org.example.graduationproject.repositories.SanPhamBienTheRepository;
+import org.example.graduationproject.services.AuthenticationService;
 import org.example.graduationproject.services.GioHangService;
 import org.example.graduationproject.services.HoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +38,9 @@ public class HoaDonServiceImpl implements HoaDonService {
 
     @Autowired
     private SanPhamBienTheRepository sanPhamBienTheRepository;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @Override
     @Transactional
@@ -236,5 +245,71 @@ public class HoaDonServiceImpl implements HoaDonService {
     @Override
     public HoaDon saveOrder(HoaDon hoaDon) {
         return hoaDonRepository.save(hoaDon);
+    }
+
+    @Override
+    public OrderResponseDTO getUserOrdersWithValidation() {
+        // Kiểm tra authentication
+        if (!authenticationService.isAuthenticated()) {
+            throw new AuthenticationException("Vui lòng đăng nhập");
+        }
+        
+        User user = authenticationService.getCurrentUser();
+        if (user == null) {
+            throw new AuthenticationException("Không tìm thấy thông tin người dùng");
+        }
+
+        List<HoaDon> orders = getUserOrders(user);
+        return OrderResponseDTO.success("Lấy danh sách đơn hàng thành công", orders);
+    }
+
+    @Override
+    public OrderResponseDTO getUserOrderDetailWithValidation(Integer orderId) {
+        // Kiểm tra authentication
+        if (!authenticationService.isAuthenticated()) {
+            throw new AuthenticationException("Vui lòng đăng nhập");
+        }
+        
+        User user = authenticationService.getCurrentUser();
+        if (user == null) {
+            throw new AuthenticationException("Không tìm thấy thông tin người dùng");
+        }
+
+        // Validate input
+        if (orderId == null || orderId <= 0) {
+            throw new ValidationException("ID đơn hàng không hợp lệ");
+        }
+
+        HoaDon order = getUserOrderById(user, orderId);
+        if (order == null) {
+            throw new ResourceNotFoundException("Không tìm thấy đơn hàng");
+        }
+
+        return OrderResponseDTO.success("Lấy chi tiết đơn hàng thành công", order);
+    }
+
+    @Override
+    public OrderResponseDTO cancelOrderWithValidation(CancelOrderDTO cancelOrderDTO) {
+        // Kiểm tra authentication
+        if (!authenticationService.isAuthenticated()) {
+            throw new AuthenticationException("Vui lòng đăng nhập");
+        }
+        
+        User user = authenticationService.getCurrentUser();
+        if (user == null) {
+            throw new AuthenticationException("Không tìm thấy thông tin người dùng");
+        }
+
+        // Validate input
+        if (cancelOrderDTO.getOrderId() == null || cancelOrderDTO.getOrderId() <= 0) {
+            throw new ValidationException("ID đơn hàng không hợp lệ");
+        }
+
+        boolean success = cancelOrder(user, cancelOrderDTO.getOrderId());
+        if (!success) {
+            throw new ValidationException("Không thể hủy đơn hàng này");
+        }
+
+        return OrderResponseDTO.success("Hủy đơn hàng thành công");
     }
 }

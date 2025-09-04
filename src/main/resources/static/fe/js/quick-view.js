@@ -92,29 +92,35 @@
     // fetch
     fetch('/api/products/'+productId+'/quick-view')
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(data => {
-        qvData = data;
-        titleEl.textContent = data.name || '';
-        priceEl.textContent = formatPrice(data.price || 0);
-        var descEl = document.getElementById('qv-description');
-        if (descEl) { descEl.textContent = data.description || ''; }
-        if(data.discount){
-          oldPriceEl.style.display = '';
-          try{
-            const old = Number(data.price) * (100 - Number(data.discount)) / 100;
-            oldPriceEl.textContent = formatPrice(old);
-          }catch(err){ oldPriceEl.style.display='none'; }
+      .then(response => {
+        // Handle new response format
+        if (response.success) {
+          const data = response.data;
+          qvData = data;
+          titleEl.textContent = data.name || '';
+          priceEl.textContent = formatPrice(data.price || 0);
+          var descEl = document.getElementById('qv-description');
+          if (descEl) { descEl.textContent = data.description || ''; }
+          if(data.discount){
+            oldPriceEl.style.display = '';
+            try{
+              const old = Number(data.price) * (100 - Number(data.discount)) / 100;
+              oldPriceEl.textContent = formatPrice(old);
+            }catch(err){ oldPriceEl.style.display='none'; }
+          }
+          // options (always full list)
+          allSizes = data.sizes || [];
+          allColors = data.colors || [];
+          populateSizes(allSizes, '');
+          populateColors(allColors, '');
+          // set single image
+          var img = data.image || '';
+          var imgEl = document.getElementById('qv-image');
+          if (imgEl) { imgEl.src = img || 'assets/img/product/product4.jpg'; }
+          updateStock();
+        } else {
+          titleEl.textContent = response.message || 'Không tải được dữ liệu sản phẩm';
         }
-        // options (always full list)
-        allSizes = data.sizes || [];
-        allColors = data.colors || [];
-        populateSizes(allSizes, '');
-        populateColors(allColors, '');
-        // set single image
-        var img = data.image || '';
-        var imgEl = document.getElementById('qv-image');
-        if (imgEl) { imgEl.src = img || 'assets/img/product/product4.jpg'; }
-        updateStock();
       })
       .catch(() => {
         titleEl.textContent = 'Không tải được dữ liệu sản phẩm';
@@ -221,8 +227,8 @@
       .then(data => {
         // Cập nhật hiển thị số lượng giỏ hàng nếu có
         const cartCountElement = document.querySelector('.cart_count');
-        if (cartCountElement) {
-          cartCountElement.textContent = data.count;
+        if (cartCountElement && data.success) {
+          cartCountElement.textContent = data.data || 0;
         }
       })
       .catch(error => {

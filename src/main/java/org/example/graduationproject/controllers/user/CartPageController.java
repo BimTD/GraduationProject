@@ -1,13 +1,9 @@
 package org.example.graduationproject.controllers.user;
 
 import org.example.graduationproject.controllers.BaseController;
-import org.example.graduationproject.models.GioHang;
-import org.example.graduationproject.models.User;
-import org.example.graduationproject.repositories.UserRepository;
-import org.example.graduationproject.services.GioHangService;
+import org.example.graduationproject.dto.CartPageResponseDTO;
+import org.example.graduationproject.services.CartPageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,24 +12,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class CartPageController extends BaseController {
 
     @Autowired
-    private GioHangService gioHangService;
-
-    @Autowired
-    private UserRepository userRepository;
+    private CartPageService cartPageService;
 
     @GetMapping("/cart")
     public String cartPage(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() &&
-                !authentication.getName().equals("anonymousUser")) {
-            
-            String username = authentication.getName();
-            User user = userRepository.findByUsername(username).orElse(null);
-            if (user != null) {
-                GioHang cart = gioHangService.getActiveCart(user);
-                model.addAttribute("cart", cart);
-            }
-        } else {
+        try {
+            CartPageResponseDTO response = cartPageService.getCartPageDataWithValidation();
+            model.addAttribute("cart", response.getCart());
+            model.addAttribute("user", response.getUser());
+        } catch (Exception e) {
             return "redirect:/login";
         }
         return "user/cart";

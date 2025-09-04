@@ -1,5 +1,6 @@
 package org.example.graduationproject.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -62,9 +63,11 @@ public class SanPham {
     private NhaCungCap nhaCungCap;
 
     @OneToMany(mappedBy = "sanPham")
+    @JsonManagedReference
     private List<ImageSanPham> images;
 
     @OneToMany(mappedBy = "sanPham")
+    @JsonManagedReference
     private List<SanPhamBienThe> bienThes;
 }
 
