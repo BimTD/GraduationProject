@@ -9,3 +9,4 @@ public interface CheckoutService {
     CheckoutResponseDTO getCheckoutPageDataWithValidation();
     CheckoutResponseDTO processCheckoutWithValidation(CheckoutDTO checkoutDTO);
 }
+

@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/assets/**","/fe/**").permitAll()
                         .requestMatchers("/", "/home", "/login", "/register", "/oauth2/**", "/oauth2/login", "/oauth2/success").permitAll()
+                        .requestMatchers("/product-details/**").permitAll()
                         .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/cart/**").authenticated()
                         .requestMatchers("/cart").authenticated()

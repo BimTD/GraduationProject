@@ -28,3 +28,4 @@ public interface AuthenticationService {
      */
     Authentication getCurrentAuthentication();
 }
+

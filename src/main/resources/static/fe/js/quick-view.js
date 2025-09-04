@@ -116,7 +116,7 @@
           // set single image
           var img = data.image || '';
           var imgEl = document.getElementById('qv-image');
-          if (imgEl) { imgEl.src = img || 'assets/img/product/product4.jpg'; }
+          if (imgEl) { imgEl.src = img || '/fe/img/product/product4.jpg'; }
           updateStock();
         } else {
           titleEl.textContent = response.message || 'Không tải được dữ liệu sản phẩm';

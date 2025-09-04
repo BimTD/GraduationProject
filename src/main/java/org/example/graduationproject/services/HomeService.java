@@ -7,3 +7,4 @@ public interface HomeService {
     // Business logic methods for controller
     HomeResponseDTO getHomePageDataWithValidation();
 }
+

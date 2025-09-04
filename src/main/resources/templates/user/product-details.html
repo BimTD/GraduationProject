@@ -1,0 +1,385 @@
+<!doctype html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="~{user/fragments/head :: head}"></head>
+
+<body>
+<!--header area start-->
+<header th:replace="~{user/fragments/header :: header}"></header>
+<!--header area end-->
+
+<!--breadcrumbs area start-->
+<div class="breadcrumbs_area product_bread">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a th:href="@{/home}">home</a></li>
+                        <li>/</li>
+                        <li th:text="${product.name}">product details</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs area end-->
+
+<!-- Error message -->
+<div th:if="${error != null}" class="container mt-4">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Lỗi!</h4>
+        <p th:text="${error}">Error message</p>
+        <hr>
+        <p class="mb-0"><a th:href="@{/home}" class="btn btn-primary">Quay về trang chủ</a></p>
+    </div>
+</div>
+
+<!--product details start-->
+<div class="product_details" th:if="${product != null}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 col-md-5">
+                <div class="product-details-tab">
+                    <!-- Main product image -->
+                    <div id="img-1" class="zoomWrapper single-zoom">
+                        <a href="#">
+                            <img id="zoom1"
+                                 th:if="${product.images != null and !product.images.isEmpty()}"
+                                 th:src="${product.images[0].imageName}" 
+                                 th:data-zoom-image="${product.images[0].imageName}" 
+                                 th:alt="${product.name}">
+                            <img
+                                 th:unless="${product.images != null and !product.images.isEmpty()}"
+                                 src="/assets/images/product-home.png" 
+                                 data-zoom-image="/assets/images/product-home.png" 
+                                 th:alt="${product.name}">
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-7">
+                <div class="product_d_right">
+                    <form id="addToCartForm">
+
+                        <h1 th:text="${product.name}">Product Name</h1>
+                        <div class=" product_ratting">
+                            <ul>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li class="review"><a href="#"> 1 review </a></li>
+                                <li class="review"><a href="#"> Write a review </a></li>
+                            </ul>
+                        </div>
+                        <div class="product_price">
+                            <span class="current_price" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">0 VNĐ</span>
+                            <span class="old_price" th:if="${product.discount != null and product.discount > 0}" 
+                                  th:text="${#numbers.formatDecimal(product.price * (100 - product.discount) / 100, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                        </div>
+                        <div class="product_desc">
+                            <p th:text="${product.description}">Product description</p>
+                        </div>
+
+                        <!-- Color selection -->
+                        <div class="product_variant color">
+                            <h3>Màu sắc</h3>
+                            <select class="niceselect_option" id="colorSelect" name="colorId">
+                                <option value="">Chọn màu sắc</option>
+                                <option th:each="color : ${product.colors}" 
+                                        th:value="${color.id}" 
+                                        th:text="${color.name}">Color</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Size selection -->
+                        <div class="product_variant size">
+                            <h3>Kích thước</h3>
+                            <select class="niceselect_option" id="sizeSelect" name="sizeId">
+                                <option value="">Chọn kích thước</option>
+                                <option th:each="size : ${product.sizes}" 
+                                        th:value="${size.id}" 
+                                        th:text="${size.name}">Size</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Stock display -->
+                        <div class="product_variant stock" style="margin-bottom: 15px;">
+                            <label>Tồn kho: </label>
+                            <span id="stockDisplay" style="font-weight: bold; color: #e74c3c;">0</span>
+                        </div>
+                        
+                        <!-- Quantity and Add to Cart -->
+                        <div class="product_variant quantity">
+                            <label>Số lượng</label>
+                            <input id="quantityInput" min="1" max="1" value="1" type="number">
+                            <button class="button" type="button" id="addToCartBtn" disabled>Thêm vào giỏ hàng</button>
+                        </div>
+                        
+                        <div class=" product_d_action">
+                            <ul>
+                                <li><a href="#" title="Add to wishlist"><i class="fa fa-heart-o" aria-hidden="true"></i> Thêm vào yêu thích</a></li>
+                                <li><a href="#" title="Add to Compare"><i class="fa fa-sliders" aria-hidden="true"></i> So sánh sản phẩm</a></li>
+                            </ul>
+                        </div>
+
+                    </form>
+                    <div class="priduct_social">
+                        <h3>Share on:</h3>
+                        <ul>
+                            <li><a href="#"><i class="fa fa-rss"></i></a></li>
+                            <li><a href="#"><i class="fa fa-vimeo"></i></a></li>
+                            <li><a href="#"><i class="fa fa-tumblr"></i></a></li>
+                            <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+                            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--product details end-->
+
+<!--product info start-->
+<div class="product_d_info">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="product_d_inner">
+                    <div class="product_info_button">
+                        <ul class="nav" role="tablist">
+                            <li >
+                                <a class="active" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">More info</a>
+                            </li>
+                            <li>
+                                <a data-bs-toggle="tab" href="#sheet" role="tab" aria-controls="sheet" aria-selected="false">Data sheet</a>
+                            </li>
+                            <li>
+                                <a data-bs-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Reviews</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="info" role="tabpanel" >
+                            <div class="product_info_content">
+                                <p th:text="${product.description}">Product description</p>
+                                <div th:if="${product.huongDan != null and !product.huongDan.isEmpty()}">
+                                    <h4>Hướng dẫn sử dụng:</h4>
+                                    <p th:text="${product.huongDan}"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="sheet" role="tabpanel" >
+                            <div class="product_d_table">
+                                <form action="#">
+                                    <table>
+                                        <tbody>
+                                        <tr th:if="${product.category != null}">
+                                            <td class="first_child">Danh mục</td>
+                                            <td th:text="${product.category}">Category</td>
+                                        </tr>
+                                        <tr th:if="${product.brand != null}">
+                                            <td class="first_child">Thương hiệu</td>
+                                            <td th:text="${product.brand}">Brand</td>
+                                        </tr>
+                                        <tr th:if="${product.tag != null and !product.tag.isEmpty()}">
+                                            <td class="first_child">Tag</td>
+                                            <td th:text="${product.tag}">Tag</td>
+                                        </tr>
+                                        <tr th:if="${product.thanhPhan != null and !product.thanhPhan.isEmpty()}">
+                                            <td class="first_child">Thành phần</td>
+                                            <td th:text="${product.thanhPhan}">Composition</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </div>
+                            <div class="product_info_content">
+                                <p th:text="${product.description}">Product description</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="reviews" role="tabpanel" >
+                            <div class="product_info_content">
+                                <p>Fashion has been creating well-designed collections since 2010. The brand offers feminine designs delivering stylish separates and statement dresses which have since evolved into a full ready-to-wear collection in which every item is a vital part of a woman's wardrobe. The result? Cool, easy, chic looks with youthful elegance and unmistakable signature style. All the beautiful pieces are made in Italy and manufactured with the greatest attention. Now Fashion extends to a range of accessories including shoes, hats, belts and more!</p>
+                            </div>
+                            <div class="product_info_inner">
+                                <div class="product_ratting mb-10">
+                                    <ul>
+                                        <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                        <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                        <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                        <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                        <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                    </ul>
+                                    <strong>Posthemes</strong>
+                                    <p>09/07/2022</p>
+                                </div>
+                                <div class="product_demo">
+                                    <strong>demo</strong>
+                                    <p>That's OK!</p>
+                                </div>
+                            </div>
+                            <div class="product_review_form">
+                                <form action="#">
+                                    <h2>Add a review </h2>
+                                    <p>Your email address will not be published. Required fields are marked </p>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <label for="review_comment">Your review </label>
+                                            <textarea name="comment" id="review_comment" ></textarea>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <label for="author">Name</label>
+                                            <input id="author"  type="text">
+
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <label for="email">Email </label>
+                                            <input id="email"  type="text">
+                                        </div>
+                                    </div>
+                                    <button type="submit">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--product info end-->
+
+<!--product section area start-->
+<section class="product_section related_product">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section_title">
+                    <h2>Related Products</h2>
+                    <p>Contemporary, minimal and modern designs embody the Lavish Alice handwriting</p>
+                </div>
+            </div>
+        </div>
+        <div class="product_area">
+            <div class="row">
+                <div class="col-12">
+                    <div class="product_carousel product_three_column4" id="relatedProductsContainer">
+                        <!-- Related products will be loaded here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!--product section area end-->
+
+<!--product section area start-->
+<section class="product_section upsell_product">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section_title">
+                    <h2>Sản phẩm nâng cấp</h2>
+                    <p>Khám phá thêm những sản phẩm cao cấp từ thương hiệu này</p>
+                </div>
+            </div>
+        </div>
+        <div class="product_area">
+            <div class="row">
+                <div class="col-12">
+                    <div class="product_carousel product_three_column4" id="upsellProductsContainer">
+                        <!-- Upsell products will be loaded here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!--product section area end-->
+
+<!--footer area start-->
+<footer th:replace="~{user/fragments/footer :: footer}"></footer>
+<!--footer area end-->
+
+<!-- modal area start-->
+<div class="modal fade" id="modal_box" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="modal_body">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-5 col-md-5 col-sm-12">
+              <div class="modal_tab">
+                <div style="text-align:center">
+                  <img id="qv-image" th:src="@{/fe/img/product/product4.jpg}" alt="" style="max-width:100%;height:auto" />
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12">
+              <div class="modal_right">
+                <div class="modal_title mb-10">
+                  <h2 id="qv-title"></h2>
+                </div>
+                <div class="modal_price mb-10">
+                  <span class="new_price" id="qv-price"></span>
+                  <span class="old_price" id="qv-old-price" style="display:none"></span>
+                </div>
+                <div class="modal_description mb-15">
+                  <p id="qv-description"></p>
+                </div>
+                <div class="variants_selects">
+                  <div class="variants_size">
+                    <h2>size</h2>
+                    <select id="qv-size" class="select_option">
+                      <option value="">Chọn size</option>
+                    </select>
+                  </div>
+                  <div class="variants_color">
+                    <h2>color</h2>
+                    <select id="qv-color" class="select_option">
+                      <option value="">Chọn màu</option>
+                    </select>
+                  </div>
+                  <div style="margin-top:10px">
+                    <span>Tồn kho: </span><strong id="qv-stock">0</strong>
+                  </div>
+                  <div class="modal_add_to_cart">
+                    <form action="#">
+                      <input id="qv-qty" min="1" max="100" step="1" value="1" type="number">
+                      <button type="button" id="qv-add">add to cart</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- modal area start-->
+
+
+<script th:src="@{/fe/js/plugins.js}"></script>
+<script th:src="@{/fe/js/main.js}"></script>
+<script th:src="@{/fe/js/quick-view.js}"></script>
+<script th:src="@{/fe/js/product-details.js}"></script>
+
+
+</body>
+
+</html>

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
@@ -33,4 +34,15 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
     
     // Search by name and filter by category and gender
     Page<SanPham> findByTenContainingIgnoreCaseAndLoai_IdAndGioiTinh(String ten, Integer loaiId, Integer gioiTinh, Pageable pageable);
+    
+    // Get related products (same category and gender, excluding current product)
+    Page<SanPham> findByLoai_IdAndGioiTinhAndIdNotAndTrangThaiHoatDongTrue(Integer loaiId, Integer gioiTinh, Integer excludeId, Pageable pageable);
+    
+    // Upsell products: same brand, different category, with discount
+    Page<SanPham> findByNhanHieu_IdAndIdNotAndTrangThaiHoatDongTrueAndKhuyenMaiGreaterThanOrderByKhuyenMaiDesc(
+            Integer nhanHieuId, Integer excludeId, BigDecimal minDiscount, Pageable pageable);
+    
+    // Alternative upsell: higher price products in same category
+    Page<SanPham> findByLoai_IdAndGioiTinhAndIdNotAndTrangThaiHoatDongTrueAndGiaBanGreaterThanOrderByGiaBanDesc(
+        Integer loaiId, Integer gioiTinh, Integer excludeId, BigDecimal minPrice, Pageable pageable);
 }

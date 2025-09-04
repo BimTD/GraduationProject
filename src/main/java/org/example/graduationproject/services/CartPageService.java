@@ -7,3 +7,4 @@ public interface CartPageService {
     // Business logic methods for controller
     CartPageResponseDTO getCartPageDataWithValidation();
 }
+

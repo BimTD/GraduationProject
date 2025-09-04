@@ -64,3 +64,4 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 }
+
