@@ -67,7 +67,7 @@
                 <div class="col-lg-3 col-md-6 offset-md-6 offset-lg-0">
                     <div class="cart_area">
                         <div class="middel_links">
-                            <ul th:if="${!isAuthenticated}">
+                            <ul th:if="!${isAuthenticated}">
                                 <li><a th:href="@{/login}">Login</a></li>
                                 <li>/</li>
                                 <li><a th:href="@{/register}">Register</a></li>
@@ -98,12 +98,12 @@
                             <div class="main_menu">
                                 <nav>
                                     <ul>
-                                        <li class="active"><a th:href="@{/home}">Home</a></li>
-                                        <li><a th:href="@{/shop}">Shop</a></li>
-                                        <li th:if="${isAuthenticated}"><a th:href="@{/orders}">Đơn hàng</a></li>
-                                        <li><a href="#">Blog</a></li>
-                                        <li><a href="#">About us</a></li>
-                                        <li><a href="#">Contact Us</a></li>
+                                        <li th:classappend="${currentPage == '/home' or currentPage == '/'} ? 'active' : ''"><a th:href="@{/home}">Home</a></li>
+                                        <li th:classappend="${currentPage == '/shop' or #strings.startsWith(currentPage, '/product-details') or currentPage == '/cart' or #strings.startsWith(currentPage, '/checkout')} ? 'active' : ''"><a th:href="@{/shop}">Shop</a></li>
+                                        <li th:if="${isAuthenticated}" th:classappend="${#strings.startsWith(currentPage, '/orders')} ? 'active' : ''"><a th:href="@{/orders}">Đơn hàng</a></li>
+                                        <li th:classappend="${currentPage == '/blog'} ? 'active' : ''"><a th:href="@{/blog}">Blog</a></li>
+                                        <li th:classappend="${currentPage == '/about'} ? 'active' : ''"><a th:href="@{/about}">About us</a></li>
+                                        <li th:classappend="${currentPage == '/contact'} ? 'active' : ''"><a th:href="@{/contact}">Contact Us</a></li>
                                     </ul>
                                 </nav>
                             </div>

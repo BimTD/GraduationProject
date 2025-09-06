@@ -1,0 +1,112 @@
+<!doctype html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="~{user/fragments/head :: head}"></head>
+
+<body>
+
+<header th:replace="~{user/fragments/header :: header}"></header>
+
+<!--breadcrumbs area start-->
+<div class="breadcrumbs_area other_bread">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="index.html">home</a></li>
+                        <li>/</li>
+                        <li>contact us</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs area end-->
+
+
+<!--contact area start-->
+<div class="contact_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-12">
+                <div class="contact_message content">
+                    <h3>contact us</h3>
+                    <p>Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare quam littera gothica, quam nunc putamus parum claram anteposuerit litterarum formas human. qui sequitur mutationem consuetudium lectorum. Mirum est notare quam</p>
+                    <ul>
+                        <li><i class="fa fa-map-marker"></i> Địa chỉ: Số 167, đường Nguyễn Trác, phường Yên Nghĩa, quận Hà Đông, Hà Nội</li>
+                        <li><i class="fa fa-phone"></i> <a href="tel:02422180336">0242.2180.336</a></li>
+                        <li><i class="fa fa-envelope-o"></i> <a href="mailto:info@phenikaa-uni.edu.vn">info@phenikaa-uni.edu.vn</a></li>
+                        <li><i class="fa fa-mobile"></i> <a href="tel:0946511010">094.651.1010</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="contact_message form">
+                    <h3>Tell us your project</h3>
+
+                    <form id="contact-form" th:action="@{/contact}" method="post">
+                        <p>
+                            <label> Your Name (required)</label>
+                            <input name="name" placeholder="Name *" type="text" required>
+                        </p>
+                        <p>
+                            <label>  Your Email (required)</label>
+                            <input name="email" placeholder="Email *" type="email" required>
+                        </p>
+                        <p>
+                            <label>  Subject</label>
+                            <input name="subject" placeholder="Subject *" type="text" required>
+                        </p>
+                        <div class="contact_textarea">
+                            <label>  Your Message</label>
+                            <textarea placeholder="Message *" name="message" class="form-control2" required></textarea>
+                        </div>
+                        <button type="submit"> Send</button>
+                        <!-- Success Message -->
+                        <div th:if="${successMessage}" class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                            <i class="fa fa-check-circle"></i> <span th:text="${successMessage}"></span>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--contact area end-->
+
+<!--contact map start-->
+<div class="contact_map">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="map-area">
+                    <iframe id="googleMap" 
+                            style="border: none; width: 100%; height: 460px;" 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.1234567890!2d105.7890123456789!3d20.9876543210987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135abc123456789%3A0xdef0123456789abc!2zU8awIDE2NywgxJDhu5NuZyBOZ3XhuqVuIFRyw6FjLCBwaMawbmcgWcOqbiBOZ2jEqWEsIHF1YW4gSOG6o2EgxJDhu5NuLCBIw6AgTuG7mWk!5e0!3m2!1svi!2s!4v1640995200000!5m2!1svi!2s"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Google Map - Số 167, đường Nguyễn Trác, phường Yên Nghĩa, quận Hà Đông, Hà Nội">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--contact map end-->
+
+
+<!--footer area start-->
+<footer th:replace="~{user/fragments/footer :: footer}"></footer>
+<!--footer area end-->
+
+
+<script th:src="@{/fe/js/plugins.js}"></script>
+<script th:src="@{/fe/js/main.js}"></script>
+
+</body>
+</html>

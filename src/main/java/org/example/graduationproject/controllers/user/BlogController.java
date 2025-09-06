@@ -1,0 +1,16 @@
+package org.example.graduationproject.controllers.user;
+
+import org.example.graduationproject.controllers.BaseController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/blog")
+public class BlogController extends BaseController {
+
+    @GetMapping
+    public String blogPage() {
+        return "user/blog";
+    }
+}

@@ -3,6 +3,8 @@ package org.example.graduationproject.controllers;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 public abstract class BaseController {
 
@@ -31,5 +33,19 @@ public abstract class BaseController {
             }
         }
         return null;
+    }
+
+    @ModelAttribute("currentPage")
+    public String getCurrentPage() {
+        try {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attributes != null) {
+                String requestURI = attributes.getRequest().getRequestURI();
+                return requestURI;
+            }
+        } catch (Exception e) {
+            // Fallback if request context is not available
+        }
+        return "";
     }
 }
