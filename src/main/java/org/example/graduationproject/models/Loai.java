@@ -1,6 +1,6 @@
 package org.example.graduationproject.models;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,12 +24,15 @@ public class Loai {
     private String ten;
 
     @OneToMany(mappedBy = "loai", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<SanPham> sanPhams;
 
     @OneToMany(mappedBy = "loai", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<MauSac> mauSacs;
 
     @OneToMany(mappedBy = "loai", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Size> sizes;
 }
 

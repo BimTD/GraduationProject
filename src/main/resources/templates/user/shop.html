@@ -105,6 +105,12 @@
                     <!--shop toolbar start-->
                     <div class="shop_title">
                         <h1>shop</h1>
+                        <div class="shop-search-info" th:if="${param.search}">
+                            <p class="search-results-info">
+                                Kết quả tìm kiếm cho: <strong th:text="${param.search}">"từ khóa"</strong>
+                                <span th:text="'(' + ${totalProducts} + ' sản phẩm)'">(0 sản phẩm)</span>
+                            </p>
+                        </div>
                     </div>
                     <div class="shop_toolbar_wrapper">
                         <div class="shop_toolbar_btn">

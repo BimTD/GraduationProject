@@ -1,6 +1,6 @@
 package org.example.graduationproject.models;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +36,7 @@ public class NhaCungCap {
     private String diaChi;
 
     @OneToMany(mappedBy = "nhaCungCap")
+    @JsonIgnore
     private List<SanPham> sanPhams;
 }
 

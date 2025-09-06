@@ -1,5 +1,6 @@
 package org.example.graduationproject.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class Size {
     private Loai loai;
 
     @OneToMany(mappedBy = "size")
+    @JsonIgnore
     private List<SanPhamBienThe> sanPhamBienThes;
 }
 

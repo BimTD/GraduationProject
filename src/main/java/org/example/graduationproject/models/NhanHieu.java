@@ -1,6 +1,6 @@
 package org.example.graduationproject.models;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +27,7 @@ public class NhanHieu {
     private LocalDateTime dateCreate;
 
     @OneToMany(mappedBy = "nhanHieu")
+    @JsonIgnore
     private List<SanPham> sanPhams;
 }
 

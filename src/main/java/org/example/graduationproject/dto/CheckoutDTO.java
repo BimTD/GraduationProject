@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class CheckoutDTO {
     
+    // Thông tin cơ bản
     private String ghiChu;
     private String loaiThanhToan; // "CASH", "BANK_TRANSFER", "CREDIT_CARD"
     private String diaChiGiaoHang;
@@ -18,4 +19,15 @@ public class CheckoutDTO {
     private String tenNguoiNhan;
     private BigDecimal phiGiaoHang;
     private BigDecimal tongTien;
+    
+    // Thông tin bổ sung từ frontend (có thể ignore nếu không cần)
+    private String ho;
+    private String ten;
+    private String tenCongTy;
+    private String quocGia;
+    private String diaChi1;
+    private String diaChi2;
+    private String thanhPho;
+    private String tinhHuyen;
+    private String email;
 }

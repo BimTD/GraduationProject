@@ -45,4 +45,64 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
     // Alternative upsell: higher price products in same category
     Page<SanPham> findByLoai_IdAndGioiTinhAndIdNotAndTrangThaiHoatDongTrueAndGiaBanGreaterThanOrderByGiaBanDesc(
         Integer loaiId, Integer gioiTinh, Integer excludeId, BigDecimal minPrice, Pageable pageable);
+    
+    // Search methods for modern search functionality with fuzzy search
+    @Query("SELECT s FROM SanPham s WHERE " +
+           "(LOWER(s.ten) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.moTa) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.tag) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.loai.ten) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.nhanHieu.ten) LIKE LOWER(:searchTerm)) AND " +
+           "s.trangThaiHoatDong = true " +
+           "ORDER BY " +
+           "CASE WHEN LOWER(s.ten) LIKE LOWER(:exactTerm) THEN 1 " +
+           "WHEN LOWER(s.ten) LIKE LOWER(:startTerm) THEN 2 " +
+           "WHEN LOWER(s.ten) LIKE LOWER(:searchTerm) THEN 3 " +
+           "WHEN LOWER(s.moTa) LIKE LOWER(:searchTerm) THEN 4 " +
+           "WHEN LOWER(s.tag) LIKE LOWER(:searchTerm) THEN 5 " +
+           "ELSE 6 END, s.ngayTao DESC")
+    List<SanPham> findTopSuggestions(@Param("searchTerm") String searchTerm, 
+                                   @Param("exactTerm") String exactTerm,
+                                   @Param("startTerm") String startTerm,
+                                   Pageable pageable);
+    
+    @Query("SELECT s FROM SanPham s WHERE " +
+           "(LOWER(s.ten) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.moTa) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.tag) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.loai.ten) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.nhanHieu.ten) LIKE LOWER(:searchTerm)) AND " +
+           "s.trangThaiHoatDong = true " +
+           "ORDER BY " +
+           "CASE WHEN LOWER(s.ten) LIKE LOWER(:exactTerm) THEN 1 " +
+           "WHEN LOWER(s.ten) LIKE LOWER(:startTerm) THEN 2 " +
+           "WHEN LOWER(s.ten) LIKE LOWER(:searchTerm) THEN 3 " +
+           "WHEN LOWER(s.moTa) LIKE LOWER(:searchTerm) THEN 4 " +
+           "WHEN LOWER(s.tag) LIKE LOWER(:searchTerm) THEN 5 " +
+           "ELSE 6 END, s.ngayTao DESC")
+    Page<SanPham> findBySearchTerm(@Param("searchTerm") String searchTerm,
+                                 @Param("exactTerm") String exactTerm,
+                                 @Param("startTerm") String startTerm,
+                                 Pageable pageable);
+    
+    @Query("SELECT s FROM SanPham s WHERE " +
+           "(LOWER(s.ten) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.moTa) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.tag) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.loai.ten) LIKE LOWER(:searchTerm) OR " +
+           "LOWER(s.nhanHieu.ten) LIKE LOWER(:searchTerm)) AND " +
+           "s.loai.id = :categoryId AND " +
+           "s.trangThaiHoatDong = true " +
+           "ORDER BY " +
+           "CASE WHEN LOWER(s.ten) LIKE LOWER(:exactTerm) THEN 1 " +
+           "WHEN LOWER(s.ten) LIKE LOWER(:startTerm) THEN 2 " +
+           "WHEN LOWER(s.ten) LIKE LOWER(:searchTerm) THEN 3 " +
+           "WHEN LOWER(s.moTa) LIKE LOWER(:searchTerm) THEN 4 " +
+           "WHEN LOWER(s.tag) LIKE LOWER(:searchTerm) THEN 5 " +
+           "ELSE 6 END, s.ngayTao DESC")
+    Page<SanPham> findBySearchTermAndCategory(@Param("searchTerm") String searchTerm,
+                                            @Param("exactTerm") String exactTerm,
+                                            @Param("startTerm") String startTerm,
+                                            @Param("categoryId") Integer categoryId, 
+                                            Pageable pageable);
 }
