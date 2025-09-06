@@ -1,0 +1,167 @@
+<!doctype html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="~{user/fragments/head :: head}"></head>
+
+<body>
+<!--header area start-->
+<header th:replace="~{user/fragments/header :: header}"></header>
+<!--header area end-->
+
+<!--breadcrumbs area start-->
+<div class="breadcrumbs_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a th:href="@{/home}">Trang chủ</a></li>
+                        <li>Thông tin cá nhân</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs area end-->
+
+<!--account area start-->
+<div class="account_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="account_content">
+                    <h2>Thông tin cá nhân</h2>
+                    
+                    <!-- Success/Error Messages -->
+                    <div th:if="${successMessage}" class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                        <span th:text="${successMessage}"></span>
+                    </div>
+                    
+                    <div th:if="${errorMessage}" class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+
+                    <div class="row">
+                        <!-- Profile Information Form -->
+                        <div class="col-lg-8">
+                            <div class="account_form">
+                                <h3>Cập nhật thông tin</h3>
+                                <form th:action="@{/profile/update}" method="post">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label>Tên đăng nhập <span>*</span></label>
+                                            <input type="text" th:value="${user.username}" readonly style="background-color: #f5f5f5;">
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <label>Họ và tên <span>*</span></label>
+                                            <input type="text" name="hoTen" th:value="${user.hoTen}" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label>Email <span>*</span></label>
+                                            <input type="email" name="email" th:value="${user.email}" required>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <label>Số điện thoại</label>
+                                            <input type="tel" name="soDienThoai" th:value="${user.soDienThoai}">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <label>Địa chỉ</label>
+                                            <textarea name="diaChi" rows="3" th:text="${user.diaChi}"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Change Password Form -->
+                        <div class="col-lg-4">
+                            <div class="account_form">
+                                <h3>Đổi mật khẩu</h3>
+                                <form th:action="@{/profile/change-password}" method="post">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <label>Mật khẩu hiện tại <span>*</span></label>
+                                            <input type="password" name="currentPassword" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <label>Mật khẩu mới <span>*</span></label>
+                                            <input type="password" name="newPassword" required minlength="6">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <label>Xác nhận mật khẩu mới <span>*</span></label>
+                                            <input type="password" name="confirmPassword" required minlength="6">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Information Display -->
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-lg-12">
+                            <div class="account_info">
+                                <h3>Thông tin tài khoản</h3>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <p><strong>Tên đăng nhập:</strong> <span th:text="${user.username}"></span></p>
+                                        <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+                                        <p><strong>Trạng thái:</strong> 
+                                            <span th:if="${user.enabled == '1'}" style="color: green;">Đã kích hoạt</span>
+                                            <span th:if="${user.enabled != '1'}" style="color: red;">Chưa kích hoạt</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p><strong>Nhà cung cấp:</strong> 
+                                            <span th:if="${user.provider != null}" th:text="${user.provider}"></span>
+                                            <span th:if="${user.provider == null}">Đăng ký thông thường</span>
+                                        </p>
+                                        <p><strong>Họ và tên:</strong> <span th:text="${user.hoTen}"></span></p>
+                                        <p><strong>Số điện thoại:</strong> <span th:text="${user.soDienThoai}"></span></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <p><strong>Địa chỉ:</strong> <span th:text="${user.diaChi}"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--account area end-->
+
+<!--footer area start-->
+<footer th:replace="~{user/fragments/footer :: footer}"></footer>
+<!--footer area end-->
+
+<!-- JS
+============================================ -->
+<script th:src="@{/fe/js/plugins.js}"></script>
+<script th:src="@{/fe/js/main.js}"></script>
+
+</body>
+</html>

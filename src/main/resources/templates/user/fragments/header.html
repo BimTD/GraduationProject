@@ -14,8 +14,16 @@
                 <div class="col-lg-5 col-md-12">
                     <div class="top_right text-right">
                         <ul>
-                            <li class="top_links"><a href="#">Account<i class="ion-chevron-down"></i></a>
-
+                            <li class="language" th:if="${isAuthenticated}">
+                                <a href="#">Account<i class="ion-chevron-down"></i></a>
+                                <ul class="dropdown_language">
+                                    <li><a th:href="@{/profile}">Thông tin cá nhân</a></li>
+                                    <li><a th:href="@{/orders}">Đơn hàng của tôi</a></li>
+                                    <li><a th:href="@{/logout}">Đăng xuất</a></li>
+                                </ul>
+                            </li>
+                            <li class="top_links" th:if="!${isAuthenticated}">
+                                <a th:href="@{/login}">Đăng nhập</a>
                             </li>
                             <li class="language"><a href="#">Language<i class="ion-chevron-down"></i></a>
                                 <ul class="dropdown_language">

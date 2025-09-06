@@ -1,7 +1,7 @@
 <head th:fragment="head">
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Home</title>
+    <title th:text="${pageTitle != null ? pageTitle : 'Home'}">Home</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/fe/img/favicon.ico}">
@@ -10,6 +10,7 @@
     <link rel="stylesheet" th:href="@{/fe/css/cart.css}">
     <link rel="stylesheet" th:href="@{/fe/css/price-vnd.css}">
     <link rel="stylesheet" th:href="@{/fe/css/checkout.css}">
+    <link rel="stylesheet" th:href="@{/fe/css/profile.css}" th:if="${#strings.startsWith(currentPage, '/profile')}">
     
     <!-- jQuery UI for slider -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/ui-lightness/jquery-ui.css">
