@@ -121,9 +121,13 @@
                                     <span class="summary_value" th:text="${order.loaiThanhToan}">Tiền mặt</span>
                                 </div>
                                 <hr class="summary_divider" />
+                                <div class="summary_row" th:if="${order.maGiamGiaSuDung != null and order.giaTriGiamGia != null and order.giaTriGiamGia > 0}">
+                                    <span class="summary_label">Giảm giá (<span th:text="${order.maGiamGiaSuDung}">SALE10</span>)</span>
+                                    <span class="summary_value" style="color: #28a745;" th:text="'-' + ${#numbers.formatDecimal(order.giaTriGiamGia, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">-50,000 VNĐ</span>
+                                </div>
                                 <div class="summary_total">
                                     <span class="summary_label">Tổng tiền</span>
-                                    <span class="summary_amount" th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">500,000 VNĐ</span>
+                                    <span class="summary_amount" th:text="${order.tongTienSauGiamGia != null ? #numbers.formatDecimal(order.tongTienSauGiamGia, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : #numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">500,000 VNĐ</span>
                                 </div>
                             </div>
                         </div>

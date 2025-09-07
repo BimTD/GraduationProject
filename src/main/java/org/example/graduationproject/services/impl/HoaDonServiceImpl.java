@@ -13,6 +13,7 @@ import org.example.graduationproject.repositories.SanPhamBienTheRepository;
 import org.example.graduationproject.services.AuthenticationService;
 import org.example.graduationproject.services.GioHangService;
 import org.example.graduationproject.services.HoaDonService;
+import org.example.graduationproject.services.MaGiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,9 @@ public class HoaDonServiceImpl implements HoaDonService {
     @Autowired
     private AuthenticationService authenticationService;
 
+    @Autowired
+    private MaGiamGiaService maGiamGiaService;
+
     @Override
     @Transactional
     public HoaDon createOrderFromCart(User user, CheckoutDTO checkoutDTO) {
@@ -66,7 +70,8 @@ public class HoaDonServiceImpl implements HoaDonService {
         hoaDon.setSoDienThoaiGiaoHang(checkoutDTO.getSoDienThoai());
         
         // Tính tổng tiền
-        BigDecimal tongTien = activeCart.getChiTietGioHangs().stream()
+        BigDecimal tongTien = checkoutDTO.getTongTien() != null ? checkoutDTO.getTongTien() : 
+            activeCart.getChiTietGioHangs().stream()
                 .map(ChiTietGioHang::getThanhTien)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         
@@ -76,6 +81,30 @@ public class HoaDonServiceImpl implements HoaDonService {
         }
         
         hoaDon.setTongTien(tongTien);
+        
+        // Xử lý mã giảm giá
+        BigDecimal giaTriGiamGia = checkoutDTO.getGiaTriGiamGia() != null ? checkoutDTO.getGiaTriGiamGia() : BigDecimal.ZERO;
+        BigDecimal tongTienSauGiamGia = checkoutDTO.getTongTienSauGiamGia() != null ? checkoutDTO.getTongTienSauGiamGia() : tongTien;
+        MaGiamGia maGiamGia = null;
+        
+        if (checkoutDTO.getMaGiamGia() != null && !checkoutDTO.getMaGiamGia().trim().isEmpty()) {
+            try {
+                // Lấy thông tin mã giảm giá
+                maGiamGia = maGiamGiaService.getMaGiamGiaByCode(checkoutDTO.getMaGiamGia());
+                
+                // Áp dụng mã giảm giá (tăng số lần sử dụng)
+                maGiamGiaService.applyMaGiamGia(checkoutDTO.getMaGiamGia());
+            } catch (Exception e) {
+                // Nếu mã giảm giá không hợp lệ, bỏ qua và tiếp tục
+                System.out.println("Mã giảm giá không hợp lệ: " + e.getMessage());
+            }
+        }
+        
+        // Lưu thông tin mã giảm giá vào hóa đơn
+        hoaDon.setMaGiamGiaSuDung(checkoutDTO.getMaGiamGia());
+        hoaDon.setGiaTriGiamGia(giaTriGiamGia);
+        hoaDon.setTongTienSauGiamGia(tongTienSauGiamGia);
+        hoaDon.setMaGiamGia(maGiamGia);
         
         // Lưu hóa đơn
         hoaDon = hoaDonRepository.save(hoaDon);

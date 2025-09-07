@@ -4,11 +4,13 @@ import org.example.graduationproject.controllers.BaseController;
 import org.example.graduationproject.dto.ProductResponseDTO;
 import org.example.graduationproject.services.UserProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequestMapping("/product-details")
@@ -17,7 +19,7 @@ public class UserProductController extends BaseController {
     @Autowired
     private UserProductService userProductService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9]+}")
     public String productDetails(@PathVariable("id") Integer productId, Model model) {
         try {
             ProductResponseDTO response = userProductService.getProductDetailsWithValidation(productId);
@@ -33,5 +35,7 @@ public class UserProductController extends BaseController {
         return "user/product-details";
     }
 }
+
+
 
 

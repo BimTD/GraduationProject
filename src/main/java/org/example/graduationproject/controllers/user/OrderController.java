@@ -33,7 +33,7 @@ public class OrderController extends BaseController {
         }
     }
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/{orderId:[0-9]+}")
     public String showOrderDetail(@PathVariable Integer orderId, Model model) {
         try {
             OrderResponseDTO response = hoaDonService.getUserOrderDetailWithValidation(orderId);
@@ -45,7 +45,7 @@ public class OrderController extends BaseController {
         }
     }
 
-    @PostMapping("/{orderId}/cancel")
+    @PostMapping("/{orderId:[0-9]+}/cancel")
     @ResponseBody
     public ResponseEntity<OrderResponseDTO> cancelOrder(@PathVariable Integer orderId) {
         CancelOrderDTO cancelOrderDTO = new CancelOrderDTO(orderId);

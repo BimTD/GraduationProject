@@ -115,6 +115,7 @@
                                 <th>Ngày đặt</th>
                                 <th>Trạng thái</th>
                                 <th>Số SP</th>
+                                <th>Giảm giá</th>
                                 <th>Tổng</th>
                                 <th>Hành động</th>
                             </tr>
@@ -133,7 +134,18 @@
                                     </span>
                                 </td>
                                 <td th:text="${order.chiTietHoaDons != null ? order.chiTietHoaDons.size() : 0}">2</td>
-                                <td th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">500,000 VNĐ</td>
+                                <td>
+                                    <span th:if="${order.maGiamGiaSuDung != null and order.giaTriGiamGia != null and order.giaTriGiamGia > 0}" 
+                                          style="color: #28a745; font-size: 12px;" 
+                                          th:text="${order.maGiamGiaSuDung + ' (-' + #numbers.formatDecimal(order.giaTriGiamGia, 0, 'COMMA', 0, 'POINT') + ' VNĐ)'}">
+                                        SALE10 (-50,000 VNĐ)
+                                    </span>
+                                    <span th:if="${order.maGiamGiaSuDung == null or order.giaTriGiamGia == null or order.giaTriGiamGia <= 0}" 
+                                          style="color: #999; font-size: 12px;">
+                                        Không có
+                                    </span>
+                                </td>
+                                <td th:text="${order.tongTienSauGiamGia != null ? #numbers.formatDecimal(order.tongTienSauGiamGia, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : #numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">500,000 VNĐ</td>
                                 <td>
                                     <a th:href="@{'/orders/' + ${order.id}}" class="btn btn-view btn-xs" title="Xem chi tiết">
                                         <i class="fa fa-eye"></i>

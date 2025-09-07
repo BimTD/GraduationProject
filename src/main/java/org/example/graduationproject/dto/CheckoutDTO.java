@@ -20,6 +20,11 @@ public class CheckoutDTO {
     private BigDecimal phiGiaoHang;
     private BigDecimal tongTien;
     
+    // Thông tin mã giảm giá
+    private String maGiamGia; // Mã giảm giá người dùng nhập
+    private BigDecimal giaTriGiamGia = BigDecimal.ZERO; // Giá trị giảm giá được áp dụng
+    private BigDecimal tongTienSauGiamGia; // Tổng tiền sau khi giảm giá
+    
     // Thông tin bổ sung từ frontend (có thể ignore nếu không cần)
     private String ho;
     private String ten;

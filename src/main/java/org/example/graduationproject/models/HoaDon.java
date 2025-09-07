@@ -48,10 +48,25 @@ public class HoaDon {
 
     private BigDecimal tongTien;
 
+    // Thông tin mã giảm giá
+    @Column(name = "ma_giam_gia_su_dung", columnDefinition = "NVARCHAR(50)")
+    private String maGiamGiaSuDung; // Mã giảm giá đã sử dụng
+
+    @Column(name = "gia_tri_giam_gia", precision = 18, scale = 2)
+    private BigDecimal giaTriGiamGia = BigDecimal.ZERO; // Giá trị giảm giá đã áp dụng
+
+    @Column(name = "tong_tien_sau_giam_gia", precision = 18, scale = 2)
+    private BigDecimal tongTienSauGiamGia; // Tổng tiền sau khi giảm giá
+
     @ManyToOne
     @JoinColumn(name = "Id_User")
     @JsonBackReference
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "Id_MaGiamGia")
+    @JsonBackReference
+    private MaGiamGia maGiamGia; // Quan hệ với mã giảm giá
 
     @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference

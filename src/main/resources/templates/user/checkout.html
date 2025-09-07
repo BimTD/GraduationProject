@@ -145,7 +145,11 @@
                         <div class="order_total">
                             <div class="total_row">
                                 <span>Tạm tính:</span>
-                                <span th:text="${#numbers.formatDecimal(#aggregates.sum(cart.chiTietGioHangs.![thanhTien]), 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                                <span id="subtotal-amount" th:text="${#numbers.formatDecimal(#aggregates.sum(cart.chiTietGioHangs.![thanhTien]), 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                            </div>
+                            <div class="total_row discount" id="discount-row" th:style="${discountCode != null ? 'display: block;' : 'display: none;'}">
+                                <span>Giảm giá (<span id="discount-code-display" th:text="${discountCode}"></span>):</span>
+                                <span id="discount-amount" style="color: #28a745;" th:text="'-' + ${#numbers.formatDecimal(discountAmount, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">-0 VNĐ</span>
                             </div>
                             <div class="total_row shipping">
                                 <span>Phí giao hàng:</span>
@@ -153,7 +157,18 @@
                             </div>
                             <div class="total_row total">
                                 <span>Tổng cộng:</span>
-                                <span id="total-amount" th:text="${#numbers.formatDecimal(#aggregates.sum(cart.chiTietGioHangs.![thanhTien]), 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                                <span id="total-amount" th:text="${finalTotal != null ? #numbers.formatDecimal(finalTotal, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : #numbers.formatDecimal(#aggregates.sum(cart.chiTietGioHangs.![thanhTien]), 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Mã giảm giá section -->
+                        <div class="discount_section" th:if="${discountCode != null}">
+                            <div class="discount_info">
+                                <h4>Mã giảm giá đã áp dụng</h4>
+                                <div class="applied_discount">
+                                    <span class="discount_code" th:text="${discountCode}">SALE10</span>
+                                    <span class="discount_amount" th:text="'-' + ${#numbers.formatDecimal(discountAmount, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">-50,000 VNĐ</span>
+                                </div>
                             </div>
                         </div>
                         
@@ -197,12 +212,193 @@
 <footer th:replace="~{user/fragments/footer :: footer}"></footer>
 <!--footer area end-->
 
-<script th:src="@{/fe/js/plugins.js}"></script>
-<script th:src="@{/fe/js/main.js}"></script>
+<script th:src="@{fe/js/plugins.js}"></script>
+<script th:src="@{fe/js/main.js}"></script>
+
+<style>
+.discount_section {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.discount_info h4 {
+    color: #28a745;
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.applied_discount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid #d4edda;
+}
+
+.discount_code {
+    font-weight: 600;
+    color: #155724;
+    background-color: #d4edda;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.discount_amount {
+    font-weight: 600;
+    color: #28a745;
+    font-size: 16px;
+}
+
+.total_row.discount {
+    border-top: 1px solid #e5e5e5;
+    padding: 8px 0;
+}
+
+.total_row.discount span:first-child {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 500px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.notification.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.notification.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.notification-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+    margin-left: 10px;
+}
+
+.notification-close:hover {
+    opacity: 1;
+}
+</style>
+
 <script>
+// ===== GLOBAL VARIABLES =====
+let currentDiscountCode = null;
+let currentDiscountAmount = 0;
+let originalSubtotal = 0;
+
+// ===== GLOBAL FUNCTIONS =====
+
+// Hàm format tiền tệ
+function formatCurrency(amount) {
+    if (isNaN(amount) || amount <= 0) {
+        return '0 VNĐ';
+    }
+    return new Intl.NumberFormat('vi-VN', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(amount) + ' VNĐ';
+}
+
+// Hàm khởi tạo mã giảm giá từ Thymeleaf data
+function initializeDiscountFromURL() {
+    // Lưu subtotal gốc
+    const subtotalElement = document.getElementById('subtotal-amount');
+    if (subtotalElement) {
+        const subtotalText = subtotalElement.textContent;
+        originalSubtotal = parseFloat(subtotalText.replace(/[^\d]/g, ''));
+        console.log('Original subtotal:', originalSubtotal);
+    }
+    
+    // Kiểm tra xem có mã giảm giá được áp dụng không (từ Thymeleaf)
+    const discountRow = document.getElementById('discount-row');
+    if (discountRow && discountRow.style.display !== 'none') {
+        const discountCodeDisplay = document.getElementById('discount-code-display');
+        const discountAmountElement = document.getElementById('discount-amount');
+        
+        if (discountCodeDisplay && discountAmountElement) {
+            currentDiscountCode = discountCodeDisplay.textContent;
+            const discountAmountText = discountAmountElement.textContent;
+            currentDiscountAmount = parseFloat(discountAmountText.replace(/[^\d]/g, ''));
+            
+            console.log('Applied discount from Thymeleaf:', currentDiscountCode, currentDiscountAmount);
+        }
+    }
+}
+
+// Hàm cập nhật hiển thị mã giảm giá
+function updateDiscountDisplay() {
+    const discountRow = document.getElementById('discount-row');
+    const discountCodeDisplay = document.getElementById('discount-code-display');
+    const discountAmountElement = document.getElementById('discount-amount');
+    
+    if (currentDiscountCode && currentDiscountAmount > 0) {
+        discountRow.style.display = 'block';
+        if (discountCodeDisplay) {
+            discountCodeDisplay.textContent = currentDiscountCode;
+        }
+        if (discountAmountElement) {
+            discountAmountElement.textContent = '-' + formatCurrency(currentDiscountAmount);
+        }
+    } else {
+        discountRow.style.display = 'none';
+    }
+}
+
+// Hàm cập nhật tổng tiền sau giảm giá (không cần thiết vì đã được tính từ server)
+function updateTotalWithDiscount() {
+    // Tổng tiền đã được tính từ server và hiển thị qua Thymeleaf
+    console.log('Total already calculated by server');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const placeOrderBtn = document.getElementById('place-order-btn');
     const checkoutForm = document.getElementById('checkout-form');
+    
+    // Khởi tạo mã giảm giá từ Thymeleaf data
+    initializeDiscountFromURL();
     
     // Xử lý đặt hàng
     placeOrderBtn.addEventListener('click', function() {
@@ -229,7 +425,12 @@ document.addEventListener('DOMContentLoaded', function() {
             ghiChu: document.getElementById('ghiChu').value,
             loaiThanhToan: document.querySelector('input[name="loaiThanhToan"]:checked').value,
             phiGiaoHang: 0, // Phí giao hàng miễn phí
-            tongTien: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, '')),
+            tongTien: originalSubtotal, // Tổng tiền gốc (trước giảm giá)
+            
+            // Thông tin mã giảm giá
+            maGiamGia: currentDiscountCode,
+            giaTriGiamGia: currentDiscountAmount,
+            tongTienSauGiamGia: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, '')), // Tổng tiền sau giảm giá
             
             // Tạo địa chỉ giao hàng đầy đủ
             diaChiGiaoHang: document.getElementById('diaChi1').value + 

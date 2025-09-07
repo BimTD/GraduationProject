@@ -8,6 +8,7 @@ public interface CheckoutService {
     // Business logic methods for controller
     CheckoutResponseDTO getCheckoutPageDataWithValidation();
     CheckoutResponseDTO processCheckoutWithValidation(CheckoutDTO checkoutDTO);
+    CheckoutResponseDTO validateMaGiamGia(String maGiamGia);
 }
 
 
