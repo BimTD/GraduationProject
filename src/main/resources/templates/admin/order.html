@@ -115,28 +115,27 @@
                     <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${#temporals.format(order.ngayTao, 'dd/MM/yyyy HH:mm')}"></td>
                     <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${order.loaiThanhToan}"></td>
                     <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${order.chiTietHoaDons != null ? order.chiTietHoaDons.size() : 0}"></td>
-                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
+                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${order.tongTienSauGiamGia != null ? #numbers.formatDecimal(order.tongTienSauGiamGia, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : #numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></td>
                     <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
-                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                            th:text="${order.trangThai}"
-                            th:classappend="${order.trangThai} == 'PENDING' ? ' bg-yellow-100 text-yellow-800' : (${order.trangThai} == 'CONFIRMED' ? ' bg-blue-100 text-blue-800' : (${order.trangThai} == 'SHIPPING' ? ' bg-indigo-100 text-indigo-800' : (${order.trangThai} == 'COMPLETED' ? ' bg-green-100 text-green-800' : ' bg-red-100 text-red-800')))"
-                      ></span>
+                      <form th:action="@{'/admin/order/' + ${order.id} + '/update-status'}" method="post" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái đơn hàng này?');">
+                        <select name="status" 
+                                th:value="${order.trangThai}"
+                                onchange="this.form.submit()"
+                                th:disabled="${order.trangThai == 'COMPLETED' or order.trangThai == 'CANCELLED'}"
+                                class="form-input border-slate-200 text-xs py-1 px-2 rounded"
+                                th:classappend="${order.trangThai} == 'PENDING' ? ' bg-yellow-100 text-yellow-800 border-yellow-300' : (${order.trangThai} == 'CONFIRMED' ? ' bg-orange-100 text-orange-800 border-orange-300' : (${order.trangThai} == 'SHIPPING' ? ' bg-purple-100 text-purple-800 border-purple-300' : (${order.trangThai} == 'COMPLETED' ? ' bg-green-100 text-green-800 border-green-300' : ' bg-red-100 text-red-800 border-red-300')))">
+                          <option value="PENDING" th:selected="${order.trangThai == 'PENDING'}">PENDING</option>
+                          <option value="CONFIRMED" th:selected="${order.trangThai == 'CONFIRMED'}">CONFIRMED</option>
+                          <option value="SHIPPING" th:selected="${order.trangThai == 'SHIPPING'}">SHIPPING</option>
+                          <option value="COMPLETED" th:selected="${order.trangThai == 'COMPLETED'}">COMPLETED</option>
+                          <option value="CANCELLED" th:selected="${order.trangThai == 'CANCELLED'}">CANCELLED</option>
+                        </select>
+                      </form>
                     </td>
                     <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-500 Action">
                       <div class="flex gap-3">
                         <a th:href="@{'/admin/order/' + ${order.id}}" class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500" title="Xem chi tiết"><i data-lucide="eye" class="size-4"></i></a>
 
-                        <form th:if="${order.trangThai == 'PENDING'}" th:action="@{'/admin/order/' + ${order.id} + '/approve'}" method="post">
-                          <button type="submit" class="flex items-center justify-center w-8 h-8 rounded-md bg-green-100 text-green-600 hover:bg-green-600 hover:text-white transition-all duration-150" title="Duyệt">
-                            <i data-lucide="check" class="size-4"></i>
-                          </button>
-                        </form>
-
-                        <form th:if="${order.trangThai == 'PENDING'}" th:action="@{'/admin/order/' + ${order.id} + '/cancel'}" method="post" onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn này?');">
-                          <button type="submit" class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150" title="Hủy">
-                            <i data-lucide="x-circle" class="size-4"></i>
-                          </button>
-                        </form>
                       </div>
                     </td>
                   </tr>

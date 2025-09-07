@@ -135,7 +135,7 @@ public class OrderAdminController {
 
 	@PostMapping("/order/{id}/update-status")
 	public String updateOrderStatus(@PathVariable("id") Integer id, 
-								   @RequestParam("newStatus") String newStatus,
+								   @RequestParam("status") String newStatus,
 								   RedirectAttributes redirectAttributes) {
 		HoaDon hoaDon = hoaDonService.getOrderById(id);
 		if (hoaDon == null) {
@@ -146,30 +146,25 @@ public class OrderAdminController {
 		String currentStatus = hoaDon.getTrangThai();
 		
 		// Kiểm tra logic chuyển trạng thái
-		if ("PENDING".equalsIgnoreCase(currentStatus) && "CONFIRMED".equalsIgnoreCase(newStatus)) {
-			// Chuyển từ PENDING sang CONFIRMED - cần kiểm tra tồn kho
-			if (!hoaDonService.updateOrderStatus(id, newStatus)) {
-				redirectAttributes.addFlashAttribute("error", "Không thể cập nhật trạng thái đơn hàng #" + id + ". Không đủ tồn kho hoặc thay đổi trạng thái không hợp lệ.");
-				return "redirect:/admin/order";
-			}
-		} else if ("CONFIRMED".equalsIgnoreCase(currentStatus) && "CANCELLED".equalsIgnoreCase(newStatus)) {
-			// Chuyển từ CONFIRMED sang CANCELLED - cần hoàn lại tồn kho
-			if (hoaDonService.updateOrderStatusAndRestoreStock(id, newStatus)) {
-				redirectAttributes.addFlashAttribute("success", "Đã cập nhật trạng thái đơn hàng #" + id + " thành " + newStatus + " và hoàn lại tồn kho.");
-			} else {
-				redirectAttributes.addFlashAttribute("error", "Không thể cập nhật trạng thái đơn hàng #" + id + ".");
-			}
+		if ("COMPLETED".equalsIgnoreCase(currentStatus) || "CANCELLED".equalsIgnoreCase(currentStatus)) {
+			// Đơn đã hoàn thành hoặc đã hủy, không thể thay đổi
+			String statusText = "COMPLETED".equalsIgnoreCase(currentStatus) ? "hoàn thành" : "hủy";
+			redirectAttributes.addFlashAttribute("error", "Đơn hàng #" + id + " đã " + statusText + ", không thể thay đổi trạng thái.");
 			return "redirect:/admin/order";
-		} else {
-			// Các trường hợp khác - cập nhật bình thường
-			if (hoaDonService.updateOrderStatus(id, newStatus)) {
-				redirectAttributes.addFlashAttribute("success", "Đã cập nhật trạng thái đơn hàng #" + id + " thành " + newStatus + ".");
-			} else {
-				redirectAttributes.addFlashAttribute("error", "Không thể cập nhật trạng thái đơn hàng #" + id + ".");
-			}
 		}
-
-
+		
+		// Cập nhật trạng thái (logic xử lý tồn kho đã được chuyển vào service)
+		if (hoaDonService.updateOrderStatus(id, newStatus)) {
+			String message = "Đã cập nhật trạng thái đơn hàng #" + id + " thành " + newStatus;
+			if ("CANCELLED".equalsIgnoreCase(newStatus)) {
+				message += " và hoàn lại tồn kho.";
+			} else {
+				message += ".";
+			}
+			redirectAttributes.addFlashAttribute("success", message);
+		} else {
+			redirectAttributes.addFlashAttribute("error", "Không thể cập nhật trạng thái đơn hàng #" + id + ".");
+		}
 
 		return "redirect:/admin/order";
 	}

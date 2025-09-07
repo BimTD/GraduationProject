@@ -124,6 +124,37 @@ public class HoaDonServiceImpl implements HoaDonService {
         // Lưu chi tiết hóa đơn
         chiTietHoaDonRepository.saveAll(chiTietHoaDons);
         
+        // Trừ tồn kho ngay khi tạo đơn hàng (PENDING)
+        Map<Integer, Integer> variantIdToRequiredQty = new HashMap<>();
+        for (ChiTietHoaDon cthd : chiTietHoaDons) {
+            if (cthd.getSanPhamBienThe() == null) continue;
+            Integer variantId = cthd.getSanPhamBienThe().getId();
+            if (variantId == null) continue;
+            int required = cthd.getSoLuong() != null ? cthd.getSoLuong() : 0;
+            variantIdToRequiredQty.merge(variantId, required, Integer::sum);
+        }
+
+        // Kiểm tra và trừ tồn kho
+        List<org.example.graduationproject.models.SanPhamBienThe> toUpdate = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : variantIdToRequiredQty.entrySet()) {
+            org.example.graduationproject.models.SanPhamBienThe variant = sanPhamBienTheRepository.findById(entry.getKey()).orElse(null);
+            if (variant == null) {
+                throw new RuntimeException("Sản phẩm không tồn tại");
+            }
+            int stock = variant.getSoLuongTon() != null ? variant.getSoLuongTon() : 0;
+            int need = entry.getValue() != null ? entry.getValue() : 0;
+            if (stock < need) {
+                throw new RuntimeException("Không đủ hàng cho sản phẩm: " + variant.getSanPham().getTen());
+            }
+            variant.setSoLuongTon(stock - need);
+            toUpdate.add(variant);
+        }
+
+        // Cập nhật tồn kho
+        if (!toUpdate.isEmpty()) {
+            sanPhamBienTheRepository.saveAll(toUpdate);
+        }
+        
         // Cập nhật trạng thái giỏ hàng thành "ordered"
         activeCart.setTrangThai("ordered");
         activeCart.setNgayCapNhat(LocalDateTime.now());
@@ -158,34 +189,36 @@ public class HoaDonServiceImpl implements HoaDonService {
         if (hoaDon != null) {
             String currentStatus = hoaDon.getTrangThai();
 
-            // Nếu chuyển từ PENDING -> CONFIRMED thì kiểm tra và trừ tồn kho
-            if ("PENDING".equalsIgnoreCase(currentStatus) && "CONFIRMED".equalsIgnoreCase(newStatus)) {
-                List<ChiTietHoaDon> chiTietList = chiTietHoaDonRepository.findByHoaDon(hoaDon);
+            // Không cho phép thay đổi trạng thái nếu đã COMPLETED hoặc CANCELLED
+            if ("COMPLETED".equalsIgnoreCase(currentStatus) || "CANCELLED".equalsIgnoreCase(currentStatus)) {
+                return false; // Đơn đã hoàn thành hoặc đã hủy, không thể thay đổi
+            }
 
-                // Gom số lượng theo từng biến thể để kiểm tra 1 lần
-                Map<Integer, Integer> variantIdToRequiredQty = new HashMap<>();
+            // Nếu chuyển sang CANCELLED từ bất kỳ trạng thái nào (trừ COMPLETED)
+            if ("CANCELLED".equalsIgnoreCase(newStatus)) {
+                // Hoàn lại tồn kho
+                List<ChiTietHoaDon> chiTietList = chiTietHoaDonRepository.findByHoaDon(hoaDon);
+                
+                // Gom số lượng theo từng biến thể để cộng lại
+                Map<Integer, Integer> variantIdToReturnQty = new HashMap<>();
                 for (ChiTietHoaDon cthd : chiTietList) {
                     if (cthd.getSanPhamBienThe() == null) continue;
                     Integer variantId = cthd.getSanPhamBienThe().getId();
                     if (variantId == null) continue;
-                    int required = cthd.getSoLuong() != null ? cthd.getSoLuong() : 0;
-                    variantIdToRequiredQty.merge(variantId, required, Integer::sum);
+                    int returnQty = cthd.getSoLuong() != null ? cthd.getSoLuong() : 0;
+                    variantIdToReturnQty.merge(variantId, returnQty, Integer::sum);
                 }
 
-                // Kiểm tra tồn kho đủ
+                // Cộng lại tồn kho
                 List<org.example.graduationproject.models.SanPhamBienThe> toUpdate = new ArrayList<>();
-                for (Map.Entry<Integer, Integer> entry : variantIdToRequiredQty.entrySet()) {
+                for (Map.Entry<Integer, Integer> entry : variantIdToReturnQty.entrySet()) {
                     org.example.graduationproject.models.SanPhamBienThe variant = sanPhamBienTheRepository.findById(entry.getKey()).orElse(null);
-                    if (variant == null) {
-                        return false; // biến thể không tồn tại
+                    if (variant != null) {
+                        int currentStock = variant.getSoLuongTon() != null ? variant.getSoLuongTon() : 0;
+                        int returnQty = entry.getValue() != null ? entry.getValue() : 0;
+                        variant.setSoLuongTon(currentStock + returnQty);
+                        toUpdate.add(variant);
                     }
-                    int stock = variant.getSoLuongTon() != null ? variant.getSoLuongTon() : 0;
-                    int need = entry.getValue() != null ? entry.getValue() : 0;
-                    if (stock < need) {
-                        return false; // không đủ hàng
-                    }
-                    variant.setSoLuongTon(stock - need);
-                    toUpdate.add(variant);
                 }
 
                 // Cập nhật tồn kho
@@ -264,6 +297,36 @@ public class HoaDonServiceImpl implements HoaDonService {
     public boolean cancelOrder(User user, Integer orderId) {
         HoaDon hoaDon = getUserOrderById(user, orderId);
         if (hoaDon != null && "PENDING".equals(hoaDon.getTrangThai())) {
+            // Hoàn lại tồn kho khi user hủy đơn
+            List<ChiTietHoaDon> chiTietList = chiTietHoaDonRepository.findByHoaDon(hoaDon);
+            
+            // Gom số lượng theo từng biến thể để cộng lại
+            Map<Integer, Integer> variantIdToReturnQty = new HashMap<>();
+            for (ChiTietHoaDon cthd : chiTietList) {
+                if (cthd.getSanPhamBienThe() == null) continue;
+                Integer variantId = cthd.getSanPhamBienThe().getId();
+                if (variantId == null) continue;
+                int returnQty = cthd.getSoLuong() != null ? cthd.getSoLuong() : 0;
+                variantIdToReturnQty.merge(variantId, returnQty, Integer::sum);
+            }
+
+            // Cộng lại tồn kho
+            List<org.example.graduationproject.models.SanPhamBienThe> toUpdate = new ArrayList<>();
+            for (Map.Entry<Integer, Integer> entry : variantIdToReturnQty.entrySet()) {
+                org.example.graduationproject.models.SanPhamBienThe variant = sanPhamBienTheRepository.findById(entry.getKey()).orElse(null);
+                if (variant != null) {
+                    int currentStock = variant.getSoLuongTon() != null ? variant.getSoLuongTon() : 0;
+                    int returnQty = entry.getValue() != null ? entry.getValue() : 0;
+                    variant.setSoLuongTon(currentStock + returnQty);
+                    toUpdate.add(variant);
+                }
+            }
+
+            // Cập nhật tồn kho
+            if (!toUpdate.isEmpty()) {
+                sanPhamBienTheRepository.saveAll(toUpdate);
+            }
+            
             hoaDon.setTrangThai("CANCELLED");
             hoaDonRepository.save(hoaDon);
             return true;
