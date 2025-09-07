@@ -8,12 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin/ma-giam-gia")
-public class MaGiamGiaController {
+public class DiscountController {
 
     @Autowired
     private MaGiamGiaService maGiamGiaService;
@@ -71,11 +70,13 @@ public class MaGiamGiaController {
         return "redirect:/admin/ma-giam-gia/discount";
     }
 
-    @GetMapping("/edit/{id:[0-9]+}")
-    public String editForm(@PathVariable Integer id, Model model) {
+    @GetMapping("/edit/{id}")
+    public String editForm(@PathVariable MaGiamGia id, Model model) {
         try {
-            MaGiamGia maGiamGia = maGiamGiaService.getMaGiamGiaById(id);
-            model.addAttribute("maGiamGia", maGiamGia);
+            if (id == null) {
+                return "redirect:/admin/ma-giam-gia/discount";
+            }
+            model.addAttribute("maGiamGia", id);
             model.addAttribute("maGiamGiaList", maGiamGiaService.getAllMaGiamGia());
             model.addAttribute("currentPage", "discount");
             return "admin/discount";
@@ -84,11 +85,15 @@ public class MaGiamGiaController {
         }
     }
 
-    @PostMapping("/edit/{id:[0-9]+}")
-    public String updateMaGiamGia(@PathVariable Integer id, @ModelAttribute MaGiamGia maGiamGia, 
+    @PostMapping("/edit/{id}")
+    public String updateMaGiamGia(@PathVariable MaGiamGia id, @ModelAttribute MaGiamGia maGiamGia, 
                                  RedirectAttributes redirectAttributes) {
         try {
-            maGiamGia.setId(id);
+            if (id == null) {
+                redirectAttributes.addFlashAttribute("error", "Không tìm thấy mã giảm giá");
+                return "redirect:/admin/ma-giam-gia/discount";
+            }
+            maGiamGia.setId(id.getId());
             maGiamGiaService.updateMaGiamGia(maGiamGia);
             redirectAttributes.addFlashAttribute("success", "Cập nhật mã giảm giá thành công");
         } catch (Exception e) {
@@ -97,10 +102,14 @@ public class MaGiamGiaController {
         return "redirect:/admin/ma-giam-gia/discount";
     }
 
-    @GetMapping("/delete/{id:[0-9]+}")
-    public String deleteMaGiamGia(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+    @GetMapping("/delete/{id}")
+    public String deleteMaGiamGia(@PathVariable MaGiamGia id, RedirectAttributes redirectAttributes) {
         try {
-            maGiamGiaService.deleteMaGiamGia(id);
+            if (id == null) {
+                redirectAttributes.addFlashAttribute("error", "Không tìm thấy mã giảm giá");
+                return "redirect:/admin/ma-giam-gia/discount";
+            }
+            maGiamGiaService.deleteMaGiamGia(id.getId());
             redirectAttributes.addFlashAttribute("success", "Xóa mã giảm giá thành công");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Lỗi: " + e.getMessage());
@@ -108,11 +117,15 @@ public class MaGiamGiaController {
         return "redirect:/admin/ma-giam-gia/discount";
     }
 
-    @GetMapping("/update-status/{id:[0-9]+}")
-    public String updateStatus(@PathVariable Integer id, @RequestParam String status, 
+    @GetMapping("/update-status/{id}")
+    public String updateStatus(@PathVariable MaGiamGia id, @RequestParam String status, 
                               RedirectAttributes redirectAttributes) {
         try {
-            maGiamGiaService.updateMaGiamGiaStatus(id, status);
+            if (id == null) {
+                redirectAttributes.addFlashAttribute("error", "Không tìm thấy mã giảm giá");
+                return "redirect:/admin/ma-giam-gia/discount";
+            }
+            maGiamGiaService.updateMaGiamGiaStatus(id.getId(), status);
             redirectAttributes.addFlashAttribute("success", "Cập nhật trạng thái thành công");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Lỗi: " + e.getMessage());

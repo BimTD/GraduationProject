@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ma-giam-gia")
-public class MaGiamGiaApiController {
+public class DiscountApiController {
 
     @Autowired
     private MaGiamGiaService maGiamGiaService;
