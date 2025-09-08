@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html   xmlns:th="http://www.thymeleaf.org"
+        lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
+<head th:replace="~{admin/fragments/head :: head('User Management')}"></head>
+
+<body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
+  <div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
+
+    <!-- Sidebar -->
+        <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+
+    <div id="sidebar-overlay" class="absolute inset-0 z-[1002] bg-slate-500/30 hidden"></div>
+    <!-- Header -->
+    <header th:replace="~{admin/fragments/header :: header}"></header>
+
+    <!-- Content -->
+    <div class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+      <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
+
+        <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
+          <div class="grow">
+            <h5 class="text-16">User Management</h5>
+          </div>
+          <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
+            <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
+              <a href="#" class="text-slate-400 dark:text-zink-200">Dashboard</a>
+            </li>
+            <li class="text-slate-700 dark:text-zink-100">Users</li>
+          </ul>
+        </div>
+
+        <!-- Flash Messages -->
+        <div th:if="${success}" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+          <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          <span th:text="${error}"></span>
+        </div>
+
+        <div class="card" id="userListTable">
+          <div class="card-body">
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
+              <!-- Search -->
+              <div class="xl:col-span-5">
+                <div class="relative">
+                  <div class="flex gap-2 items-center">
+                    <div class="relative">
+                      <form th:action="@{/admin/user}" method="get" class="flex gap-2 items-center">
+                        <input type="text" name="search" id="searchInput" th:value="${search}" class="form-input border-slate-200" placeholder="Search by username, email, name, phone..." autocomplete="off">
+                        <input type="hidden" name="status" th:value="${status}">
+                        <input type="hidden" name="page" value="0">
+                        <button type="submit" id="searchBtn" class="absolute right-2.5 top-2.5 bg-transparent border-none p-0">
+                          <i data-lucide="search" class="inline-block size-4 text-slate-500 dark:text-zink-200 fill-slate-100 dark:fill-zink-600"></i>
+                        </button>
+                      </form>
+                    </div>
+
+                    <a th:href="@{/admin/user}" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
+                      <i data-lucide="refresh-cw" class="size-4"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Status Filter -->
+              <div class="xl:col-span-3">
+                <form th:action="@{/admin/user}" method="get" class="flex items-center gap-2">
+                  <input type="hidden" name="search" th:value="${search}">
+                  <input type="hidden" name="page" value="0">
+                  <select name="status" id="statusFilter" class="form-input border-slate-200">
+                    <option th:value="''" th:selected="${status == null or status == ''}">All Status</option>
+                    <option th:value="enabled" th:selected="${status == 'enabled'}">Enabled</option>
+                    <option th:value="disabled" th:selected="${status == 'disabled'}">Disabled</option>
+                  </select>
+                  <button type="submit" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
+                    <i data-lucide="filter" class="size-4"></i>
+                  </button>
+                </form>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="!pt-1 card-body">
+            <div class="overflow-x-auto">
+              <table class="w-full whitespace-nowrap" id="userTable">
+                <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
+                  <tr>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">STT</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Username</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Email</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Full Name</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Phone</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Provider</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Status</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                  <tr th:if="${users == null or #lists.isEmpty(users)}" class="hover:bg-slate-50 dark:hover:bg-zink-600/50">
+                    <td colspan="8" class="px-3.5 py-2.5 text-center border-b border-slate-200 dark:border-zink-500">Không có dữ liệu!</td>
+                  </tr>
+                  <tr th:each="user, stat : ${users}" th:class="'hover:bg-slate-50 dark:hover:bg-zink-600/50'">
+                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${page * size + stat.count}"></td>
+                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${user.username}"></td>
+                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${user.email}"></td>
+                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${user.hoTen != null ? user.hoTen : 'N/A'}"></td>
+                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${user.soDienThoai != null ? user.soDienThoai : 'N/A'}"></td>
+                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${user.provider != null ? user.provider : 'Local'}"></td>
+                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                      <span th:if="${user.enabled == '1'}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Enabled</span>
+                      <span th:if="${user.enabled == '0'}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Disabled</span>
+                    </td>
+                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-500 Action">
+                      <div class="flex gap-2">
+                        <a th:href="@{'/admin/user/' + ${user.id}}" class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500" title="Xem chi tiết">
+                          <i data-lucide="eye" class="size-4"></i>
+                        </a>
+                        <button type="button" class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500" 
+                                th:data-user-id="${user.id}" 
+                                th:data-username="${user.username}"
+                                onclick="resetPassword(this.dataset.userId, this.dataset.username)" 
+                                title="Đặt lại mật khẩu">
+                          <i data-lucide="key-round" class="size-4"></i>
+                        </button>
+                        <form th:action="@{'/admin/user/' + ${user.id} + '/toggle-status'}" method="post" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái người dùng này?');">
+                          <button type="submit" class="flex items-center justify-center w-8 h-8 rounded-md transition-all duration-150" 
+                                  th:class="${user.enabled == '1'} ? 'bg-red-100 text-red-600 hover:bg-red-600 hover:text-white' : 'bg-green-100 text-green-600 hover:bg-green-600 hover:text-white'"
+                                  th:title="${user.enabled == '1'} ? 'Vô hiệu hóa' : 'Kích hoạt'">
+                            <i th:data-lucide="${user.enabled == '1'} ? 'x' : 'check'" class="size-4"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
+              <div class="grow">
+                <p class="text-slate-500 dark:text-zink-200">
+                  Showing <b th:text="${users != null ? users.size() : 0}"></b> of <b th:text="${totalElements}"></b> Results
+                </p>
+              </div>
+              <div class="flex items-center gap-2">
+                <form th:action="@{/admin/user}" method="get" class="flex items-center gap-2">
+                  <input type="hidden" name="search" th:value="${search}" />
+                  <input type="hidden" name="status" th:value="${status}" />
+                  <input type="hidden" name="page" th:value="${page}" />
+
+                  <div class="flex items-center gap-2">
+                    <label for="size" class="whitespace-nowrap">Items per page:</label>
+                    <select name="size" id="size" class="form-input border-slate-200" onchange="this.form.submit()">
+                      <option th:value="5" th:selected="${size == 5}">5</option>
+                      <option th:value="10" th:selected="${size == 10}">10</option>
+                      <option th:value="20" th:selected="${size == 20}">20</option>
+                      <option th:value="50" th:selected="${size == 50}">50</option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+
+              <div class="col-sm-auto mt-sm-0">
+                <div class="flex gap-2 pagination-wrap justify-content-center">
+                  <a th:href="@{/admin/user(page=${prevPage}, size=${size}, search=${search}, status=${status})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
+                    <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
+                  </a>
+                  <ul class="flex flex-wrap items-center gap-2 pagination">
+                    <li th:each="i : ${#numbers.sequence(0, lastPage)}">
+                      <a th:href="@{/admin/user(page=${i}, size=${size}, search=${search}, status=${status})}"
+                         th:text="${i+1}"
+                         th:classappend="${i == page} ? 'active bg-custom-50 border-custom-50 text-custom-500' : ''"
+                         class="inline-flex items-center justify-center h-8 px-3 border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 hover:bg-custom-50">
+                      </a>
+                    </li>
+                  </ul>
+                  <a th:href="@{/admin/user(page=${nextPage}, size=${size}, search=${search}, status=${status})}" th:classappend="${page == lastPage} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
+                    Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Reset Password Modal -->
+<div id="resetPasswordModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="fixed inset-0 bg-slate-500/30 transition-opacity" aria-hidden="true"></div>
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+    <div class="inline-block align-bottom bg-white dark:bg-zink-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+      <form id="resetPasswordForm" method="post">
+        <div class="bg-white dark:bg-zink-800 px-6 pt-6 pb-4">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-custom-100 dark:bg-custom-500/20">
+              <i data-lucide="key-round" class="h-6 w-6 text-custom-500 dark:text-custom-400"></i>
+            </div>
+            <div class="ml-4">
+              <h3 class="text-lg font-medium text-slate-900 dark:text-zink-100" id="modal-title">
+                Đặt lại mật khẩu
+              </h3>
+              <p class="text-sm text-slate-500 dark:text-zink-400 mt-1">
+                Nhập mật khẩu mới cho user: <span id="resetUsername" class="font-medium text-slate-700 dark:text-zink-200"></span>
+              </p>
+            </div>
+          </div>
+          <div class="mt-6">
+            <label for="newPassword" class="block text-sm font-medium text-slate-700 dark:text-zink-300 mb-2">Mật khẩu mới</label>
+            <input type="password" id="newPassword" name="newPassword" required 
+                   class="form-input border-slate-200 dark:border-zink-500 focus:border-custom-500 focus:ring-custom-500/20 dark:bg-zink-700 dark:text-zink-100"
+                   placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)">
+            <p class="mt-2 text-xs text-slate-500 dark:text-zink-400">Mật khẩu phải có ít nhất 6 ký tự</p>
+          </div>
+        </div>
+        <div class="bg-slate-50 dark:bg-zink-700 px-6 py-4 flex justify-end space-x-3">
+          <button type="button" onclick="closeResetPasswordModal()" class="btn bg-slate-500 text-white hover:bg-slate-600 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-zink-500">
+            Hủy
+          </button>
+          <button type="submit" class="btn bg-custom-500 text-white hover:bg-custom-600 dark:bg-custom-500 dark:text-white dark:hover:bg-custom-600">
+            Đặt lại mật khẩu
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function resetPassword(userId, username) {
+  document.getElementById('resetUsername').textContent = username;
+  document.getElementById('resetPasswordForm').action = '/admin/user/' + userId + '/reset-password';
+  document.getElementById('newPassword').value = '';
+  document.getElementById('resetPasswordModal').classList.remove('hidden');
+}
+
+function closeResetPasswordModal() {
+  document.getElementById('resetPasswordModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('resetPasswordModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeResetPasswordModal();
+  }
+});
+</script>
+    <!-- End Content -->
+
+  </div>
+
+  <div th:replace="admin/fragments/script :: script"></div>
+
+</body>
+
+</html>
+
+
