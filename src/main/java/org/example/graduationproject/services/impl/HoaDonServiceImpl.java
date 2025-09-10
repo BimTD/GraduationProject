@@ -14,6 +14,7 @@ import org.example.graduationproject.services.AuthenticationService;
 import org.example.graduationproject.services.GioHangService;
 import org.example.graduationproject.services.HoaDonService;
 import org.example.graduationproject.services.MaGiamGiaService;
+import org.example.graduationproject.services.LichSuSuDungMaGiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,9 @@ public class HoaDonServiceImpl implements HoaDonService {
 
     @Autowired
     private MaGiamGiaService maGiamGiaService;
+    
+    @Autowired
+    private LichSuSuDungMaGiamGiaService lichSuSuDungMaGiamGiaService;
 
     @Override
     @Transactional
@@ -82,18 +86,85 @@ public class HoaDonServiceImpl implements HoaDonService {
         
         hoaDon.setTongTien(tongTien);
         
-        // Xử lý mã giảm giá
+        // Xử lý mã giảm giá (hỗ trợ nhiều mã)
         BigDecimal giaTriGiamGia = checkoutDTO.getGiaTriGiamGia() != null ? checkoutDTO.getGiaTriGiamGia() : BigDecimal.ZERO;
         BigDecimal tongTienSauGiamGia = checkoutDTO.getTongTienSauGiamGia() != null ? checkoutDTO.getTongTienSauGiamGia() : tongTien;
         MaGiamGia maGiamGia = null;
+        String maGiamGiaSuDung = "";
         
-        if (checkoutDTO.getMaGiamGia() != null && !checkoutDTO.getMaGiamGia().trim().isEmpty()) {
+        // Xử lý nhiều mã giảm giá (ưu tiên)
+        if (checkoutDTO.getMaGiamGiaList() != null && checkoutDTO.getMaGiamGiaList().length > 0) {
+            StringBuilder maGiamGiaBuilder = new StringBuilder();
+            BigDecimal totalDiscount = BigDecimal.ZERO;
+            List<MaGiamGia> usedMaGiamGiaList = new ArrayList<>();
+            List<BigDecimal> usedDiscountAmounts = new ArrayList<>();
+            
+            for (String code : checkoutDTO.getMaGiamGiaList()) {
+                if (code != null && !code.trim().isEmpty()) {
+                    try {
+                        // Lấy thông tin mã giảm giá
+                        MaGiamGia discountCode = maGiamGiaService.getMaGiamGiaByCode(code.trim());
+                        
+                        // Tính giá trị giảm giá cho mã này
+                        BigDecimal discountAmount = maGiamGiaService.calculateDiscountAmount(code.trim(), tongTien, null);
+                        totalDiscount = totalDiscount.add(discountAmount);
+                        
+                        // Áp dụng mã giảm giá (tăng số lần sử dụng)
+                        maGiamGiaService.applyMaGiamGia(code.trim());
+                        
+                        // Lưu thông tin để tạo lịch sử
+                        usedMaGiamGiaList.add(discountCode);
+                        usedDiscountAmounts.add(discountAmount);
+                        
+                        // Thêm vào danh sách
+                        if (maGiamGiaBuilder.length() > 0) {
+                            maGiamGiaBuilder.append(",");
+                        }
+                        maGiamGiaBuilder.append(code.trim());
+                        
+                        // Lưu mã đầu tiên làm mã chính (để tương thích)
+                        if (maGiamGia == null) {
+                            maGiamGia = discountCode;
+                        }
+                        
+                    } catch (Exception e) {
+                        // Nếu mã giảm giá không hợp lệ, bỏ qua và tiếp tục
+                        System.out.println("Mã giảm giá không hợp lệ: " + code + " - " + e.getMessage());
+                    }
+                }
+            }
+            
+            maGiamGiaSuDung = maGiamGiaBuilder.toString();
+            giaTriGiamGia = totalDiscount;
+            tongTienSauGiamGia = tongTien.subtract(totalDiscount);
+            
+            // Lưu lịch sử sử dụng mã giảm giá (sẽ lưu sau khi có ID hóa đơn)
+            if (!usedMaGiamGiaList.isEmpty()) {
+                // Tạm thời lưu vào biến để sử dụng sau khi lưu hóa đơn
+                hoaDon.setMaGiamGiaList(usedMaGiamGiaList);
+                hoaDon.setGiaTriGiamGiaList(usedDiscountAmounts);
+            }
+            
+        } else if (checkoutDTO.getMaGiamGia() != null && !checkoutDTO.getMaGiamGia().trim().isEmpty()) {
+            // Xử lý 1 mã giảm giá (tương thích ngược)
             try {
                 // Lấy thông tin mã giảm giá
                 maGiamGia = maGiamGiaService.getMaGiamGiaByCode(checkoutDTO.getMaGiamGia());
                 
+                // Tính giá trị giảm giá
+                BigDecimal discountAmount = maGiamGiaService.calculateDiscountAmount(checkoutDTO.getMaGiamGia(), tongTien, null);
+                giaTriGiamGia = discountAmount;
+                tongTienSauGiamGia = tongTien.subtract(discountAmount);
+                
                 // Áp dụng mã giảm giá (tăng số lần sử dụng)
                 maGiamGiaService.applyMaGiamGia(checkoutDTO.getMaGiamGia());
+                
+                maGiamGiaSuDung = checkoutDTO.getMaGiamGia();
+                
+                // Lưu lịch sử sử dụng mã giảm giá (sẽ lưu sau khi có ID hóa đơn)
+                hoaDon.setMaGiamGiaList(List.of(maGiamGia));
+                hoaDon.setGiaTriGiamGiaList(List.of(discountAmount));
+                
             } catch (Exception e) {
                 // Nếu mã giảm giá không hợp lệ, bỏ qua và tiếp tục
                 System.out.println("Mã giảm giá không hợp lệ: " + e.getMessage());
@@ -101,13 +172,29 @@ public class HoaDonServiceImpl implements HoaDonService {
         }
         
         // Lưu thông tin mã giảm giá vào hóa đơn
-        hoaDon.setMaGiamGiaSuDung(checkoutDTO.getMaGiamGia());
+        hoaDon.setMaGiamGiaSuDung(maGiamGiaSuDung);
         hoaDon.setGiaTriGiamGia(giaTriGiamGia);
         hoaDon.setTongTienSauGiamGia(tongTienSauGiamGia);
         hoaDon.setMaGiamGia(maGiamGia);
         
         // Lưu hóa đơn
         hoaDon = hoaDonRepository.save(hoaDon);
+        
+        // Lưu lịch sử sử dụng mã giảm giá
+        if (hoaDon.getMaGiamGiaList() != null && !hoaDon.getMaGiamGiaList().isEmpty()) {
+            try {
+                lichSuSuDungMaGiamGiaService.saveMultipleUsageHistory(
+                    user, 
+                    hoaDon.getMaGiamGiaList(), 
+                    hoaDon.getGiaTriGiamGiaList(), 
+                    hoaDon.getId().longValue()
+                );
+                System.out.println("Đã lưu lịch sử sử dụng " + hoaDon.getMaGiamGiaList().size() + " mã giảm giá cho đơn hàng " + hoaDon.getId());
+            } catch (Exception e) {
+                System.err.println("Lỗi khi lưu lịch sử sử dụng mã giảm giá: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
 
         // Tạo chi tiết hóa đơn
         List<ChiTietHoaDon> chiTietHoaDons = new ArrayList<>();

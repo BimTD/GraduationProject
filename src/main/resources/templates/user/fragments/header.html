@@ -92,6 +92,7 @@
                                     <ul>
                                         <li th:classappend="${currentPage == '/home' or currentPage == '/'} ? 'active' : ''"><a th:href="@{/home}">Home</a></li>
                                         <li th:classappend="${currentPage == '/shop' or #strings.startsWith(currentPage, '/product-details') or currentPage == '/cart' or #strings.startsWith(currentPage, '/checkout')} ? 'active' : ''"><a th:href="@{/shop}">Shop</a></li>
+                                        <li th:classappend="${currentPage == '/discount-codes'} ? 'active' : ''"><a th:href="@{/discount-codes}">Mã giảm giá</a></li>
                                         <li th:if="${isAuthenticated}" th:classappend="${#strings.startsWith(currentPage, '/orders')} ? 'active' : ''"><a th:href="@{/orders}">Đơn hàng</a></li>
                                         <li th:classappend="${currentPage == '/blog'} ? 'active' : ''"><a th:href="@{/blog}">Blog</a></li>
                                         <li th:classappend="${currentPage == '/about'} ? 'active' : ''"><a th:href="@{/about}">About us</a></li>

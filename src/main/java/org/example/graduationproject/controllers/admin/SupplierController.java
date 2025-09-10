@@ -54,7 +54,7 @@ public class SupplierController {
         model.addAttribute("editMode", false);
         if (editId != null) {
             NhaCungCap editSupplier = nhaCungCapService.findById(editId).orElse(null);
-            if (editSupplier != null) {
+            if (editSupplier != null) { 
                 model.addAttribute("supplier", editSupplier);
                 model.addAttribute("formAction", "/admin/supplier/update");
                 model.addAttribute("showForm", true);

@@ -1,5 +1,6 @@
 package org.example.graduationproject.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -79,7 +80,7 @@ public class MaGiamGia {
 
     // Quan hệ với hóa đơn đã sử dụng mã này
     @OneToMany(mappedBy = "maGiamGia", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonIgnore
     private List<HoaDon> hoaDons; // Danh sách hóa đơn đã sử dụng mã này
 
     // Constructor tiện ích

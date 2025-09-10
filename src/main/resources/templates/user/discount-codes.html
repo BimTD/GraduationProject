@@ -1,0 +1,308 @@
+<!doctype html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="~{user/fragments/head :: head}"></head>
+
+<body>
+<!--header area start-->
+<header th:replace="~{user/fragments/header :: header}"></header>
+<!--header area end-->
+
+<!--breadcrumbs area start-->
+<div class="breadcrumbs_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="/home">home</a></li>
+                        <li>Mã giảm giá</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs area end-->
+
+<!--discount codes area start -->
+<div class="discount_codes_area mt-60">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="discount_codes_header">
+                    <h2>Mã giảm giá hiện có</h2>
+                    <p>Chọn mã giảm giá phù hợp và tiết kiệm cho đơn hàng của bạn</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row" id="discount-codes-container">
+            <!-- Discount codes from Thymeleaf -->
+            <div th:each="discount : ${discountCodes}" class="col-lg-6 col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title" th:text="${discount.tenMaGiamGia}">Tên mã giảm giá</h5>
+                        <span class="badge badge-primary" th:text="${discount.maGiamGia}">SALE10</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text" th:text="${discount.moTa}">Mô tả mã giảm giá</p>
+                        
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Loại:</strong>
+                                <span th:text="${discount.loaiGiamGia == 'PERCENTAGE'} ? 'Phần trăm' : 'Số tiền cố định'">Phần trăm</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Giá trị:</strong>
+                                <span th:if="${discount.loaiGiamGia == 'PERCENTAGE'}" th:text="${discount.giaTriGiamGia} + '%'">10%</span>
+                                <span th:if="${discount.loaiGiamGia != 'PERCENTAGE'}" th:text="${#numbers.formatDecimal(discount.giaTriGiamGia, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">100,000 VNĐ</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <strong>Trạng thái:</strong>
+                                <span class="badge" th:classappend="${discount.trangThai == 'ACTIVE'} ? 'badge-success' : 'badge-secondary'" th:text="${discount.trangThai}">ACTIVE</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Hết hạn:</strong>
+                                <span th:text="${#temporals.format(discount.ngayKetThuc, 'dd/MM/yyyy')}">31/12/2024</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <strong>Đơn tối thiểu:</strong>
+                                <span th:if="${discount.giaTriToiThieu != null}" th:text="${#numbers.formatDecimal(discount.giaTriToiThieu, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">100,000 VNĐ</span>
+                                <span th:if="${discount.giaTriToiThieu == null}">Không có</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Đã sử dụng:</strong>
+                                <span th:if="${discount.soLuongSuDung != null}" th:text="${discount.soLuongDaSuDung} + '/' + ${discount.soLuongSuDung} + ' lần'">2/10 lần</span>
+                                <span th:if="${discount.soLuongSuDung == null}">Không giới hạn</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-outline-primary btn-sm" th:data-code="${discount.maGiamGia}" onclick="copyDiscountCode(this.dataset.code)">
+                            <i class="fa fa-copy"></i> Copy mã
+                        </button>
+                        <button class="btn btn-primary btn-sm ml-2" th:data-code="${discount.maGiamGia}" onclick="useDiscountCode(this.dataset.code)" th:disabled="${discount.trangThai != 'ACTIVE'}">
+                            <i class="fa fa-shopping-cart"></i> Sử dụng ngay
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Empty state -->
+        <div class="row" th:if="${#lists.isEmpty(discountCodes)}">
+            <div class="col-12 text-center">
+                <div class="empty-state">
+                    <i class="fa fa-ticket-alt" style="font-size: 64px; color: #ccc; margin-bottom: 20px;"></i>
+                    <h3>Không có mã giảm giá nào</h3>
+                    <p>Hiện tại chưa có mã giảm giá nào khả dụng. Vui lòng quay lại sau!</p>
+                    <a href="/home" class="btn btn-primary">Tiếp tục mua sắm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--discount codes area end -->
+
+<!--footer area start-->
+<footer th:replace="~{user/fragments/footer :: footer}"></footer>
+<!--footer area end-->
+
+<script th:src="@{fe/js/plugins.js}"></script>
+<script th:src="@{fe/js/main.js}"></script>
+
+<style>
+.discount_codes_area {
+    padding: 60px 0;
+}
+
+.discount_codes_header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.discount_codes_header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.discount_codes_header p {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+
+.card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 15px 20px;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+    padding: 15px 20px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.empty-state {
+    padding: 60px 20px;
+}
+
+.empty-state h3 {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.empty-state p {
+    color: #999;
+    margin-bottom: 30px;
+}
+</style>
+
+<script>
+// Hàm copy mã giảm giá
+function copyDiscountCode(code) {
+    navigator.clipboard.writeText(code).then(() => {
+        showNotification(`Đã copy mã giảm giá: ${code}`, 'success');
+    }).catch(err => {
+        showNotification('Không thể copy mã giảm giá', 'error');
+    });
+}
+
+// Hàm sử dụng mã giảm giá
+function useDiscountCode(code) {
+    window.location.href = `/cart?discountCode=${encodeURIComponent(code)}`;
+}
+
+// Hàm hiển thị thông báo
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        max-width: 500px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+    notification.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; font-size: 20px; cursor: pointer; opacity: 0.7;">&times;</button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
+}
+</script>
+</body>
+</html>

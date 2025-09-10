@@ -49,4 +49,10 @@ public interface MaGiamGiaService {
     
     // Tự động cập nhật trạng thái mã giảm giá hết hạn
     void updateExpiredMaGiamGia();
+    
+    // Lấy mã giảm giá có thể sử dụng cho user (chưa sử dụng)
+    List<MaGiamGia> getAvailableMaGiamGiaForUser(org.example.graduationproject.models.User user);
+    
+    // Kiểm tra mã giảm giá có thể sử dụng bởi user không
+    boolean canUserUseMaGiamGia(String maGiamGia, org.example.graduationproject.models.User user);
 }

@@ -71,6 +71,13 @@ public class HoaDon {
     @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<ChiTietHoaDon> chiTietHoaDons;
+    
+    // Các field tạm thời để lưu lịch sử sử dụng mã giảm giá (không lưu vào DB)
+    @Transient
+    private List<MaGiamGia> maGiamGiaList;
+    
+    @Transient
+    private List<BigDecimal> giaTriGiamGiaList;
 }
 
 

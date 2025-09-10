@@ -20,34 +20,55 @@ public class CheckoutController extends BaseController {
     @GetMapping
     public String showCheckoutPage(Model model, 
                                   @RequestParam(required = false) String discountCode,
-                                  @RequestParam(required = false) String discountAmount) {
+                                  @RequestParam(required = false) String discountAmount,
+                                  @RequestParam(required = false) String discountCodes,
+                                  @RequestParam(required = false) String totalDiscountAmount) {
         try {
             CheckoutResponseDTO response = checkoutService.getCheckoutPageDataWithValidation();
             model.addAttribute("cart", response.getCart());
             model.addAttribute("user", response.getUser());
             
-            // Thêm thông tin mã giảm giá nếu có
-            if (discountCode != null && !discountCode.trim().isEmpty()) {
+            // Tính tổng tiền gốc
+            java.math.BigDecimal originalTotal = response.getCart().getChiTietGioHangs().stream()
+                .map(org.example.graduationproject.models.ChiTietGioHang::getThanhTien)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+            
+            // Xử lý mã giảm giá (hỗ trợ cả 1 mã và nhiều mã)
+            if (discountCodes != null && !discountCodes.trim().isEmpty()) {
+                // Nhiều mã giảm giá (từ cart mới)
+                String[] codes = discountCodes.split(",");
+                model.addAttribute("appliedDiscountCodes", codes);
+                model.addAttribute("discountCodes", discountCodes);
+                
+                if (totalDiscountAmount != null && !totalDiscountAmount.trim().isEmpty()) {
+                    try {
+                        java.math.BigDecimal totalDiscountBD = new java.math.BigDecimal(totalDiscountAmount);
+                        java.math.BigDecimal finalTotal = originalTotal.subtract(totalDiscountBD);
+                        model.addAttribute("totalDiscountAmount", totalDiscountBD);
+                        model.addAttribute("finalTotal", finalTotal);
+                    } catch (NumberFormatException e) {
+                        model.addAttribute("finalTotal", originalTotal);
+                    }
+                }
+            } else if (discountCode != null && !discountCode.trim().isEmpty()) {
+                // 1 mã giảm giá (từ cart cũ)
                 model.addAttribute("discountCode", discountCode);
                 model.addAttribute("discountAmount", discountAmount);
                 
-                // Cập nhật tổng tiền trong model nếu có mã giảm giá
                 if (discountAmount != null && !discountAmount.trim().isEmpty()) {
                     try {
                         java.math.BigDecimal discountAmountBD = new java.math.BigDecimal(discountAmount);
-                        java.math.BigDecimal originalTotal = response.getCart().getChiTietGioHangs().stream()
-                            .map(org.example.graduationproject.models.ChiTietGioHang::getThanhTien)
-                            .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
                         java.math.BigDecimal finalTotal = originalTotal.subtract(discountAmountBD);
                         model.addAttribute("finalTotal", finalTotal);
                     } catch (NumberFormatException e) {
-                        // Nếu không parse được số, sử dụng tổng tiền gốc
-                        model.addAttribute("finalTotal", response.getCart().getChiTietGioHangs().stream()
-                            .map(org.example.graduationproject.models.ChiTietGioHang::getThanhTien)
-                            .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add));
+                        model.addAttribute("finalTotal", originalTotal);
                     }
                 }
+            } else {
+                // Không có mã giảm giá
+                model.addAttribute("finalTotal", originalTotal);
             }
+            
         } catch (Exception e) {
             return "redirect:/cart";
         }

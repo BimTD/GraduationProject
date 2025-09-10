@@ -2,8 +2,10 @@ package org.example.graduationproject.services.impl;
 
 import org.example.graduationproject.models.MaGiamGia;
 import org.example.graduationproject.models.SanPham;
+import org.example.graduationproject.models.User;
 import org.example.graduationproject.repositories.MaGiamGiaRepository;
 import org.example.graduationproject.services.MaGiamGiaService;
+import org.example.graduationproject.services.LichSuSuDungMaGiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,9 @@ public class MaGiamGiaServiceImpl implements MaGiamGiaService {
 
     @Autowired
     private MaGiamGiaRepository maGiamGiaRepository;
+    
+    @Autowired
+    private LichSuSuDungMaGiamGiaService lichSuSuDungMaGiamGiaService;
 
     @Override
     @Transactional
@@ -229,5 +234,38 @@ public class MaGiamGiaServiceImpl implements MaGiamGiaService {
         if (!exhaustedCodes.isEmpty()) {
             maGiamGiaRepository.saveAll(exhaustedCodes);
         }
+    }
+    
+    @Override
+    public List<MaGiamGia> getAvailableMaGiamGiaForUser(User user) {
+        if (user == null) {
+            return List.of();
+        }
+        
+        // Lấy tất cả mã giảm giá active
+        List<MaGiamGia> activeCodes = getActiveMaGiamGia();
+        
+        // Lấy danh sách mã đã sử dụng bởi user
+        List<String> usedCodes = lichSuSuDungMaGiamGiaService.getUsedMaGiamGiaCodesByUser(user);
+        
+        // Lọc ra những mã chưa được user sử dụng
+        return activeCodes.stream()
+            .filter(code -> !usedCodes.contains(code.getMaGiamGia()))
+            .toList();
+    }
+    
+    @Override
+    public boolean canUserUseMaGiamGia(String maGiamGia, User user) {
+        if (user == null || maGiamGia == null || maGiamGia.trim().isEmpty()) {
+            return false;
+        }
+        
+        // Kiểm tra mã giảm giá có hợp lệ không
+        if (!isValidMaGiamGia(maGiamGia)) {
+            return false;
+        }
+        
+        // Kiểm tra user đã sử dụng mã này chưa
+        return !lichSuSuDungMaGiamGiaService.hasUserUsedMaGiamGia(user, maGiamGia);
     }
 }
