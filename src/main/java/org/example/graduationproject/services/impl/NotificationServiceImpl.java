@@ -115,5 +115,6 @@ public class NotificationServiceImpl implements NotificationService {
             "/queue/notifications",
             notification
         );
+        System.out.println("Sending notification to user: " + user.getUsername() + " - " + title);
     }
 }

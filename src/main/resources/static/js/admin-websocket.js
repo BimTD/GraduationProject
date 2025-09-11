@@ -1,6 +1,7 @@
 class AdminNotificationWebSocket {
     constructor() {
         this.socket = null;
+        this.stompClient = null;
         this.isConnected = false;
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 5;
@@ -15,26 +16,22 @@ class AdminNotificationWebSocket {
             // Sử dụng SockJS để kết nối WebSocket
             this.socket = new SockJS('/ws');
             
-            this.socket.onopen = () => {
-                console.log('Admin WebSocket connected');
+            // Tạo STOMP client
+            this.stompClient = Stomp.over(this.socket);
+            
+            // Cấu hình STOMP client
+            this.stompClient.debug = null; // Tắt debug để tránh spam console
+            
+            this.stompClient.connect({}, (frame) => {
+                console.log('Admin WebSocket connected via STOMP');
                 this.isConnected = true;
                 this.reconnectAttempts = 0;
                 this.subscribeToNotifications();
-            };
-
-            this.socket.onclose = () => {
-                console.log('Admin WebSocket disconnected');
+            }, (error) => {
+                console.error('Admin STOMP connection error:', error);
                 this.isConnected = false;
                 this.attemptReconnect();
-            };
-
-            this.socket.onerror = (error) => {
-                console.error('Admin WebSocket error:', error);
-            };
-
-            this.socket.onmessage = (event) => {
-                this.handleMessage(event);
-            };
+            });
 
         } catch (error) {
             console.error('Failed to connect to Admin WebSocket:', error);
@@ -43,26 +40,20 @@ class AdminNotificationWebSocket {
     }
 
     subscribeToNotifications() {
-        if (this.socket && this.isConnected) {
+        if (this.stompClient && this.isConnected) {
             // Subscribe to admin notifications
-            this.socket.send(JSON.stringify({
-                command: 'subscribe',
-                destination: '/topic/admin/notifications'
-            }));
+            this.stompClient.subscribe('/topic/admin/notifications', (message) => {
+                try {
+                    const notification = JSON.parse(message.body);
+                    this.showNotification(notification);
+                    this.updateNotificationCount();
+                } catch (error) {
+                    console.error('Error parsing admin notification message:', error);
+                }
+            });
         }
     }
 
-    handleMessage(event) {
-        try {
-            const data = JSON.parse(event.data);
-            if (data.type === 'notification') {
-                this.showNotification(data);
-                this.updateNotificationCount();
-            }
-        } catch (error) {
-            console.error('Error parsing Admin WebSocket message:', error);
-        }
-    }
 
     showNotification(notification) {
         // Tạo thông báo toast
@@ -155,10 +146,14 @@ class AdminNotificationWebSocket {
     }
 
     disconnect() {
+        if (this.stompClient && this.isConnected) {
+            this.stompClient.disconnect();
+        }
         if (this.socket) {
             this.socket.close();
             this.socket = null;
         }
+        this.stompClient = null;
         this.isConnected = false;
     }
 

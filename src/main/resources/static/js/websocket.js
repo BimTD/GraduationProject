@@ -1,11 +1,12 @@
-class NotificationWebSocket {
+    class NotificationWebSocket {
     constructor() {
         this.socket = null;
+        this.stompClient = null;
         this.isConnected = false;
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 5;
         this.reconnectDelay = 1000;
-        this.isAdmin = false; // Add admin flag
+        this.isAdminFlag = false; // Add admin flag
     }
 
     connect() {
@@ -15,26 +16,22 @@ class NotificationWebSocket {
             // Sử dụng SockJS để kết nối WebSocket
             this.socket = new SockJS('/ws');
             
-            this.socket.onopen = () => {
-                console.log('WebSocket connected');
+            // Tạo STOMP client
+            this.stompClient = Stomp.over(this.socket);
+            
+            // Cấu hình STOMP client
+            this.stompClient.debug = null; // Tắt debug để tránh spam console
+            
+            this.stompClient.connect({}, (frame) => {
+                console.log('WebSocket connected via STOMP');
                 this.isConnected = true;
                 this.reconnectAttempts = 0;
                 this.subscribeToNotifications();
-            };
-
-            this.socket.onclose = () => {
-                console.log('WebSocket disconnected');
+            }, (error) => {
+                console.error('STOMP connection error:', error);
                 this.isConnected = false;
                 this.attemptReconnect();
-            };
-
-            this.socket.onerror = (error) => {
-                console.error('WebSocket error:', error);
-            };
-
-            this.socket.onmessage = (event) => {
-                this.handleMessage(event);
-            };
+            });
 
         } catch (error) {
             console.error('Failed to connect to WebSocket:', error);
@@ -43,36 +40,38 @@ class NotificationWebSocket {
     }
 
     subscribeToNotifications() {
-        if (this.socket && this.isConnected) {
+        if (this.stompClient && this.isConnected) {
             // Subscribe to user notifications
-            this.socket.send(JSON.stringify({
-                command: 'subscribe',
-                destination: '/user/queue/notifications'
-            }));
+            this.stompClient.subscribe('/user/queue/notifications', (message) => {
+                console.log('Received user notification:', message.body);
+                try {
+                    const notification = JSON.parse(message.body);
+                    this.showNotification(notification);
+                    this.updateNotificationCount();
+                } catch (error) {
+                    console.error('Error parsing notification message:', error);
+                }
+            });
 
             // Subscribe to admin notifications (if user is admin)
-            if (this.isAdmin()) {
-                this.socket.send(JSON.stringify({
-                    command: 'subscribe',
-                    destination: '/topic/admin/notifications'
-                }));
+            if (this.checkIsAdmin()) {
+                this.stompClient.subscribe('/topic/admin/notifications', (message) => {
+                    try {
+                        const notification = JSON.parse(message.body);
+                        this.showNotification(notification);
+                        this.updateNotificationCount();
+                    } catch (error) {
+                        console.error('Error parsing admin notification message:', error);
+                    }
+                });
             }
         }
     }
 
-    handleMessage(event) {
-        try {
-            const data = JSON.parse(event.data);
-            if (data.type === 'notification') {
-                this.showNotification(data);
-                this.updateNotificationCount();
-            }
-        } catch (error) {
-            console.error('Error parsing WebSocket message:', error);
-        }
-    }
 
     showNotification(notification) {
+        console.log('Showing notification:', notification);
+        
         // Tạo thông báo toast
         const toast = this.createToast(notification);
         document.body.appendChild(toast);
@@ -80,6 +79,7 @@ class NotificationWebSocket {
         // Hiển thị thông báo
         setTimeout(() => {
             toast.classList.add('show');
+            console.log('Toast notification displayed');
         }, 100);
 
         // Tự động ẩn sau 5 giây
@@ -154,7 +154,7 @@ class NotificationWebSocket {
 
     updateNotificationCount() {
         // Cập nhật badge số thông báo chưa đọc cho user
-        if (!this.isAdmin()) {
+        if (!this.checkIsAdmin()) {
             fetch('/notifications/api/unread-count')
                 .then(response => response.json())
                 .then(count => {
@@ -175,11 +175,11 @@ class NotificationWebSocket {
         }
     }
 
-    isAdmin() {
+    checkIsAdmin() {
         // Kiểm tra xem user có phải admin không (có thể dựa vào URL hoặc data attribute)
         return window.location.pathname.includes('/admin') || 
                document.body.getAttribute('data-user-role') === 'ADMIN' ||
-               this.isAdmin;
+               this.isAdminFlag;
     }
 
     attemptReconnect() {
@@ -196,10 +196,14 @@ class NotificationWebSocket {
     }
 
     disconnect() {
+        if (this.stompClient && this.isConnected) {
+            this.stompClient.disconnect();
+        }
         if (this.socket) {
             this.socket.close();
             this.socket = null;
         }
+        this.stompClient = null;
         this.isConnected = false;
     }
 

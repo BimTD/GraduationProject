@@ -262,6 +262,9 @@ public class HoaDonServiceImpl implements HoaDonService {
         String userMessage = "Đơn hàng #" + hoaDon.getId() + " của bạn đã được tạo thành công. " +
                            "Chúng tôi sẽ xử lý đơn hàng trong thời gian sớm nhất.";
         notificationService.createNotification(userTitle, userMessage, "ORDER_CREATED", user, hoaDon.getId());
+        
+        // Gửi thông báo real-time cho user
+        notificationService.sendNotificationToUser(user, userTitle, userMessage, "ORDER_CREATED", hoaDon.getId());
 
         return hoaDon;
     }
@@ -347,6 +350,10 @@ public class HoaDonServiceImpl implements HoaDonService {
             notificationService.createNotification(userTitle, userMessage, "ORDER_STATUS_CHANGED", 
                                                  hoaDon.getUser(), orderId);
             
+            // Gửi thông báo real-time cho user
+            notificationService.sendNotificationToUser(hoaDon.getUser(), userTitle, userMessage, 
+                                                     "ORDER_STATUS_CHANGED", orderId);
+            
             return true;
         }
         return false;
@@ -399,6 +406,17 @@ public class HoaDonServiceImpl implements HoaDonService {
             }
             
             hoaDonRepository.save(hoaDon);
+            
+            // Gửi thông báo cho user khi admin thay đổi trạng thái
+            String userTitle = "Cập nhật đơn hàng #" + orderId;
+            String userMessage = "Trạng thái đơn hàng #" + orderId + " đã được cập nhật thành " + newStatus;
+            notificationService.createNotification(userTitle, userMessage, "ORDER_STATUS_CHANGED", 
+                                                 hoaDon.getUser(), orderId);
+            
+            // Gửi thông báo real-time cho user
+            notificationService.sendNotificationToUser(hoaDon.getUser(), userTitle, userMessage, 
+                                                     "ORDER_STATUS_CHANGED", orderId);
+            
             return true;
         }
         return false;
@@ -441,6 +459,21 @@ public class HoaDonServiceImpl implements HoaDonService {
             
             hoaDon.setTrangThai("CANCELLED");
             hoaDonRepository.save(hoaDon);
+            
+            // Gửi thông báo cho user khi hủy đơn hàng
+            String userTitle = "Đơn hàng đã được hủy #" + orderId;
+            String userMessage = "Đơn hàng #" + orderId + " của bạn đã được hủy thành công.";
+            notificationService.createNotification(userTitle, userMessage, "ORDER_CANCELLED", user, orderId);
+            
+            // Gửi thông báo real-time cho user
+            notificationService.sendNotificationToUser(user, userTitle, userMessage, "ORDER_CANCELLED", orderId);
+            
+            // Gửi thông báo cho admin khi user hủy đơn hàng
+            String adminTitle = "Đơn hàng bị hủy #" + orderId;
+            String adminMessage = "Khách hàng " + user.getHoTen() + " đã hủy đơn hàng #" + orderId + 
+                                " với tổng tiền " + hoaDon.getTongTien() + " VNĐ";
+            notificationService.createAdminNotification(adminTitle, adminMessage, "ORDER_CANCELLED", orderId);
+            
             return true;
         }
         return false;
