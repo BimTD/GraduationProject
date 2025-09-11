@@ -70,6 +70,29 @@
                                 <li><a th:href="@{/logout}" style="color: #ff4444;">Logout</a></li>
                             </ul>
                         </div>
+                        <!-- Notification Bell -->
+                        <div class="notification-dropdown" th:if="${isAuthenticated}">
+                            <a href="#" onclick="toggleNotificationDropdown(event)" onmouseenter="loadDropdownNotifications()">
+                                <i class="fa fa-bell"></i>
+                                <span id="notification-badge" class="notification-badge" style="display: none;">0</span>
+                            </a>
+                            <div id="notification-dropdown" class="notification-dropdown-content">
+                                <div class="dropdown-header">
+                                    <h6>Thông báo</h6>
+                                </div>
+                                <div id="notification-list-dropdown" class="notification-list">
+                                    <div class="text-center p-3">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p class="mt-2 mb-0 text-muted">Đang tải thông báo...</p>
+                                    </div>
+                                </div>
+                                <div class="dropdown-footer">
+                                    <p class="mb-0 text-muted small">Chỉ hiển thị 5 thông báo gần nhất</p>
+                                </div>
+                            </div>
+                        </div>
                         <div class="cart_link">
                             <a th:href="@{/cart}"><i class="fa fa-shopping-basket"></i>Cart <span class="cart_count" th:if="${isAuthenticated}">0</span></a>
                         </div>
@@ -91,9 +114,9 @@
                                 <nav>
                                     <ul>
                                         <li th:classappend="${currentPage == '/home' or currentPage == '/'} ? 'active' : ''"><a th:href="@{/home}">Home</a></li>
-                                        <li th:classappend="${currentPage == '/shop' or #strings.startsWith(currentPage, '/product-details') or currentPage == '/cart' or #strings.startsWith(currentPage, '/checkout')} ? 'active' : ''"><a th:href="@{/shop}">Shop</a></li>
+                                        <li th:classappend="${currentPage == '/shop' or (currentPage != null and #strings.startsWith(currentPage, '/product-details')) or currentPage == '/cart' or (currentPage != null and #strings.startsWith(currentPage, '/checkout'))} ? 'active' : ''"><a th:href="@{/shop}">Shop</a></li>
                                         <li th:classappend="${currentPage == '/discount-codes'} ? 'active' : ''"><a th:href="@{/discount-codes}">Mã giảm giá</a></li>
-                                        <li th:if="${isAuthenticated}" th:classappend="${#strings.startsWith(currentPage, '/orders')} ? 'active' : ''"><a th:href="@{/orders}">Đơn hàng</a></li>
+                                        <li th:if="${isAuthenticated}" th:classappend="${currentPage != null and #strings.startsWith(currentPage, '/orders')} ? 'active' : ''"><a th:href="@{/orders}">Đơn hàng</a></li>
                                         <li th:classappend="${currentPage == '/blog'} ? 'active' : ''"><a th:href="@{/blog}">Blog</a></li>
                                         <li th:classappend="${currentPage == '/about'} ? 'active' : ''"><a th:href="@{/about}">About us</a></li>
                                         <li th:classappend="${currentPage == '/contact'} ? 'active' : ''"><a th:href="@{/contact}">Contact Us</a></li>
@@ -112,3 +135,42 @@
     </div>
     <!--header bottom end-->
 </header>
+
+<script>
+function toggleNotificationDropdown(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('notification-dropdown');
+    dropdown.classList.toggle('show');
+    
+    // Load notifications if not already loaded
+    if (!dropdown.dataset.loaded) {
+        loadNotificationDropdown();
+        dropdown.dataset.loaded = 'true';
+    }
+}
+
+function loadNotificationDropdown() {
+    fetch('/notifications/api/unread-count')
+        .then(response => response.json())
+        .then(count => {
+            const badge = document.getElementById('notification-badge');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.style.display = 'inline';
+            } else {
+                badge.style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Error loading notification count:', error));
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('notification-dropdown');
+    const toggle = event.target.closest('.notification-dropdown');
+    
+    if (dropdown && !toggle) {
+        dropdown.classList.remove('show');
+    }
+});
+</script>

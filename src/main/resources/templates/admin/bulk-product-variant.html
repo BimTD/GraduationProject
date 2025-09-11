@@ -23,10 +23,10 @@
                 </div>
                 <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
                     <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
-                        <a href="#!" class="text-slate-400 dark:text-zink-200">Dashboard</a>
+                        <a href="#!" class="text-slate-400 dark:text-zink-200">Tổng Quan</a>
                     </li>
                     <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
-                        <a th:href="@{/admin/product-variant}" class="text-slate-400 dark:text-zink-200">Product Variant</a>
+                        <a th:href="@{/admin/product-variant}" class="text-slate-400 dark:text-zink-200">Sản Phẩm Biến Thể</a>
                     </li>
                     <li class="text-slate-700 dark:text-zink-100">
                         Tạo Hàng Loạt
@@ -101,7 +101,7 @@
                             <div class="bg-slate-50 dark:bg-zink-600 rounded-lg p-4">
                                 <h6 class="font-medium text-slate-700 dark:text-zink-100 mb-3">Xem Trước</h6>
                                 <div id="previewContainer" class="text-sm text-slate-600 dark:text-zink-300">
-                                    <p>Chọn sản phẩm, màu sắc và size để xem số lượng biến thể sẽ được tạo</p>
+                                    <p>Chọn sản phẩm, màu sắc và kích cỡ để xem số lượng biến thể sẽ được tạo</p>
                                 </div>
                             </div>
                         </div>
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error loading available options:', error);
-                alert('Có lỗi xảy ra khi tải thông tin màu sắc và size!');
+                alert('Có lỗi xảy ra khi tải thông tin màu sắc và kích cỡ!');
             });
     }
 
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateSizeContainer(sizes) {
         if (!sizes || sizes.length === 0) {
-            sizeContainer.innerHTML = '<p class="text-slate-500 text-sm">Không có size phù hợp cho sản phẩm này</p>';
+            sizeContainer.innerHTML = '<p class="text-slate-500 text-sm">Không có kích cỡ phù hợp cho sản phẩm này</p>';
             selectAllSizes.disabled = true;
             deselectAllSizes.disabled = true;
             return;
@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function resetColorAndSizeContainers() {
         colorContainer.innerHTML = '<p class="text-slate-500 text-sm">Chọn sản phẩm trước để xem màu sắc phù hợp</p>';
-        sizeContainer.innerHTML = '<p class="text-slate-500 text-sm">Chọn sản phẩm trước để xem size phù hợp</p>';
+        sizeContainer.innerHTML = '<p class="text-slate-500 text-sm">Chọn sản phẩm trước để xem kích cỡ phù hợp</p>';
         
         selectAllColors.disabled = true;
         deselectAllColors.disabled = true;
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             submitBtn.disabled = false;
         } else {
-            previewContainer.innerHTML = '<p>Chọn sản phẩm, màu sắc và size để xem số lượng biến thể sẽ được tạo</p>';
+            previewContainer.innerHTML = '<p>Chọn sản phẩm, màu sắc và kích cỡ để xem số lượng biến thể sẽ được tạo</p>';
             submitBtn.disabled = true;
         }
     }
@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (selectedSizes.length === 0) {
             e.preventDefault();
-            alert('Vui lòng chọn ít nhất một size!');
+            alert('Vui lòng chọn ít nhất một kích cỡ!');
             return;
         }
         

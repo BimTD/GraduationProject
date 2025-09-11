@@ -12,10 +12,15 @@
     <link rel="stylesheet" th:href="@{/fe/css/checkout.css}">
     <link rel="stylesheet" th:href="@{/fe/css/profile.css}" th:if="${#strings.startsWith(currentPage, '/profile')}">
     <link rel="stylesheet" th:href="@{/fe/css/modern-search.css}">
+    <link rel="stylesheet" th:href="@{/css/notifications.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <!-- jQuery UI for slider -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/ui-lightness/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script th:src="@{/fe/js/modern-search.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script th:src="@{/js/websocket.js}"></script>
+
 </head>

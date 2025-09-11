@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
-<head th:replace="~{admin/fragments/head :: head('Discount Code Management')}"></head>
+<head th:replace="~{admin/fragments/head :: head('Quản Lý Mã Giảm Giá')}"></head>
 
 <body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
     <div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
@@ -21,14 +21,14 @@
                 <!-- Breadcrumb -->
                 <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
                     <div class="grow">
-                        <h5 class="text-16">Discount Code Management</h5>
+                        <h5 class="text-16">Mã Giảm Giá</h5>
                     </div>
                     <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
                         <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1 before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
-                            <a href="#!" class="text-slate-400 dark:text-zink-200">Dashboards</a>
+                            <a href="#!" class="text-slate-400 dark:text-zink-200">Tổng Quan</a>
                         </li>
                         <li class="text-slate-700 dark:text-zink-100">
-                            Discount Codes
+                            Mã Giảm Giá
                         </li>
                     </ul>
                 </div>
@@ -67,15 +67,15 @@
                                         <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
                                             <tr>
                                                 <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">ID</th>
-                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Code</th>
-                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Name</th>
-                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Type</th>
-                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Value</th>
-                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Status</th>
-                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Start Date</th>
-                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">End Date</th>
-                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Usage</th>
-                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Actions</th>
+                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Mã</th>
+                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Tên</th>
+                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Loại</th>
+                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Giá Trị</th>
+                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Trạng Thái</th>
+                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Ngày Bắt Đầu</th>
+                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Ngày Kết Thúc</th>
+                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Số Lượng</th>
+                                                <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Hành Động</th>
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-slate-200 dark:divide-zink-500">
@@ -87,10 +87,10 @@
                                                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5" th:text="${maGiamGia.tenMaGiamGia}"></td>
                                                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5">
                                                     <span th:if="${maGiamGia.loaiGiamGia == 'PERCENTAGE'}" class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                                                        Percentage
+                                                        Phần trăm
                                                     </span>
                                                     <span th:if="${maGiamGia.loaiGiamGia == 'FIXED'}" class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                                                        Fixed Amount
+                                                        Tiền cố định
                                                     </span>
                                                 </td>
                                                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5">
@@ -101,16 +101,16 @@
                                                 </td>
                                                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5">
                                                     <span th:if="${maGiamGia.trangThai == 'ACTIVE'}" class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                                                        Active
+                                                        Hoạt động
                                                     </span>
                                                     <span th:if="${maGiamGia.trangThai == 'INACTIVE'}" class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300">
-                                                        Inactive
+                                                        Không hoạt động
                                                     </span>
                                                     <span th:if="${maGiamGia.trangThai == 'EXPIRED'}" class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
-                                                        Expired
+                                                        Hết hạn
                                                     </span>
                                                     <span th:if="${maGiamGia.trangThai == 'EXHAUSTED'}" class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
-                                                        Exhausted
+                                                        Kiệt sức
                                                     </span>
                                                 </td>
                                                 <td class="px-3.5 py-2.5 first:pl-5 last:pr-5" th:text="${#temporals.format(maGiamGia.ngayBatDau, 'dd/MM/yyyy HH:mm')}"></td>
@@ -164,7 +164,7 @@
                         <!-- Form Header -->
                         <div class="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h5 class="text-16" id="formTitle">Create New Discount Code</h5>
+                                <h5 class="text-16" id="formTitle">Tạo Mã Giảm Giá Mới</h5>
                             </div>
                             <div class="flex items-center gap-2">
                                 <button id="backToListBtn" class="btn bg-slate-500 text-white hover:bg-slate-600 transition-all px-4 py-2 rounded">
@@ -181,22 +181,22 @@
                                     <!-- Basic Information -->
                                     <div class="card">
                                         <div class="card-header">
-                                            <h6 class="card-title">Basic Information</h6>
+                                            <h6 class="card-title">Thông Tin</h6>
                                         </div>
                                         <div class="card-body">
                                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                 <div>
-                                                    <label for="maGiamGia" class="inline-block mb-2 text-base font-medium">Discount Code <span class="text-red-500">*</span></label>
-                                                    <input type="text" id="maGiamGia" th:field="*{maGiamGia}" class="form-input border-slate-200" placeholder="e.g., SALE10, WELCOME20" required>
+                                                    <label for="maGiamGia" class="inline-block mb-2 text-base font-medium">Mã Giảm Giá <span class="text-red-500">*</span></label>
+                                                    <input type="text" id="maGiamGia" th:field="*{maGiamGia}" class="form-input border-slate-200" placeholder="...SALE10, WELCOME20" required>
                                                     <div class="text-xs text-slate-500 mt-1">Code for users to enter during checkout</div>
                                                 </div>
                                                 <div>
-                                                    <label for="tenMaGiamGia" class="inline-block mb-2 text-base font-medium">Discount Name <span class="text-red-500">*</span></label>
-                                                    <input type="text" id="tenMaGiamGia" th:field="*{tenMaGiamGia}" class="form-input border-slate-200" placeholder="e.g., 10% Off Sale" required>
+                                                    <label for="tenMaGiamGia" class="inline-block mb-2 text-base font-medium">Tên <span class="text-red-500">*</span></label>
+                                                    <input type="text" id="tenMaGiamGia" th:field="*{tenMaGiamGia}" class="form-input border-slate-200" placeholder="...giảm giá" required>
                                                 </div>
                                             </div>
                                             <div class="mt-4">
-                                                <label for="moTa" class="inline-block mb-2 text-base font-medium">Description</label>
+                                                <label for="moTa" class="inline-block mb-2 text-base font-medium">Mô tả</label>
                                                 <textarea id="moTa" th:field="*{moTa}" class="form-input border-slate-200" rows="3" placeholder="Detailed description of the discount code"></textarea>
                                             </div>
                                         </div>
@@ -205,34 +205,34 @@
                                     <!-- Discount Configuration -->
                                     <div class="card">
                                         <div class="card-header">
-                                            <h6 class="card-title">Discount Configuration</h6>
+                                            <h6 class="card-title">Cấu Hình </h6>
                                         </div>
                                         <div class="card-body">
                                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                 <div>
-                                                    <label for="loaiGiamGia" class="inline-block mb-2 text-base font-medium">Discount Type <span class="text-red-500">*</span></label>
+                                                    <label for="loaiGiamGia" class="inline-block mb-2 text-base font-medium">Loại<span class="text-red-500">*</span></label>
                                                     <select id="loaiGiamGia" th:field="*{loaiGiamGia}" class="form-input border-slate-200" required>
-                                                        <option value="">Select discount type</option>
-                                                        <option value="PERCENTAGE">Percentage (%)</option>
-                                                        <option value="FIXED">Fixed Amount (VNĐ)</option>
+                                                        <option value="">Chọn loại giảm giá</option>
+                                                        <option value="PERCENTAGE">Phần trăm (%)</option>
+                                                        <option value="FIXED">Tiền cố định (VNĐ)</option>
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label for="giaTriGiamGia" class="inline-block mb-2 text-base font-medium">Discount Value <span class="text-red-500">*</span></label>
+                                                    <label for="giaTriGiamGia" class="inline-block mb-2 text-base font-medium">Giá Trị<span class="text-red-500">*</span></label>
                                                     <input type="number" id="giaTriGiamGia" th:field="*{giaTriGiamGia}" class="form-input border-slate-200" step="0.01" min="0" required>
-                                                    <div class="text-xs text-slate-500 mt-1" id="giaTriHelp">Enter discount value</div>
+                                                    <div class="text-xs text-slate-500 mt-1" id="giaTriHelp">Nhập giá trị</div>
                                                 </div>
                                             </div>
                                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 mt-4">
                                                 <div>
-                                                    <label for="giaTriToiThieu" class="inline-block mb-2 text-base font-medium">Minimum Order Value</label>
+                                                    <label for="giaTriToiThieu" class="inline-block mb-2 text-base font-medium">Giá trị đơn hàng tối thiểu</label>
                                                     <input type="number" id="giaTriToiThieu" th:field="*{giaTriToiThieu}" class="form-input border-slate-200" step="0.01" min="0" placeholder="0">
-                                                    <div class="text-xs text-slate-500 mt-1">Order must have minimum value to apply code</div>
+                                                    <div class="text-xs text-slate-500 mt-1">Đặt hàng phải có giá trị tối thiểu để áp dụng mã</div>
                                                 </div>
                                                 <div id="giaTriToiDaGroup" style="display: none;">
-                                                    <label for="giaTriToiDa" class="inline-block mb-2 text-base font-medium">Maximum Discount Value</label>
+                                                    <label for="giaTriToiDa" class="inline-block mb-2 text-base font-medium">Giá trị đơn hàng tối đa</label>
                                                     <input type="number" id="giaTriToiDa" th:field="*{giaTriToiDa}" class="form-input border-slate-200" step="0.01" min="0" placeholder="No limit">
-                                                    <div class="text-xs text-slate-500 mt-1">Only applies to percentage discount type</div>
+                                                    <div class="text-xs text-slate-500 mt-1">Chỉ áp dụng cho loại chiết khấu phần trăm</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -241,20 +241,20 @@
                                     <!-- Usage Configuration -->
                                     <div class="card">
                                         <div class="card-header">
-                                            <h6 class="card-title">Usage Configuration</h6>
+                                            <h6 class="card-title">Cấu hình sử dụng</h6>
                                         </div>
                                         <div class="card-body">
                                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                 <div>
-                                                    <label for="soLuongSuDung" class="inline-block mb-2 text-base font-medium">Maximum Usage Count</label>
-                                                    <input type="number" id="soLuongSuDung" th:field="*{soLuongSuDung}" class="form-input border-slate-200" min="1" placeholder="Unlimited">
-                                                    <div class="text-xs text-slate-500 mt-1">Leave empty for unlimited usage</div>
+                                                    <label for="soLuongSuDung" class="inline-block mb-2 text-base font-medium">Số lượng sử dụng tối đa</label>
+                                                    <input type="number" id="soLuongSuDung" th:field="*{soLuongSuDung}" class="form-input border-slate-200" min="1" placeholder="Không giới hạn">
+                                                    <div class="text-xs text-slate-500 mt-1">Để trống để sử dụng không giới hạn</div>
                                                 </div>
                                                 <div>
-                                                    <label for="trangThai" class="inline-block mb-2 text-base font-medium">Status</label>
+                                                    <label for="trangThai" class="inline-block mb-2 text-base font-medium">Trạng Thái</label>
                                                     <select id="trangThai" th:field="*{trangThai}" class="form-input border-slate-200">
-                                                        <option value="ACTIVE">Active</option>
-                                                        <option value="INACTIVE">Inactive</option>
+                                                        <option value="ACTIVE">Hoạt động</option>
+                                                        <option value="INACTIVE">Không hoạt động</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -264,16 +264,16 @@
                                     <!-- Date Configuration -->
                                     <div class="card">
                                         <div class="card-header">
-                                            <h6 class="card-title">Validity Period</h6>
+                                            <h6 class="card-title">Thời hạn hiệu lực</h6>
                                         </div>
                                         <div class="card-body">
                                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                 <div>
-                                                    <label for="ngayBatDau" class="inline-block mb-2 text-base font-medium">Start Date <span class="text-red-500">*</span></label>
+                                                    <label for="ngayBatDau" class="inline-block mb-2 text-base font-medium">Ngày Bắt Đầu <span class="text-red-500">*</span></label>
                                                     <input type="datetime-local" id="ngayBatDau" th:field="*{ngayBatDau}" class="form-input border-slate-200" required>
                                                 </div>
                                                 <div>
-                                                    <label for="ngayKetThuc" class="inline-block mb-2 text-base font-medium">End Date <span class="text-red-500">*</span></label>
+                                                    <label for="ngayKetThuc" class="inline-block mb-2 text-base font-medium">Ngày Kết Thúc <span class="text-red-500">*</span></label>
                                                     <input type="datetime-local" id="ngayKetThuc" th:field="*{ngayKetThuc}" class="form-input border-slate-200" required>
                                                 </div>
                                             </div>
@@ -282,9 +282,9 @@
 
                                     <!-- Form Actions -->
                                     <div class="flex justify-end gap-2 mt-6">
-                                        <button type="button" id="cancelBtn" class="btn bg-slate-500 text-white hover:bg-slate-600 transition-all px-4 py-2 rounded">Cancel</button>
+                                        <button type="button" id="cancelBtn" class="btn bg-slate-500 text-white hover:bg-slate-600 transition-all px-4 py-2 rounded">Hủy</button>
                                         <button type="submit" id="submitBtn" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
-                                            <span class="ml-1">Save</span>
+                                            <span class="ml-1">Lưu</span>
                                         </button>
                                     </div>
                                 </div>
@@ -293,21 +293,21 @@
                                 <div class="lg:col-span-1">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h6 class="card-title">Preview</h6>
+                                            <h6 class="card-title">Xem trước</h6>
                                         </div>
                                         <div class="card-body">
                                             <div class="text-center">
-                                                <h6 class="text-sm font-medium text-slate-600 dark:text-zink-200">Discount Code</h6>
+                                                <h6 class="text-sm font-medium text-slate-600 dark:text-zink-200">Mã giảm giá</h6>
                                                 <code id="previewCode" class="block text-lg font-mono bg-slate-100 dark:bg-zink-600 p-2 rounded mt-2">-</code>
                                                 
                                                 <hr class="my-4">
                                                 
-                                                <h6 class="text-sm font-medium text-slate-600 dark:text-zink-200">Discount Value</h6>
+                                                <h6 class="text-sm font-medium text-slate-600 dark:text-zink-200">Giá trị</h6>
                                                 <span id="previewValue" class="block text-lg font-semibold text-green-600 mt-2">-</span>
                                                 
                                                 <hr class="my-4">
                                                 
-                                                <h6 class="text-sm font-medium text-slate-600 dark:text-zink-200">Validity Period</h6>
+                                                <h6 class="text-sm font-medium text-slate-600 dark:text-zink-200">Thời hạn hiệu lực</h6>
                                                 <small id="previewDate" class="block text-slate-500 mt-2">-</small>
                                             </div>
                                         </div>

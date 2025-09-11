@@ -15,6 +15,7 @@ import org.example.graduationproject.services.GioHangService;
 import org.example.graduationproject.services.HoaDonService;
 import org.example.graduationproject.services.MaGiamGiaService;
 import org.example.graduationproject.services.LichSuSuDungMaGiamGiaService;
+import org.example.graduationproject.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +50,9 @@ public class HoaDonServiceImpl implements HoaDonService {
     
     @Autowired
     private LichSuSuDungMaGiamGiaService lichSuSuDungMaGiamGiaService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     @Transactional
@@ -247,6 +251,18 @@ public class HoaDonServiceImpl implements HoaDonService {
         activeCart.setNgayCapNhat(LocalDateTime.now());
         gioHangService.updateCartStatus(activeCart);
 
+        // Tạo thông báo cho admin khi có đơn hàng mới
+        String adminTitle = "Đơn hàng mới #" + hoaDon.getId();
+        String adminMessage = "Khách hàng " + user.getHoTen() + " vừa đặt đơn hàng #" + hoaDon.getId() + 
+                            " với tổng tiền " + hoaDon.getTongTien() + " VNĐ";
+        notificationService.createAdminNotification(adminTitle, adminMessage, "ORDER_CREATED", hoaDon.getId());
+        
+        // Tạo thông báo cho user
+        String userTitle = "Đặt hàng thành công";
+        String userMessage = "Đơn hàng #" + hoaDon.getId() + " của bạn đã được tạo thành công. " +
+                           "Chúng tôi sẽ xử lý đơn hàng trong thời gian sớm nhất.";
+        notificationService.createNotification(userTitle, userMessage, "ORDER_CREATED", user, hoaDon.getId());
+
         return hoaDon;
     }
 
@@ -275,6 +291,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         HoaDon hoaDon = hoaDonRepository.findById(orderId).orElse(null);
         if (hoaDon != null) {
             String currentStatus = hoaDon.getTrangThai();
+            String oldStatus = currentStatus;
 
             // Không cho phép thay đổi trạng thái nếu đã COMPLETED hoặc CANCELLED
             if ("COMPLETED".equalsIgnoreCase(currentStatus) || "CANCELLED".equalsIgnoreCase(currentStatus)) {
@@ -322,6 +339,14 @@ public class HoaDonServiceImpl implements HoaDonService {
             }
             
             hoaDonRepository.save(hoaDon);
+            
+            // Gửi thông báo cho user khi admin thay đổi trạng thái
+            String userTitle = "Cập nhật đơn hàng #" + orderId;
+            String userMessage = "Trạng thái đơn hàng #" + orderId + " đã được cập nhật từ " + 
+                               oldStatus + " thành " + newStatus;
+            notificationService.createNotification(userTitle, userMessage, "ORDER_STATUS_CHANGED", 
+                                                 hoaDon.getUser(), orderId);
+            
             return true;
         }
         return false;
