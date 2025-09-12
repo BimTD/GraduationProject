@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org"
+        lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
+<head th:replace="~{admin/fragments/head :: head('Doanh thu')}"></head>
+
+<body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
+<div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
+
+    <!-- Sidebar -->
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}" ></div>
+
+    <div id="sidebar-overlay" class="absolute inset-0 z-[1002] bg-slate-500/30 hidden"></div>
+    <!-- Header -->
+    <header th:replace="~{admin/fragments/header :: header}"></header>
+
+    <!-- Content -->
+    <div class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+        <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
+
+            <!-- Header -->
+            <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
+                <div class="grow">
+                    <h5 class="text-16">Thống Kê Doanh Thu</h5>
+                </div>
+                <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
+                    <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
+                        <a href="#" class="text-slate-400 dark:text-zink-200">Tổng Quan</a>
+                    </li>
+                    <li class="text-slate-700 dark:text-zink-100">
+                        Doanh thu
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="card mb-6">
+                <div class="card-body">
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium">Thời gian:</label>
+                            <select id="periodSelect" class="form-select" onchange="changePeriod()">
+                                <option value="day" th:selected="${selectedPeriod == 'day'}">Theo ngày</option>
+                                <option value="month" th:selected="${selectedPeriod == 'month'}">Theo tháng</option>
+                                <option value="year" th:selected="${selectedPeriod == 'year'}">Theo năm</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2" id="yearSelect" th:if="${selectedPeriod == 'month' or selectedPeriod == 'year'}">
+                            <label class="text-sm font-medium">Năm:</label>
+                            <select id="yearSelectInput" class="form-select" onchange="changeYear()">
+                                <option th:each="year : ${#numbers.sequence(2020, 2024)}" 
+                                        th:value="${year}" 
+                                        th:text="${year}"
+                                        th:selected="${year == selectedYear}"></option>
+                            </select>
+                        </div>
+                        <button class="btn bg-custom-500 text-white" onclick="refreshCharts()">
+                            <i data-lucide="refresh-cw" class="size-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 xl:grid-cols-4">
+                <!-- Total Revenue Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-green-100 text-green-500 dark:bg-green-500/20">
+                                <i data-lucide="dollar-sign" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Tổng Doanh Thu</h6>
+                                <h4 class="mb-1 text-2xl" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h4>
+                                <p class="text-slate-500 dark:text-zink-200">Tất cả đơn hàng</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Orders Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-blue-100 text-blue-500 dark:bg-blue-500/20">
+                                <i data-lucide="shopping-bag" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Tổng Đơn Hàng</h6>
+                                <h4 class="mb-1 text-2xl" th:text="${totalOrders}">0</h4>
+                                <p class="text-slate-500 dark:text-zink-200">Đơn hàng hoàn thành</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Average Order Value Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-orange-100 text-orange-500 dark:bg-orange-500/20">
+                                <i data-lucide="trending-up" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Giá Trị Đơn Hàng TB</h6>
+                                <h4 class="mb-1 text-2xl" th:text="${#numbers.formatDecimal(averageOrderValue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h4>
+                                <p class="text-slate-500 dark:text-zink-200">Trung bình mỗi đơn</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Growth Rate Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-purple-100 text-purple-500 dark:bg-purple-500/20">
+                                <i data-lucide="bar-chart-3" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Tăng Trưởng</h6>
+                                <h4 class="mb-1 text-2xl text-green-500">+12.5%</h4>
+                                <p class="text-slate-500 dark:text-zink-200">So với tháng trước</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row 1 -->
+            <div class="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
+                <!-- Revenue Trend Chart -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center justify-between mb-4">
+                            <h6 class="text-15">Xu Hướng Doanh Thu</h6>
+                            <div class="flex items-center justify-center size-8 rounded-md bg-custom-100 text-custom-500 dark:bg-custom-500/20">
+                                <i data-lucide="trending-up" class="size-4"></i>
+                            </div>
+                        </div>
+                        <div class="h-80">
+                            <canvas id="revenueTrendChart"></canvas>
+                        </div>
+                        <!-- Revenue Trend Statistics -->
+                        <div class="mt-4 pt-4 border-t border-slate-200 dark:border-zink-500">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="text-center">
+                                    <h6 class="text-sm text-slate-500 dark:text-zink-200">Tổng Doanh Thu Kỳ</h6>
+                                    <h4 class="text-lg font-semibold" th:text="${#numbers.formatDecimal(periodTotalRevenue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h4>
+                                </div>
+                                <div class="text-center">
+                                    <h6 class="text-sm text-slate-500 dark:text-zink-200">Trung Bình/Kỳ</h6>
+                                    <h4 class="text-lg font-semibold" th:text="${#numbers.formatDecimal(periodAverageRevenue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revenue by Category Chart -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center justify-between mb-4">
+                            <h6 class="text-15">Doanh Thu Theo Danh Mục</h6>
+                            <div class="flex items-center justify-center size-8 rounded-md bg-green-100 text-green-500 dark:bg-green-500/20">
+                                <i data-lucide="pie-chart" class="size-4"></i>
+                            </div>
+                        </div>
+                        <div class="h-80">
+                            <canvas id="revenueByCategoryChart"></canvas>
+                        </div>
+                        <!-- Category Statistics -->
+                        <div class="mt-4 pt-4 border-t border-slate-200 dark:border-zink-500">
+                            <div class="space-y-2">
+                                <div th:each="category, iterStat : ${revenueByCategory}" class="flex justify-between items-center">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-3 h-3 rounded-full" th:style="'background-color: ' + ${chartColors[iterStat.index % chartColors.size()]}"></div>
+                                        <span class="text-sm" th:text="${category.key}">Danh mục</span>
+                                    </div>
+                                    <span class="text-sm font-semibold" th:text="${#numbers.formatDecimal(category.value, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row 2 -->
+            <div class="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
+                <!-- Monthly Revenue Chart -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center justify-between mb-4">
+                            <h6 class="text-15">Doanh Thu 12 Tháng Gần Nhất</h6>
+                            <div class="flex items-center justify-center size-8 rounded-md bg-blue-100 text-blue-500 dark:bg-blue-500/20">
+                                <i data-lucide="bar-chart" class="size-4"></i>
+                            </div>
+                        </div>
+                        <div class="h-80">
+                            <canvas id="monthlyRevenueChart"></canvas>
+                        </div>
+                        <!-- Monthly Statistics -->
+                        <div class="mt-4 pt-4 border-t border-slate-200 dark:border-zink-500">
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="text-center">
+                                    <h6 class="text-sm text-slate-500 dark:text-zink-200">Tháng Cao Nhất</h6>
+                                    <h4 class="text-sm font-semibold" th:text="${highestMonth}">Tháng</h4>
+                                    <h5 class="text-xs text-slate-600" th:text="${#numbers.formatDecimal(highestRevenue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h5>
+                                </div>
+                                <div class="text-center">
+                                    <h6 class="text-sm text-slate-500 dark:text-zink-200">Tháng Thấp Nhất</h6>
+                                    <h4 class="text-sm font-semibold" th:text="${lowestMonth}">Tháng</h4>
+                                    <h5 class="text-xs text-slate-600" th:text="${#numbers.formatDecimal(lowestRevenue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h5>
+                                </div>
+                                <div class="text-center">
+                                    <h6 class="text-sm text-slate-500 dark:text-zink-200">Trung Bình/Tháng</h6>
+                                    <h4 class="text-sm font-semibold" th:text="${#numbers.formatDecimal(monthlyAverage, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Method Chart -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center justify-between mb-4">
+                            <h6 class="text-15">Doanh Thu Theo Phương Thức Thanh Toán</h6>
+                            <div class="flex items-center justify-center size-8 rounded-md bg-orange-100 text-orange-500 dark:bg-orange-500/20">
+                                <i data-lucide="credit-card" class="size-4"></i>
+                            </div>
+                        </div>
+                        <div class="h-80">
+                            <canvas id="paymentMethodChart"></canvas>
+                        </div>
+                        <!-- Payment Method Statistics -->
+                        <div class="mt-4 pt-4 border-t border-slate-200 dark:border-zink-500">
+                            <div class="space-y-2">
+                                <div th:each="payment, iterStat : ${revenueByPaymentMethod}" class="flex justify-between items-center">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-3 h-3 rounded-full" th:style="'background-color: ' + ${chartColors[iterStat.index % chartColors.size()]}"></div>
+                                        <span class="text-sm" th:text="${payment.key}">Phương thức</span>
+                                    </div>
+                                    <span class="text-sm font-semibold" th:text="${#numbers.formatDecimal(payment.value, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Summary Table -->
+            <div class="card mb-6">
+                <div class="card-body">
+                    <div class="flex items-center justify-between mb-4">
+                        <h6 class="text-15">Tổng Hợp Doanh Thu Chi Tiết</h6>
+                        <div class="flex items-center justify-center size-8 rounded-md bg-indigo-100 text-indigo-500 dark:bg-indigo-500/20">
+                            <i data-lucide="bar-chart-2" class="size-4"></i>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full whitespace-nowrap">
+                            <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
+                                <tr>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Chỉ Số</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Giá Trị</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Mô Tả</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white dark:bg-zink-700">
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 font-medium">Tổng Doanh Thu</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 text-sm text-slate-500">Tổng doanh thu từ tất cả đơn hàng hoàn thành</td>
+                                </tr>
+                                <tr class="bg-white dark:bg-zink-700">
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 font-medium">Tổng Đơn Hàng</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${totalOrders}">0</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 text-sm text-slate-500">Số lượng đơn hàng đã hoàn thành</td>
+                                </tr>
+                                <tr class="bg-white dark:bg-zink-700">
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 font-medium">Giá Trị Đơn Hàng TB</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${#numbers.formatDecimal(averageOrderValue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 text-sm text-slate-500">Giá trị trung bình mỗi đơn hàng</td>
+                                </tr>
+                                <tr class="bg-white dark:bg-zink-700">
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 font-medium">Doanh Thu Kỳ</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${#numbers.formatDecimal(periodTotalRevenue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 text-sm text-slate-500">Doanh thu trong kỳ được chọn</td>
+                                </tr>
+                                <tr class="bg-white dark:bg-zink-700">
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 font-medium">Trung Bình Kỳ</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${#numbers.formatDecimal(periodAverageRevenue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 text-sm text-slate-500">Doanh thu trung bình mỗi kỳ</td>
+                                </tr>
+                                <tr class="bg-white dark:bg-zink-700">
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 font-medium">Tháng Cao Nhất</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${highestMonthDisplay}">Tháng: 0 VNĐ</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 text-sm text-slate-500">Tháng có doanh thu cao nhất trong 12 tháng gần nhất</td>
+                                </tr>
+                                <tr class="bg-white dark:bg-zink-700">
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 font-medium">Tháng Thấp Nhất</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${lowestMonthDisplay}">Tháng: 0 VNĐ</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 text-sm text-slate-500">Tháng có doanh thu thấp nhất trong 12 tháng gần nhất</td>
+                                </tr>
+                                <tr class="bg-white dark:bg-zink-700">
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 font-medium">Trung Bình/Tháng</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${#numbers.formatDecimal(monthlyAverage, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500 text-sm text-slate-500">Doanh thu trung bình mỗi tháng trong 12 tháng gần nhất</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Products Table -->
+            <div class="card mb-6">
+                <div class="card-body">
+                    <div class="flex items-center justify-between mb-4">
+                        <h6 class="text-15">Sản Phẩm Bán Chạy</h6>
+                        <div class="flex items-center justify-center size-8 rounded-md bg-purple-100 text-purple-500 dark:bg-purple-500/20">
+                            <i data-lucide="star" class="size-4"></i>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full whitespace-nowrap">
+                            <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
+                                <tr>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">STT</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Tên Sản Phẩm</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Hình Ảnh</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Số Lượng Bán</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Giá Bán</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="product, iterStat : ${topProducts.products}" class="bg-white dark:bg-zink-700">
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${iterStat.index + 1}">1</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${product.key.ten}">Tên sản phẩm</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                                        <img th:src="${#lists.isEmpty(product.key.images) ? '/assets/images/no-image.png' : product.key.images.get(0).imageName}" 
+                                             alt="Ảnh sản phẩm" class="w-12 h-12 object-cover rounded">
+                                    </td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${product.value}">0</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" 
+                                        th:text="${#numbers.formatDecimal(product.key.giaBan, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(topProducts.products)}">
+                                    <td colspan="5" class="text-center py-4">Chưa có dữ liệu sản phẩm bán chạy</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- End Content -->
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+<script th:inline="javascript">
+            // Revenue data from server
+            const revenueData = /*[[${revenueByTime}]]*/ {};
+            const categoryData = /*[[${revenueByCategory}]]*/ {};
+            const monthlyData = /*[[${monthlyRevenue}]]*/ {};
+            const paymentData = /*[[${revenueByPaymentMethod}]]*/ {};
+            const selectedPeriod = /*[[${selectedPeriod}]]*/ 'month';
+            const chartColors = /*[[${chartColors}]]*/ ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#22C55E'];
+    
+    // Chart configurations
+    const chartConfigs = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.dataset.label + ': ' + new Intl.NumberFormat('vi-VN').format(context.parsed.y) + ' VNĐ';
+                    }
+                }
+            }
+        }
+    };
+
+    // Revenue Trend Chart
+    const revenueTrendCtx = document.getElementById('revenueTrendChart').getContext('2d');
+    const revenueTrendChart = new Chart(revenueTrendCtx, {
+        type: 'line',
+        data: {
+            labels: Object.keys(revenueData),
+            datasets: [{
+                label: 'Doanh Thu',
+                data: Object.values(revenueData),
+                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            ...chartConfigs,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat('vi-VN').format(value) + ' VNĐ';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Revenue by Category Chart
+    const categoryCtx = document.getElementById('revenueByCategoryChart').getContext('2d');
+    const categoryLabels = Object.keys(categoryData);
+    const categoryValues = Object.values(categoryData);
+    const categoryColors = chartColors.slice(0, categoryLabels.length).map(color => color + 'CC'); // Add transparency
+    
+    const categoryChart = new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                data: categoryValues,
+                backgroundColor: categoryColors
+            }]
+        },
+        options: {
+            ...chartConfigs,
+            plugins: {
+                ...chartConfigs.plugins,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed / total) * 100).toFixed(1);
+                            return context.label + ': ' + new Intl.NumberFormat('vi-VN').format(context.parsed) + ' VNĐ (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Monthly Revenue Chart
+    const monthlyCtx = document.getElementById('monthlyRevenueChart').getContext('2d');
+    const monthlyChart = new Chart(monthlyCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(monthlyData),
+            datasets: [{
+                label: 'Doanh Thu',
+                data: Object.values(monthlyData),
+                backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                borderColor: 'rgb(16, 185, 129)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            ...chartConfigs,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat('vi-VN').format(value) + ' VNĐ';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Payment Method Chart
+    const paymentCtx = document.getElementById('paymentMethodChart').getContext('2d');
+    const paymentLabels = Object.keys(paymentData);
+    const paymentValues = Object.values(paymentData);
+    const paymentColors = chartColors.slice(0, paymentLabels.length).map(color => color + 'CC'); // Add transparency
+    
+    const paymentChart = new Chart(paymentCtx, {
+        type: 'pie',
+        data: {
+            labels: paymentLabels,
+            datasets: [{
+                data: paymentValues,
+                backgroundColor: paymentColors
+            }]
+        },
+        options: {
+            ...chartConfigs,
+            plugins: {
+                ...chartConfigs.plugins,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed / total) * 100).toFixed(1);
+                            return context.label + ': ' + new Intl.NumberFormat('vi-VN').format(context.parsed) + ' VNĐ (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Functions
+    function changePeriod() {
+        const period = document.getElementById('periodSelect').value;
+        const yearSelect = document.getElementById('yearSelect');
+        
+        if (period === 'month' || period === 'year') {
+            yearSelect.style.display = 'flex';
+        } else {
+            yearSelect.style.display = 'none';
+        }
+        
+        refreshCharts();
+    }
+
+    function changeYear() {
+        refreshCharts();
+    }
+
+    function refreshCharts() {
+        const period = document.getElementById('periodSelect').value;
+        const year = document.getElementById('yearSelectInput') ? document.getElementById('yearSelectInput').value : null;
+        
+        // Reload page with new parameters
+        let url = '/admin/revenue?period=' + period;
+        if (year) {
+            url += '&year=' + year;
+        }
+        window.location.href = url;
+    }
+</script>
+
+<div th:replace="~{admin/fragments/script :: script}"></div>
+
+</body>
+</html>

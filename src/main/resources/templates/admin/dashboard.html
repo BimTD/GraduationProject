@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org"
+        lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
+<head th:replace="~{admin/fragments/head :: head('Tổng Quan')}"></head>
+
+<body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
+<div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
+
+    <!-- Sidebar -->
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}" ></div>
+
+    <div id="sidebar-overlay" class="absolute inset-0 z-[1002] bg-slate-500/30 hidden"></div>
+    <!-- Header -->
+    <header th:replace="~{admin/fragments/header :: header}"></header>
+
+    <!-- Content -->
+    <div class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+        <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
+
+            <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
+                <div class="grow">
+                    <h5 class="text-16">Tổng Quan</h5>
+                </div>
+                <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
+                    <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
+                        <a href="#" class="text-slate-400 dark:text-zink-200">Tổng Quan</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 xl:grid-cols-4">
+                <!-- Total Products Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-custom-100 text-custom-500 dark:bg-custom-500/20">
+                                <i data-lucide="package" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Tổng Sản Phẩm</h6>
+                                <h4 class="mb-1 text-2xl" th:text="${totalProducts}">0</h4>
+                                <p class="text-slate-500 dark:text-zink-200">Sản phẩm trong hệ thống</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Users Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-green-100 text-green-500 dark:bg-green-500/20">
+                                <i data-lucide="users" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Tổng Người Dùng</h6>
+                                <h4 class="mb-1 text-2xl" th:text="${totalUsers}">0</h4>
+                                <p class="text-slate-500 dark:text-zink-200">Người dùng đã đăng ký</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Orders Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-orange-100 text-orange-500 dark:bg-orange-500/20">
+                                <i data-lucide="shopping-bag" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Tổng Đơn Hàng</h6>
+                                <h4 class="mb-1 text-2xl" th:text="${totalOrders}">0</h4>
+                                <p class="text-slate-500 dark:text-zink-200">Đơn hàng đã tạo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Revenue Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-purple-100 text-purple-500 dark:bg-purple-500/20">
+                                <i data-lucide="dollar-sign" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Tổng Doanh Thu</h6>
+                                <h4 class="mb-1 text-2xl" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h4>
+                                <p class="text-slate-500 dark:text-zink-200">Tổng doanh thu</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Statistics -->
+            <div class="grid grid-cols-1 gap-4 mb-6 lg:grid-cols-2">
+                <!-- Monthly Revenue Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center justify-between mb-4">
+                            <h6 class="text-15">Doanh Thu Tháng Này</h6>
+                            <div class="flex items-center justify-center size-8 rounded-md bg-custom-100 text-custom-500 dark:bg-custom-500/20">
+                                <i data-lucide="trending-up" class="size-4"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="mb-1 text-2xl" th:text="${#numbers.formatDecimal(monthlyRevenue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h4>
+                                <p class="text-slate-500 dark:text-zink-200">Tháng hiện tại</p>
+                            </div>
+                            <div class="text-right">
+                                <h6 class="mb-1 text-15" th:text="${monthlyOrders}">0</h6>
+                                <p class="text-slate-500 dark:text-zink-200">Đơn hàng</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cart Statistics Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center justify-between mb-4">
+                            <h6 class="text-15">Thống Kê Giỏ Hàng</h6>
+                            <div class="flex items-center justify-center size-8 rounded-md bg-green-100 text-green-500 dark:bg-green-500/20">
+                                <i data-lucide="shopping-cart" class="size-4"></i>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="text-center">
+                                <h4 class="mb-1 text-xl" th:text="${activeCarts}">0</h4>
+                                <p class="text-slate-500 dark:text-zink-200">Giỏ hàng hoạt động</p>
+                            </div>
+                            <div class="text-center">
+                                <h4 class="mb-1 text-xl" th:text="${abandonedCarts}">0</h4>
+                                <p class="text-slate-500 dark:text-zink-200">Giỏ hàng bỏ dở</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center">
+                                <h4 class="mb-1 text-lg" th:text="${potentialAbandonedCarts}">0</h4>
+                                <p class="text-slate-500 dark:text-zink-200 text-sm">Có thể bỏ dở (>24h)</p>
+                            </div>
+                            <div class="text-center">
+                                <h4 class="mb-1 text-lg" th:text="${#numbers.formatDecimal(abandonmentRate, 1, 'COMMA', 1, 'POINT')} + '%'">0%</h4>
+                                <p class="text-slate-500 dark:text-zink-200 text-sm">Tỷ lệ bỏ dở</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Top Products Table -->
+            <div class="card mt-6">
+                <div class="card-body">
+                    <div class="flex items-center justify-between mb-4">
+                        <h6 class="text-15">Sản Phẩm Bán Chạy</h6>
+                        <div class="flex items-center justify-center size-8 rounded-md bg-purple-100 text-purple-500 dark:bg-purple-500/20">
+                            <i data-lucide="star" class="size-4"></i>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full whitespace-nowrap">
+                            <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
+                                <tr>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">STT</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Tên Sản Phẩm</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Hình Ảnh</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Số Lượng Bán</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Giá Bán</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="product, iterStat : ${topProducts}" class="bg-white dark:bg-zink-700">
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${iterStat.index + 1}">1</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${product.key.ten}">Tên sản phẩm</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
+                                        <img th:src="${#lists.isEmpty(product.key.images) ? '/assets/images/no-image.png' : product.key.images.get(0).imageName}" 
+                                             alt="Ảnh sản phẩm" class="w-12 h-12 object-cover rounded">
+                                    </td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${product.value}">0</td>
+                                    <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" 
+                                        th:text="${#numbers.formatDecimal(product.key.giaBan, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(topProducts)}">
+                                    <td colspan="5" class="text-center py-4">Chưa có dữ liệu sản phẩm bán chạy</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- End Content -->
+
+</div>
+
+<div th:replace="~{admin/fragments/script :: script}"></div>
+
+
+</body>
+</html>

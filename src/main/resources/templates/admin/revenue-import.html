@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org"
+        lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
+<head th:replace="~{admin/fragments/head :: head('Thống kê nhập hàng')}"></head>
+
+<body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
+<div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
+
+    <!-- Sidebar -->
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}" ></div>
+
+    <div id="sidebar-overlay" class="absolute inset-0 z-[1002] bg-slate-500/30 hidden"></div>
+    <!-- Header -->
+    <header th:replace="~{admin/fragments/header :: header}"></header>
+
+    <!-- Content -->
+    <div class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+        <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
+
+            <!-- Breadcrumb -->
+            <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
+                <div class="grow">
+                    <h5 class="text-16">Thống Kê Nhập Hàng</h5>
+                </div>
+                <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
+                    <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
+                        <a href="#" class="text-slate-400 dark:text-zink-200">Tổng Quan</a>
+                    </li>
+                    <li class="text-slate-700 dark:text-zink-100">
+                        Thống Kê Nhập Hàng
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium">Thời gian:</label>
+                            <select id="periodSelect" class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:cursor-not-allowed opacity-100">
+                                <option value="day" th:selected="${selectedPeriod == 'day'}">Theo ngày</option>
+                                <option value="month" th:selected="${selectedPeriod == 'month'}">Theo tháng</option>
+                                <option value="year" th:selected="${selectedPeriod == 'year'}">Theo năm</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium">Năm:</label>
+                            <select id="yearSelect" class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:cursor-not-allowed opacity-100">
+                                <option th:each="year : ${#numbers.sequence(2020, 2025)}" 
+                                        th:value="${year}" 
+                                        th:text="${year}"
+                                        th:selected="${selectedYear != null && selectedYear == year}"></option>
+                            </select>
+                        </div>
+                        <button type="button" id="refreshBtn" class="btn bg-custom-500 text-white border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
+                            <i data-lucide="refresh-cw" class="inline-block size-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 gap-5 xl:grid-cols-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-custom-100 text-custom-500 dark:bg-custom-500/20">
+                                <i data-lucide="truck" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Tổng Phiếu Nhập</h6>
+                                <h4 class="mb-0 text-2xl" th:text="${totalImports}">0</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-green-100 text-green-500 dark:bg-green-500/20">
+                                <i data-lucide="dollar-sign" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Tổng Chi Phí</h6>
+                                <h4 class="mb-0 text-2xl" th:text="${#numbers.formatDecimal(totalImportCost, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-orange-100 text-orange-500 dark:bg-orange-500/20">
+                                <i data-lucide="trending-up" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Chi Phí Trung Bình</h6>
+                                <h4 class="mb-0 text-2xl" th:text="${#numbers.formatDecimal(averageImportValue, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-purple-100 text-purple-500 dark:bg-purple-500/20">
+                                <i data-lucide="calendar" class="size-6"></i>
+                            </div>
+                            <div class="grow ms-3">
+                                <h6 class="mb-1 text-15">Chi Phí Kỳ Này</h6>
+                                <h4 class="mb-0 text-2xl" th:text="${#numbers.formatDecimal(periodTotalCost, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 gap-5 xl:grid-cols-2">
+                <!-- Chi phí nhập hàng theo thời gian -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center justify-between mb-4">
+                            <h6 class="text-15">Chi Phí Nhập Hàng Theo Thời Gian</h6>
+                            <div class="dropdown">
+                                <button class="flex items-center justify-center size-8 transition-all duration-200 ease-linear rounded text-slate-500 bg-slate-100 hover:text-slate-600 hover:bg-slate-200 dark:bg-zink-600 dark:text-zink-200 dark:hover:text-zink-300 dark:hover:bg-zink-500" type="button" data-bs-toggle="dropdown">
+                                    <i data-lucide="more-horizontal" class="size-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="importCostTimeChart" style="height: 300px;"></div>
+                    </div>
+                </div>
+
+                <!-- Chi phí nhập hàng theo nhà cung cấp -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center justify-between mb-4">
+                            <h6 class="text-15">Chi Phí Theo Nhà Cung Cấp</h6>
+                            <div class="dropdown">
+                                <button class="flex items-center justify-center size-8 transition-all duration-200 ease-linear rounded text-slate-500 bg-slate-100 hover:text-slate-600 hover:bg-slate-200 dark:bg-zink-600 dark:text-zink-200 dark:hover:text-zink-300 dark:hover:bg-zink-500" type="button" data-bs-toggle="dropdown">
+                                    <i data-lucide="more-horizontal" class="size-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="importCostSupplierChart" style="height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Trend Chart -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="flex items-center justify-between mb-4">
+                        <h6 class="text-15">Xu Hướng Chi Phí Nhập Hàng 12 Tháng Gần Nhất</h6>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-slate-500">Cao nhất: <span th:text="${highestMonthDisplay}">-</span></span>
+                            <span class="text-sm text-slate-500">Thấp nhất: <span th:text="${lowestMonthDisplay}">-</span></span>
+                        </div>
+                    </div>
+                    <div id="monthlyImportTrendChart" style="height: 350px;"></div>
+                </div>
+            </div>
+
+            <!-- Bottom Charts Row -->
+            <div class="grid grid-cols-1 gap-5 xl:grid-cols-2">
+                <!-- Chi phí theo danh mục -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center justify-between mb-4">
+                            <h6 class="text-15">Tổng Quan Nhập Hàng</h6>
+                        </div>
+                        <div id="importCostCategoryChart" style="height: 300px;"></div>
+                    </div>
+                </div>
+
+                <!-- Top sản phẩm nhập nhiều -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center justify-between mb-4">
+                            <h6 class="text-15">Top Sản Phẩm Nhập Nhiều Nhất</h6>
+                        </div>
+                        <div id="topImportedProductsChart" style="height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Table -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="flex items-center justify-between mb-4">
+                        <h6 class="text-15">Thống Kê Chi Tiết</h6>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full whitespace-nowrap">
+                            <thead class="ltr:text-left rtl:text-right">
+                                <tr class="border-b border-slate-200 dark:border-zink-500">
+                                    <th class="px-3.5 py-2.5 font-semibold">Nhà Cung Cấp</th>
+                                    <th class="px-3.5 py-2.5 font-semibold">Số Phiếu Nhập</th>
+                                    <th class="px-3.5 py-2.5 font-semibold">Tổng Chi Phí</th>
+                                    <th class="px-3.5 py-2.5 font-semibold">Tỷ Lệ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="supplier, iterStat : ${importCostBySupplier}" class="border-b border-slate-200 dark:border-zink-500">
+                                    <td class="px-3.5 py-2.5" th:text="${supplier.key}">Nhà cung cấp</td>
+                                    <td class="px-3.5 py-2.5" th:text="${importsBySupplier[supplier.key]}">0</td>
+                                    <td class="px-3.5 py-2.5" th:text="${#numbers.formatDecimal(supplier.value, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                                    <td class="px-3.5 py-2.5">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-full bg-slate-200 rounded-full h-2 dark:bg-zink-600">
+                                                <div class="bg-custom-500 h-2 rounded-full" 
+                                                     th:style="'width: ' + ${#numbers.formatDecimal((supplier.value / totalImportCost) * 100, 1, 'POINT', 1, 'POINT')} + '%'"></div>
+                                            </div>
+                                            <span class="text-sm" th:text="${#numbers.formatDecimal((supplier.value / totalImportCost) * 100, 1, 'POINT', 1, 'POINT')} + '%'">0%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- End Content -->
+
+</div>
+
+<!-- ApexCharts -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script th:inline="javascript">
+    // Dữ liệu từ server
+    const importCostByTime = /*[[${importCostByTime}]]*/ {};
+    const importCostBySupplier = /*[[${importCostBySupplier}]]*/ {};
+    const importOverview = /*[[${importOverview}]]*/ {};
+    const monthlyImportCost = /*[[${monthlyImportCost}]]*/ {};
+    const topImportedProducts = /*[[${topImportedProducts}]]*/ {};
+    const chartColors = /*[[${chartColors}]]*/ [];
+
+
+    // Chart configurations
+    let importCostTimeChart, importCostSupplierChart, importCostCategoryChart, monthlyImportTrendChart, topImportedProductsChart;
+
+    // Helper function to convert values to number
+    function convertToNumber(value) {
+        if (typeof value === 'number') return value;
+        if (typeof value === 'string') {
+            const parsed = parseFloat(value);
+            return isNaN(parsed) ? 0 : parsed;
+        }
+        if (value && typeof value === 'object') {
+            if (value.toNumber) return value.toNumber();
+            if (value.toString) {
+                const parsed = parseFloat(value.toString());
+                return isNaN(parsed) ? 0 : parsed;
+            }
+        }
+        return 0;
+    }
+
+    // Initialize charts
+    function initCharts() {
+        // 1. Chi phí nhập hàng theo thời gian
+        const timeLabels = Object.keys(importCostByTime);
+        const timeValues = Object.values(importCostByTime).map(val => val || 0);
+        
+        // Fallback data if no data available
+        if (timeLabels.length === 0) {
+            timeLabels.push('Không có dữ liệu');
+            timeValues.push(0);
+        }
+        
+        
+        importCostTimeChart = new ApexCharts(document.querySelector("#importCostTimeChart"), {
+            series: [{
+                name: 'Chi phí nhập hàng',
+                data: timeValues
+            }],
+            chart: {
+                type: 'area',
+                height: 300,
+                toolbar: { show: false }
+            },
+            colors: chartColors.length > 0 ? [chartColors[0]] : ['#3B82F6'],
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 2 },
+            fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.3 } },
+            xaxis: { categories: timeLabels },
+            yaxis: {
+                labels: {
+                    formatter: function(val) {
+                        return new Intl.NumberFormat('vi-VN').format(val) + ' VNĐ';
+                    }
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return new Intl.NumberFormat('vi-VN').format(val) + ' VNĐ';
+                    }
+                }
+            }
+        });
+        importCostTimeChart.render();
+
+        // 2. Chi phí theo nhà cung cấp
+        const supplierLabels = Object.keys(importCostBySupplier);
+        const supplierValues = Object.values(importCostBySupplier).map(val => val || 0);
+        
+        // Fallback data if no data available
+        if (supplierLabels.length === 0) {
+            supplierLabels.push('Không có dữ liệu');
+            supplierValues.push(100);
+        }
+        
+        
+        importCostSupplierChart = new ApexCharts(document.querySelector("#importCostSupplierChart"), {
+            series: supplierValues,
+            chart: {
+                type: 'donut',
+                height: 300
+            },
+            labels: supplierLabels,
+            colors: chartColors.length > 0 ? chartColors : ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'],
+            legend: { position: 'bottom' },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '70%'
+                    }
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return new Intl.NumberFormat('vi-VN').format(val) + ' VNĐ';
+                    }
+                }
+            }
+        });
+        importCostSupplierChart.render();
+
+        // 3. Xu hướng chi phí 12 tháng
+        const monthlyLabels = Object.keys(monthlyImportCost);
+        const monthlyValues = Object.values(monthlyImportCost).map(val => val || 0);
+        
+        // Fallback data if no data available
+        if (monthlyLabels.length === 0) {
+            for (let i = 0; i < 12; i++) {
+                const date = new Date();
+                date.setMonth(date.getMonth() - (11 - i));
+                monthlyLabels.push(date.toLocaleDateString('vi-VN', { month: '2-digit', year: 'numeric' }));
+                monthlyValues.push(0);
+            }
+        }
+        
+        
+        monthlyImportTrendChart = new ApexCharts(document.querySelector("#monthlyImportTrendChart"), {
+            series: [{
+                name: 'Chi phí nhập hàng',
+                data: monthlyValues
+            }],
+            chart: {
+                type: 'line',
+                height: 350,
+                toolbar: { show: false }
+            },
+            colors: chartColors.length > 1 ? [chartColors[1]] : ['#10B981'],
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 3 },
+            markers: { size: 5 },
+            xaxis: { categories: monthlyLabels },
+            yaxis: {
+                labels: {
+                    formatter: function(val) {
+                        return new Intl.NumberFormat('vi-VN').format(val) + ' VNĐ';
+                    }
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return new Intl.NumberFormat('vi-VN').format(val) + ' VNĐ';
+                    }
+                }
+            },
+            grid: { borderColor: '#f1f5f9' }
+        });
+        monthlyImportTrendChart.render();
+
+        // 4. Tổng quan nhập hàng (biểu đồ tròn theo trạng thái)
+        
+        let statusLabels = [];
+        let statusValues = [];
+        
+        // Kiểm tra và xử lý dữ liệu an toàn
+        if (importOverview && importOverview.timeData && typeof importOverview.timeData === 'object') {
+            statusLabels = Object.keys(importOverview.timeData);
+            statusValues = Object.values(importOverview.timeData).map(val => {
+                const numVal = parseFloat(val) || 0;
+                return numVal;
+            });
+        }
+        
+        // Fallback data if no data available
+        if (statusLabels.length === 0) {
+            statusLabels = ['Không có dữ liệu'];
+            statusValues = [0];
+        }
+        
+        
+        importCostCategoryChart = new ApexCharts(document.querySelector("#importCostCategoryChart"), {
+            series: statusValues,
+            chart: {
+                type: 'donut',
+                height: 300,
+                toolbar: { show: false }
+            },
+            colors: chartColors.length > 3 ? [chartColors[0], chartColors[1], chartColors[2]] : ['#10B981', '#F59E0B', '#EF4444'],
+            labels: statusLabels,
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '70%',
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true,
+                                label: 'Tổng phiếu nhập',
+                                formatter: function (w) {
+                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val, opts) {
+                    return opts.w.config.labels[opts.seriesIndex] + ': ' + val.toFixed(1) + '%';
+                }
+            },
+            legend: {
+                position: 'bottom',
+                horizontalAlign: 'center'
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return val + ' phiếu nhập';
+                    }
+                }
+            }
+        });
+        importCostCategoryChart.render();
+
+        // 5. Top sản phẩm nhập nhiều
+        const productData = topImportedProducts.products || [];
+        
+        const productLabels = [];
+        const productValues = [];
+        
+        productData.forEach(item => {
+            if (item && item.ten) {
+                productLabels.push(item.ten);
+                productValues.push(item.soLuong || 0);
+            }
+        });
+        
+        // Fallback data if no data available
+        if (productLabels.length === 0) {
+            productLabels.push('Không có dữ liệu');
+            productValues.push(0);
+        }
+        
+        
+        topImportedProductsChart = new ApexCharts(document.querySelector("#topImportedProductsChart"), {
+            series: [{
+                name: 'Số lượng nhập',
+                data: productValues
+            }],
+            chart: {
+                type: 'bar',
+                height: 300,
+                toolbar: { show: false }
+            },
+            colors: chartColors.length > 3 ? [chartColors[3]] : ['#EF4444'],
+            plotOptions: {
+                bar: { borderRadius: 4 }
+            },
+            dataLabels: { enabled: false },
+            xaxis: { categories: productLabels },
+            yaxis: {
+                labels: {
+                    formatter: function(val) {
+                        return new Intl.NumberFormat('vi-VN').format(val) + ' sản phẩm';
+                    }
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return new Intl.NumberFormat('vi-VN').format(val) + ' sản phẩm';
+                    }
+                }
+            }
+        });
+        topImportedProductsChart.render();
+    }
+
+    // Refresh data function
+    function refreshData() {
+        const period = document.getElementById('periodSelect').value;
+        const year = document.getElementById('yearSelect').value;
+        
+        const url = new URL(window.location.href);
+        url.searchParams.set('period', period);
+        url.searchParams.set('year', year);
+        
+        window.location.href = url.toString();
+    }
+
+    // Event listeners
+    document.getElementById('refreshBtn').addEventListener('click', refreshData);
+    document.getElementById('periodSelect').addEventListener('change', refreshData);
+    document.getElementById('yearSelect').addEventListener('change', refreshData);
+
+    // Initialize charts when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Wait for ApexCharts to load
+        if (typeof ApexCharts !== 'undefined') {
+            initCharts();
+        } else {
+            // Retry after a short delay
+            setTimeout(function() {
+                if (typeof ApexCharts !== 'undefined') {
+                    initCharts();
+                } else {
+                    console.error('ApexCharts library not loaded');
+                    // Show error message
+                    document.querySelectorAll('[id$="Chart"]').forEach(function(element) {
+                        element.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">Không thể tải biểu đồ. Vui lòng tải lại trang.</div>';
+                    });
+                }
+            }, 1000);
+        }
+    });
+</script>
+
+<div th:replace="~{admin/fragments/script :: script}"></div>
+
+</body>
+</html>
