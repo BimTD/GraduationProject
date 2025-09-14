@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org"
+        lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
+<head th:replace="~{admin/fragments/head :: head('Marketing Strategies')}"></head>
+
+<body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
+<div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
+
+    <!-- Sidebar -->
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}" ></div>
+
+    <div id="sidebar-overlay" class="absolute inset-0 z-[1002] bg-slate-500/30 hidden"></div>
+    <!-- Header -->
+    <header th:replace="~{admin/fragments/header :: header}"></header>
+
+    <!-- Content -->
+    <div class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+        <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
+
+            <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
+                <div class="grow">
+                    <h5 class="text-16">Chiến Thuật Marketing</h5>
+                </div>
+                <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
+                    <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
+                        <a href="#" class="text-slate-400 dark:text-zink-200">Tổng Quan</a>
+                    </li>
+                    <li class="text-slate-700 dark:text-zink-100">
+                        Marketing
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Overview Cards -->
+            <div class="grid grid-cols-1 gap-5 mb-5 md:grid-cols-2 xl:grid-cols-4" th:if="${strategies != null and !strategies.strategies.empty}">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-custom-100 text-custom-500 dark:bg-custom-500/20">
+                                <i data-lucide="users" class="size-6"></i>
+                            </div>
+                            <div class="grow">
+                                <p class="text-slate-500 dark:text-zink-200">Tổng Khách Hàng</p>
+                                <h5 class="mt-1 text-2xl font-semibold" th:text="${#aggregates.sum(strategies.strategies.![customerCount])}">0</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-sky-100 text-sky-500 dark:bg-sky-500/20">
+                                <i data-lucide="layers" class="size-6"></i>
+                            </div>
+                            <div class="grow">
+                                <p class="text-slate-500 dark:text-zink-200">Phân Khúc</p>
+                                <h5 class="mt-1 text-2xl font-semibold" th:text="${strategies.totalClusters}">0</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-emerald-100 text-emerald-500 dark:bg-emerald-500/20">
+                                <i data-lucide="target" class="size-6"></i>
+                            </div>
+                            <div class="grow">
+                                <p class="text-slate-500 dark:text-zink-200">Chiến Thuật</p>
+                                <h5 class="mt-1 text-2xl font-semibold" th:text="${#lists.size(strategies.strategies)}">0</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-orange-100 text-orange-500 dark:bg-orange-500/20">
+                                <i data-lucide="clock" class="size-6"></i>
+                            </div>
+                            <div class="grow">
+                                <p class="text-slate-500 dark:text-zink-200">Cập Nhật Cuối</p>
+                                <h5 class="mt-1 text-sm font-semibold" th:text="${#dates.format(strategies.lastUpdated, 'dd/MM HH:mm')}">Hôm nay</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marketing Strategies Grid -->
+            <div class="grid grid-cols-1 gap-5 xl:grid-cols-2" th:if="${strategies != null and !strategies.strategies.empty}">
+                <div th:each="strategy : ${strategies.strategies}" class="card">
+                    <div class="card-body">
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h6 class="mb-1 text-16" th:text="${strategy.clusterName}">Cluster Name</h6>
+                                <p class="text-slate-500 dark:text-zink-200 text-sm" th:text="${strategy.clusterDescription}">Description</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-1 text-xs font-medium rounded-full"
+                                      th:class="${strategy.priority == 'HIGH'} ? 'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400' : (${strategy.priority == 'MEDIUM'} ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/20 dark:text-yellow-400' : 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400')"
+                                      th:text="${strategy.priority}">Priority</span>
+                                <span class="px-2 py-1 text-xs font-medium text-white rounded-full bg-custom-500" 
+                                      th:text="${strategy.customerCount} + ' khách hàng'">0 khách hàng</span>
+                            </div>
+                        </div>
+
+                        <!-- Characteristics -->
+                        <div class="mb-4">
+                            <h6 class="mb-2 text-sm font-medium text-slate-500 dark:text-zink-200">Đặc trưng RFM:</h6>
+                            <div class="grid grid-cols-3 gap-4 text-center">
+                                <div>
+                                    <p class="text-xs text-slate-500 dark:text-zink-200">Recency</p>
+                                    <p class="text-sm font-semibold" th:text="${strategy.characteristics.recencyAvg} + ' ngày'">0 ngày</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 dark:text-zink-200">Frequency</p>
+                                    <p class="text-sm font-semibold" th:text="${strategy.characteristics.frequencyAvg} + ' đơn'">0 đơn</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500 dark:text-zink-200">Monetary</p>
+                                    <p class="text-sm font-semibold" th:text="${#numbers.formatDecimal(strategy.characteristics.monetaryAvg, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top 3 Marketing Tactics -->
+                        <div class="mb-4">
+                            <h6 class="mb-2 text-sm font-medium text-slate-500 dark:text-zink-200">Chiến thuật chính:</h6>
+                            <div th:each="tactic, iterStat : ${strategy.marketingTactics}" th:if="${iterStat.index < 3}">
+                                <div class="flex items-center justify-between p-2 mb-2 bg-slate-50 dark:bg-zink-600 rounded-md">
+                                    <div class="flex-1">
+                                        <h6 class="text-sm font-medium" th:text="${tactic.title}">Tactic Title</h6>
+                                        <p class="text-xs text-slate-500 dark:text-zink-200" th:text="${tactic.description}">Description</p>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="px-1.5 py-0.5 text-xs font-medium rounded"
+                                              th:class="${tactic.priority == 'HIGH'} ? 'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400' : (${tactic.priority == 'MEDIUM'} ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/20 dark:text-yellow-400' : 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400')"
+                                              th:text="${tactic.priority}">Priority</span>
+                                        <span class="px-1.5 py-0.5 text-xs font-medium text-slate-600 dark:text-zink-300 bg-slate-200 dark:bg-zink-500 rounded"
+                                              th:text="${tactic.category}">Category</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Objectives -->
+                        <div class="mb-4">
+                            <h6 class="mb-2 text-sm font-medium text-slate-500 dark:text-zink-200">Mục tiêu:</h6>
+                            <p class="text-sm text-slate-600 dark:text-zink-300 mb-1" th:text="${strategy.objectives.primary}">Primary objective</p>
+                            <p class="text-xs text-slate-500 dark:text-zink-200" th:text="${strategy.objectives.kpi}">KPI</p>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="flex justify-end">
+                            <a th:href="@{/admin/marketing/{id}(id=${strategy.clusterId})}" 
+                               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-custom-500 border border-custom-500 rounded-md hover:bg-custom-600 hover:border-custom-600 focus:bg-custom-600 focus:border-custom-600 focus:text-white focus:outline-none focus:ring-2 focus:ring-custom-500 focus:ring-offset-2">
+                                <i data-lucide="eye" class="size-4"></i>
+                                Xem Chi Tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${strategies == null or strategies.strategies.empty}" class="text-center py-12">
+                <div class="mx-auto mb-4 size-16 text-slate-400 dark:text-zink-500">
+                    <i data-lucide="target" class="size-16"></i>
+                </div>
+                <h4 class="mb-2 text-lg font-medium text-slate-600 dark:text-zink-300">Chưa có dữ liệu phân khúc</h4>
+                <p class="mb-6 text-slate-500 dark:text-zink-400">Hãy chạy phân tích RFM và clustering trước để xem chiến thuật marketing</p>
+                <a href="/admin/analytics" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-custom-500 border border-custom-500 rounded-md hover:bg-custom-600 hover:border-custom-600 focus:bg-custom-600 focus:border-custom-600 focus:text-white focus:outline-none focus:ring-2 focus:ring-custom-500 focus:ring-offset-2">
+                    <i data-lucide="bar-chart-3" class="size-4"></i>
+                    Đi đến Phân tích
+                </a>
+            </div>
+
+        </div>
+    </div>
+    <!-- End Content -->
+
+</div>
+
+<div th:replace="~{admin/fragments/script :: script}"></div>
+
+</body>
+</html>

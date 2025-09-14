@@ -16,6 +16,7 @@ import org.example.graduationproject.services.HoaDonService;
 import org.example.graduationproject.services.MaGiamGiaService;
 import org.example.graduationproject.services.LichSuSuDungMaGiamGiaService;
 import org.example.graduationproject.services.NotificationService;
+import org.example.graduationproject.analytics.services.RFMAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +54,9 @@ public class HoaDonServiceImpl implements HoaDonService {
 
     @Autowired
     private NotificationService notificationService;
+    
+    @Autowired
+    private RFMAnalysisService rfmAnalysisService;
 
     @Override
     @Transactional
@@ -339,6 +343,14 @@ public class HoaDonServiceImpl implements HoaDonService {
             // Cập nhật trường daLayTien khi trạng thái là COMPLETED
             if ("COMPLETED".equalsIgnoreCase(newStatus)) {
                 hoaDon.setDaLayTien("YES");
+                
+                // Cập nhật RFM analysis khi đơn hàng hoàn thành
+                try {
+                    rfmAnalysisService.calculateRFMForUser(hoaDon.getUser());
+                    System.out.println("RFM analysis updated for user: " + hoaDon.getUser().getId());
+                } catch (Exception e) {
+                    System.err.println("Error updating RFM analysis: " + e.getMessage());
+                }
             }
             
             hoaDonRepository.save(hoaDon);

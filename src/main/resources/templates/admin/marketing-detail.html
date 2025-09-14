@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org"
+        lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
+<head th:replace="~{admin/fragments/head :: head('Chiến Thuật Marketing - ' + ${strategy.clusterName})}"></head>
+
+<body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
+<div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
+
+    <!-- Sidebar -->
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}" ></div>
+
+    <div id="sidebar-overlay" class="absolute inset-0 z-[1002] bg-slate-500/30 hidden"></div>
+    <!-- Header -->
+    <header th:replace="~{admin/fragments/header :: header}"></header>
+
+    <!-- Content -->
+    <div class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
+        <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
+
+            <!-- Header -->
+            <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
+                <div class="grow">
+                    <h5 class="text-16" th:text="${strategy.clusterName}">Cluster Name</h5>
+                    <p class="text-slate-500 dark:text-zink-200" th:text="${strategy.clusterDescription}">Description</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="/admin/marketing" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-200 rounded-md hover:text-slate-600 hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500 dark:hover:text-zink-100">
+                        <i data-lucide="arrow-left" class="size-4"></i>
+                        Quay lại
+                    </a>
+                    <button type="button" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-custom-500 border border-custom-500 rounded-md hover:bg-custom-600 hover:border-custom-600 focus:bg-custom-600 focus:border-custom-600 focus:text-white focus:outline-none focus:ring-2 focus:ring-custom-500 focus:ring-offset-2">
+                        <i data-lucide="download" class="size-4"></i>
+                        Xuất báo cáo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Overview Cards -->
+            <div class="grid grid-cols-1 gap-5 mb-5 md:grid-cols-2 xl:grid-cols-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-custom-100 text-custom-500 dark:bg-custom-500/20">
+                                <i data-lucide="calendar" class="size-6"></i>
+                            </div>
+                            <div class="grow">
+                                <p class="text-slate-500 dark:text-zink-200">Recency Trung Bình</p>
+                                <h5 class="mt-1 text-xl font-semibold" th:text="${strategy.characteristics.recencyAvg} + ' ngày'">0 ngày</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-sky-100 text-sky-500 dark:bg-sky-500/20">
+                                <i data-lucide="shopping-cart" class="size-6"></i>
+                            </div>
+                            <div class="grow">
+                                <p class="text-slate-500 dark:text-zink-200">Frequency Trung Bình</p>
+                                <h5 class="mt-1 text-xl font-semibold" th:text="${strategy.characteristics.frequencyAvg} + ' đơn'">0 đơn</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-emerald-100 text-emerald-500 dark:bg-emerald-500/20">
+                                <i data-lucide="dollar-sign" class="size-6"></i>
+                            </div>
+                            <div class="grow">
+                                <p class="text-slate-500 dark:text-zink-200">Monetary Trung Bình</p>
+                                <h5 class="mt-1 text-xl font-semibold" th:text="${#numbers.formatDecimal(strategy.characteristics.monetaryAvg, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center size-12 rounded-md bg-orange-100 text-orange-500 dark:bg-orange-500/20">
+                                <i data-lucide="users" class="size-6"></i>
+                            </div>
+                            <div class="grow">
+                                <p class="text-slate-500 dark:text-zink-200">Tổng Khách Hàng</p>
+                                <h5 class="mt-1 text-xl font-semibold" th:text="${strategy.customerCount}">0</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objectives -->
+            <div class="card mb-5">
+                <div class="card-body">
+                    <h5 class="mb-4 text-16">
+                        <i data-lucide="target" class="inline-block size-4 mr-2"></i>
+                        Mục Tiêu Marketing
+                    </h5>
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div>
+                            <h6 class="mb-2 text-sm font-medium text-slate-600 dark:text-zink-300">Mục tiêu chính:</h6>
+                            <p class="text-sm text-slate-500 dark:text-zink-400" th:text="${strategy.objectives.primary}">Primary objective</p>
+                        </div>
+                        <div>
+                            <h6 class="mb-2 text-sm font-medium text-slate-600 dark:text-zink-300">Mục tiêu phụ:</h6>
+                            <p class="text-sm text-slate-500 dark:text-zink-400" th:text="${strategy.objectives.secondary}">Secondary objective</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h6 class="mb-2 text-sm font-medium text-slate-600 dark:text-zink-300">KPI mục tiêu:</h6>
+                        <span class="inline-flex items-center px-3 py-1 text-sm font-medium text-white rounded-full bg-custom-500" th:text="${strategy.objectives.kpi}">KPI</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marketing Tactics -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="mb-4 text-16">
+                        <i data-lucide="lightbulb" class="inline-block size-4 mr-2"></i>
+                        Chiến Thuật Marketing
+                    </h5>
+                    
+                    <!-- High Priority Tactics -->
+                    <div th:if="${#lists.size(strategy.marketingTactics.?[priority == 'HIGH'])} > 0" class="mb-6">
+                        <h6 class="mb-3 text-sm font-medium text-red-600 dark:text-red-400">
+                            <i data-lucide="alert-triangle" class="inline-block size-4 mr-1"></i>
+                            Ưu tiên cao
+                        </h6>
+                        <div th:each="tactic : ${strategy.marketingTactics}" th:if="${tactic.priority == 'HIGH'}">
+                            <div class="p-4 mb-3 border-l-4 border-red-500 bg-red-50 dark:bg-red-500/10 rounded-r-md">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <h6 class="mb-2 text-sm font-medium" th:text="${tactic.title}">Tactic Title</h6>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${tactic.description}">Description</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="px-2 py-1 text-xs font-medium text-white bg-red-500 rounded" th:text="${tactic.priority}">Priority</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.category}">Category</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedImpact}">Impact</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedCost}">Cost</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.timeToImplement}">Time</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 ml-4">
+                                        <button class="px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500">
+                                            <i data-lucide="edit" class="inline-block size-3 mr-1"></i>
+                                            Chỉnh sửa
+                                        </button>
+                                        <button class="px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600">
+                                            <i data-lucide="play" class="inline-block size-3 mr-1"></i>
+                                            Thực hiện
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medium Priority Tactics -->
+                    <div th:if="${#lists.size(strategy.marketingTactics.?[priority == 'MEDIUM'])} > 0" class="mb-6">
+                        <h6 class="mb-3 text-sm font-medium text-yellow-600 dark:text-yellow-400">
+                            <i data-lucide="clock" class="inline-block size-4 mr-1"></i>
+                            Ưu tiên trung bình
+                        </h6>
+                        <div th:each="tactic : ${strategy.marketingTactics}" th:if="${tactic.priority == 'MEDIUM'}">
+                            <div class="p-4 mb-3 border-l-4 border-yellow-500 bg-yellow-50 dark:bg-yellow-500/10 rounded-r-md">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <h6 class="mb-2 text-sm font-medium" th:text="${tactic.title}">Tactic Title</h6>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${tactic.description}">Description</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded" th:text="${tactic.priority}">Priority</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.category}">Category</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedImpact}">Impact</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedCost}">Cost</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.timeToImplement}">Time</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 ml-4">
+                                        <button class="px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500">
+                                            <i data-lucide="edit" class="inline-block size-3 mr-1"></i>
+                                            Chỉnh sửa
+                                        </button>
+                                        <button class="px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600">
+                                            <i data-lucide="play" class="inline-block size-3 mr-1"></i>
+                                            Thực hiện
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Low Priority Tactics -->
+                    <div th:if="${#lists.size(strategy.marketingTactics.?[priority == 'LOW'])} > 0">
+                        <h6 class="mb-3 text-sm font-medium text-green-600 dark:text-green-400">
+                            <i data-lucide="check-circle" class="inline-block size-4 mr-1"></i>
+                            Ưu tiên thấp
+                        </h6>
+                        <div th:each="tactic : ${strategy.marketingTactics}" th:if="${tactic.priority == 'LOW'}">
+                            <div class="p-4 mb-3 border-l-4 border-green-500 bg-green-50 dark:bg-green-500/10 rounded-r-md">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <h6 class="mb-2 text-sm font-medium" th:text="${tactic.title}">Tactic Title</h6>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${tactic.description}">Description</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="px-2 py-1 text-xs font-medium text-white bg-green-500 rounded" th:text="${tactic.priority}">Priority</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.category}">Category</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedImpact}">Impact</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedCost}">Cost</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.timeToImplement}">Time</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 ml-4">
+                                        <button class="px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500">
+                                            <i data-lucide="edit" class="inline-block size-3 mr-1"></i>
+                                            Chỉnh sửa
+                                        </button>
+                                        <button class="px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600">
+                                            <i data-lucide="play" class="inline-block size-3 mr-1"></i>
+                                            Thực hiện
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- End Content -->
+
+</div>
+
+<div th:replace="~{admin/fragments/script :: script}"></div>
+
+</body>
+</html>
