@@ -24,3 +24,4 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     
     long countByUserAndIsReadFalse(User user);
 }
+

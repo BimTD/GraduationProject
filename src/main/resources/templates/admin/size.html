@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html   xmlns:th="http://www.thymeleaf.org"
         lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
-<head th:replace="~{admin/fragments/head :: head('Size Management')}"></head>
+<head th:replace="~{admin/fragments/head :: head('Quản lý kích cỡ')}"></head>
 
 <body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
 <div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
@@ -18,14 +18,14 @@
         <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
             <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
                 <div class="grow">
-                    <h5 class="text-16">Size</h5>
+                    <h5 class="text-16">Kích cỡ</h5>
                 </div>
                 <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
                     <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
-                        <a href="#" class="text-slate-400 dark:text-zink-200">Dashboard</a>
+                        <a href="#" class="text-slate-400 dark:text-zink-200">Tổng quan</a>
                     </li>
                     <li class="text-slate-700 dark:text-zink-100">
-                        Size
+                        Kích cỡ
                     </li>
                 </ul>
             </div>
@@ -39,11 +39,11 @@
                         <form th:action="@{${formAction}}" th:object="${size}" method="post" class="flex gap-2 items-end">
                             <input type="hidden" th:field="*{id}" />
                             <div>
-                                <label class="block mb-1">Size Name</label>
-                                <input type="text" th:field="*{tenSize}" class="form-input border-slate-200" placeholder="Enter size name..." required />
+                                <label class="block mb-1">Kích cỡ</label>
+                                <input type="text" th:field="*{tenSize}" class="form-input border-slate-200" placeholder="Kích cỡ..." required />
                             </div>
                             <div>
-                                <label class="block mb-1">Category</label>
+                                <label class="block mb-1">Danh mục</label>
                                 <select th:field="*{loai.id}" class="form-input border-slate-200" required>
                                     <option th:each="loai : ${loais}" th:value="${loai.id}" th:text="${loai.ten}" th:selected="${loai.id} == *{loai.id}"></option>
                                 </select>
@@ -67,9 +67,9 @@
                             <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
                             <tr>
                                 <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">STT</th>
-                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Size Name</th>
-                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Category Name</th>
-                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Action</th>
+                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Kích cỡ</th>
+                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Danh mục</th>
+                                <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">Hành động</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -86,12 +86,12 @@
                                 <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
                                     <div class="flex gap-3">
                                         <a th:href="@{'/admin/size/edit/' + ${size.id}}" class="flex items-center justify-center transition-all duration-150 ease-linear rounded-md size-8 edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"><i data-lucide="pencil" class="size-4"></i></a>
-                                        <a th:href="@{'/admin/size/delete/' + ${size.id}}" onclick="return confirm('Are you sure you want to delete?');" class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"><i data-lucide="trash-2" class="size-4"></i></a>
+                                        <a th:href="@{'/admin/size/delete/' + ${size.id}}" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');" class="flex items-center justify-center w-8 h-8 rounded-md bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-150"><i data-lucide="trash-2" class="size-4"></i></a>
                                     </div>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(sizes)}">
-                                <td colspan="4" class="text-center">None.</td>
+                                <td colspan="4" class="text-center">Không có.</td>
                             </tr>
                             </tbody>
                         </table>
@@ -101,7 +101,7 @@
                     <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
                         <div class="grow">
                             <p class="text-slate-500 dark:text-zink-200">
-                                Showing <b th:text="${sizes.size()}"></b> of <b th:text="${totalElements}"></b> Results
+                                Hiển thị <b th:text="${sizes.size()}"></b> trong <b th:text="${totalElements}"></b> kết qủa
                             </p>
                         </div>
                         <div class="flex items-center gap-2">
@@ -109,7 +109,7 @@
                                 <input type="hidden" name="search" th:value="${search}" />
                                 <input type="hidden" name="page" th:value="${page}" />
                                 <div class="flex items-center gap-2">
-                                    <label for="size" class="whitespace-nowrap">Items per page:</label>
+                                    <label for="size" class="whitespace-nowrap">Số lượng mỗi trang:</label>
                                     <select name="size" id="size" class="form-input border-slate-200" onchange="this.form.submit()">
                                         <option th:value="5" th:selected="${pageSize == 5}">5</option>
                                         <option th:value="10" th:selected="${pageSize == 10}">10</option>
@@ -122,7 +122,7 @@
                         <div class="col-sm-auto mt-sm-0">
                             <div class="flex gap-2 pagination-wrap justify-content-center">
                                 <a th:href="@{/admin/size(page=${prevPage},size=${pageSize},search=${search})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
-                                    <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
+                                    <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Trước
                                 </a>
                                 <ul class="flex flex-wrap items-center gap-2 pagination">
                                     <li th:each="i : ${#numbers.sequence(0, lastPage)}">
@@ -134,7 +134,7 @@
                                     </li>
                                 </ul>
                                 <a th:href="@{/admin/size(page=${nextPage},size=${pageSize},search=${search})}" th:classappend="${page+1 >= totalPages} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
-                                    Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
+                                    Sau <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
                                 </a>
                             </div>
                         </div>

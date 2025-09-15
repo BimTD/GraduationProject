@@ -15,3 +15,4 @@ CREATE INDEX idx_chat_messages_user_id ON chat_messages(user_id);
 CREATE INDEX idx_chat_messages_created_at ON chat_messages(created_at);
 CREATE INDEX idx_chat_messages_is_read ON chat_messages(is_read);
 CREATE INDEX idx_chat_messages_message_type ON chat_messages(message_type);
+

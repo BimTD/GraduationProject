@@ -19,3 +19,4 @@ public class ChatResponseDTO {
     private LocalDateTime createdAt;
     private Boolean isRead;
 }
+

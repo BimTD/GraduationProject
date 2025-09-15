@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html   xmlns:th="http://www.thymeleaf.org"
         lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
-<head th:replace="~{admin/fragments/head :: head('Product Management')}"></head>
+<head th:replace="~{admin/fragments/head :: head('Quản lý sản phẩm')}"></head>
 
 <body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
     <div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
@@ -19,14 +19,14 @@
 
                 <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
                     <div class="grow">
-                        <h5 class="text-16">Product Analytics</h5>
+                        <h5 class="text-16">Sản phẩm</h5>
                     </div>
                     <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
                         <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
-                            <a href="#!" class="text-slate-400 dark:text-zink-200">Dashboards</a>
+                            <a href="#!" class="text-slate-400 dark:text-zink-200">Tổng quan</a>
                         </li>
                         <li class="text-slate-700 dark:text-zink-100">
-                            Product
+                            Sản phẩm
                         </li>
                     </ul>
                 </div>
@@ -48,7 +48,7 @@
                                 <div class="relative">
                                     <div class="flex gap-2 items-center">
                                         <div class="relative">
-                                            <input type="text" id="searchInput" th:value="${search}" class="form-input border-slate-200" placeholder="Search for..." autocomplete="off">
+                                            <input type="text" id="searchInput" th:value="${search}" class="form-input border-slate-200" placeholder="Tìm kiếm..." autocomplete="off">
                                             <button type="button" id="searchBtn" class="absolute right-2.5 top-2.5 bg-transparent border-none p-0">
                                                 <i data-lucide="search" class="inline-block size-4 text-slate-500 dark:text-zink-200 fill-slate-100 dark:fill-zink-600"></i>
                                             </button>
@@ -65,7 +65,7 @@
                             <!-- Filter by Category -->
                             <div class="xl:col-span-2">
                                 <select id="categoryFilter" class="form-input border-slate-200">
-                                    <option value="">All Categories</option>
+                                    <option value="">Danh mục</option>
                                     <option th:each="category : ${categories}" 
                                             th:value="${category.id}" 
                                             th:text="${category.ten}"
@@ -77,7 +77,7 @@
                             <!-- Filter by Gender -->
                             <div class="xl:col-span-2">
                                 <select id="genderFilter" class="form-input border-slate-200">
-                                    <option value="">All Genders</option>
+                                    <option value="">Giới tính</option>
                                     <option value="1" th:selected="${gender == '1'}">Nam</option>
                                     <option value="2" th:selected="${gender == '2'}">Nữ</option>
                                     <option value="3" th:selected="${gender == '3'}">Unisex</option>
@@ -98,18 +98,18 @@
                                 <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
                                 <tr>
                                     <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ID">STT</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 Name">Product Name</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 Action">Image</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Selling Price</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Import Price</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Status</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Brand</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Category</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Gender</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Like Count</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Comment Count</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Hide/Show</th>
-                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Action</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 Name">Tên</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 Action">Hình ảnh</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Giá bán</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Giá nhập</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Trạng thái</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Nhãn hệu</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Danh mục</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Giới tính</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Thích</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Bình luận</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Ẩn/Hiện</th>
+                                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500 ">Hành động</th>
                                 </tr>
                                 </thead>
                                 <tbody class="list">
@@ -143,7 +143,7 @@
                                         </td>
                                     </tr>
                                     <tr th:if="${#lists.isEmpty(products)}">
-                                        <td colspan="14" class="text-center">There are no products.</td>
+                                        <td colspan="14" class="text-center">Không có sản phẩm nào.</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -152,7 +152,7 @@
                         <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
                             <div class="grow">
                                 <p class="text-slate-500 dark:text-zink-200">
-                                    Showing <b th:text="${products.size()}"></b> of <b th:text="${totalElements}"></b> Results
+                                    Hiển thị <b th:text="${products.size()}"></b> trong <b th:text="${totalElements}"></b> kết quả
                                 </p>
                             </div>
                             <div class="flex items-center gap-2">
@@ -163,7 +163,7 @@
                                     <input type="hidden" name="page" th:value="${page}" />
 
                                     <div class="flex items-center gap-2">
-                                        <label for="size" class="whitespace-nowrap">Items per page:</label>
+                                        <label for="size" class="whitespace-nowrap">Số lượng mỗi trang:</label>
                                         <select name="size" id="size" class="form-input border-slate-200" onchange="this.form.submit()">
                                             <option th:value="5" th:selected="${size == 5}">5</option>
                                             <option th:value="10" th:selected="${size == 10}">10</option>
@@ -177,7 +177,7 @@
                             <div class="col-sm-auto mt-sm-0">
                                 <div class="flex gap-2 pagination-wrap justify-content-center">
                                     <a th:href="@{/admin/product(page=${prevPage},size=${size},search=${search},categoryId=${categoryId},gender=${gender})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
-                                        <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
+                                        <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Trước
                                     </a>
                                     <ul class="flex flex-wrap items-center gap-2 pagination">
                                         <li th:each="i : ${#numbers.sequence(0, lastPage)}">
@@ -189,7 +189,7 @@
                                         </li>
                                     </ul>
                                     <a th:href="@{/admin/product(page=${nextPage},size=${size},search=${search},categoryId=${categoryId},gender=${gender})}" th:classappend="${page == lastPage} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
-                                        Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
+                                        Sau <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
                                     </a>
                                 </div>
                             </div>

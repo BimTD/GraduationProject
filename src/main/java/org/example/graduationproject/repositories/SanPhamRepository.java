@@ -110,4 +110,9 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
     List<SanPham> findByLoaiTenAndTrangThaiHoatDong(String tenLoai, Boolean trangThaiHoatDong);
     long countByTrangThaiHoatDong(Boolean trangThaiHoatDong);
     List<SanPham> findByTenContainingIgnoreCaseAndTrangThaiHoatDong(String ten, Boolean trangThaiHoatDong);
+    
+    // Methods for price-based search
+    List<SanPham> findByGiaBanBetweenAndTrangThaiHoatDong(BigDecimal minPrice, BigDecimal maxPrice, Boolean trangThaiHoatDong);
+    List<SanPham> findByGiaBanGreaterThanEqualAndTrangThaiHoatDong(BigDecimal minPrice, Boolean trangThaiHoatDong);
+    List<SanPham> findByGiaBanLessThanEqualAndTrangThaiHoatDong(BigDecimal maxPrice, Boolean trangThaiHoatDong);
 }

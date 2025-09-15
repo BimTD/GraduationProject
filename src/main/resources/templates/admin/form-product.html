@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html   xmlns:th="http://www.thymeleaf.org"
         lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
-<head th:replace="~{admin/fragments/head :: head('Product Management')}"></head>
+<head th:replace="~{admin/fragments/head :: head('Quản lý sản phẩm')}"></head>
 
 <body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
 <div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
@@ -19,14 +19,14 @@
 
             <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
                 <div class="grow">
-                    <h5 class="text-16">Product Analytics</h5>
+                    <h5 class="text-16">Sản phẩm</h5>
                 </div>
                 <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
                     <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
-                        <a href="#!" class="text-slate-400 dark:text-zink-200">Dashboards</a>
+                        <a href="#!" class="text-slate-400 dark:text-zink-200">Tổng quan</a>
                     </li>
                     <li class="text-slate-700 dark:text-zink-100">
-                        Product
+                        Sản phẩm
                     </li>
                 </ul>
             </div>
@@ -40,33 +40,33 @@
                     <div class="space-y-4">
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Name</label>
-                                <input th:field="*{ten}" type="text" maxlength="100" class="form-input w-full" placeholder="Product Name" required>
+                                <label class="block text-sm font-medium mb-1">Tên</label>
+                                <input th:field="*{ten}" type="text" maxlength="100" class="form-input w-full" placeholder="Tên sản phẩm" required>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Selling Price</label>
-                                <input th:field="*{giaBan}" type="number" step="0.01" min="0" class="form-input w-full" placeholder="Selling Price" required>
+                                <label class="block text-sm font-medium mb-1">Giá bán</label>
+                                <input th:field="*{giaBan}" type="number" step="0.01" min="0" class="form-input w-full" placeholder="Giá bán" required>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Import Price</label>
-                                <input th:field="*{giaNhap}" type="number" step="0.01" min="0" class="form-input w-full" placeholder="Import Price" required>
+                                <label class="block text-sm font-medium mb-1">Giá nhập</label>
+                                <input th:field="*{giaNhap}" type="number" step="0.01" min="0" class="form-input w-full" placeholder="Giá nhập" required>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Promotion</label>
-                                <input th:field="*{khuyenMai}" type="number" step="0.01" min="0" class="form-input w-full" placeholder="Promotion">
+                                <label class="block text-sm font-medium mb-1">Khuyến mãi</label>
+                                <input th:field="*{khuyenMai}" type="number" step="0.01" min="0" class="form-input w-full" placeholder="Khuyến mãi">
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Gender</label>
+                                <label class="block text-sm font-medium mb-1">Giới tính</label>
                                 <select th:field="*{gioiTinh}" class="form-select w-full" required>
-                                    <option value="">Select Gender</option>
+                                    <option value="">Chọn giới tính</option>
                                     <option value="1">Nam</option>
                                     <option value="2">Nữ</option>
                                     <option value="3">Phi giới tính</option>
@@ -75,33 +75,33 @@
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Category</label>
+                                <label class="block text-sm font-medium mb-1">Danh mục</label>
                                 <select th:field="*{loaiId}" class="form-select w-full" required>
-                                    <option value="">Select Category</option>
+                                    <option value="">Chọn danh mục</option>
                                     <option th:each="loai : ${loais}" th:value="${loai.id}" th:text="${loai.ten}" th:selected="${loai.id} == *{loaiId}"></option>
                                 </select>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Brand</label>
+                                <label class="block text-sm font-medium mb-1">Nhãn hiệu</label>
                                 <select th:field="*{nhanHieuId}" class="form-select w-full" required>
-                                    <option value="">Select Brand</option>
+                                    <option value="">Chọn nhãn hiệu</option>
                                     <option th:each="nhanHieu : ${nhanHieus}" th:value="${nhanHieu.id}" th:text="${nhanHieu.ten}" th:selected="${nhanHieu.id} == *{nhanHieuId}"></option>
                                 </select>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Image</label>
+                                <label class="block text-sm font-medium mb-1">Hình ảnh</label>
                                 <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 mb-2">
                                     <input type="hidden" name="imageUrls" id="imageUrls">
                                     <input type="file" id="uploadImage" multiple class="form-input w-full mb-2" accept="image/*">
-                                    <div class="text-xs text-gray-500 mb-2">Select multiple images (jpg, png, ...), maximum 5MB/image.</div>
+                                    <div class="text-xs text-gray-500 mb-2">Chọn nhiều hình ảnh (jpg, png, ...), tối đa 5MB/hình ảnh.</div>
                                     
                                     <!-- Existing images in edit mode -->
                                     <div th:if="${editMode and not #lists.isEmpty(existingImages)}" class="mb-4">
-                                        <h6 class="text-sm font-medium mb-2">Current Images:</h6>
+                                        <h6 class="text-sm font-medium mb-2">Hình ảnh hiện tại:</h6>
                                         <div class="flex flex-wrap gap-2">
                                             <div th:each="image : ${existingImages}" class="relative">
                                                 <img th:src="${image.imageName}" alt="Product Image" class="w-16 h-16 object-cover rounded border">
@@ -119,33 +119,33 @@
                     <div class="space-y-4">
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Description</label>
-                                <textarea th:field="*{moTa}" class="form-input w-full" rows="3" placeholder="Product Description"></textarea>
+                                <label class="block text-sm font-medium mb-1">Mô tả</label>
+                                <textarea th:field="*{moTa}" class="form-input w-full" rows="3" placeholder="Mô tả"></textarea>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Tag</label>
-                                <input th:field="*{tag}" type="text" maxlength="100" class="form-input w-full" placeholder="Product Tags">
+                                <label class="block text-sm font-medium mb-1">Nhãn</label>
+                                <input th:field="*{tag}" type="text" maxlength="100" class="form-input w-full" placeholder="Nhãn">
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Guide</label>
-                                <textarea th:field="*{huongDan}" class="form-input w-full" rows="3" placeholder="Usage Guide"></textarea>
+                                <label class="block text-sm font-medium mb-1">Hướng dẫn</label>
+                                <textarea th:field="*{huongDan}" class="form-input w-full" rows="3" placeholder="Hướng dẫn"></textarea>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Ingredient</label>
-                                <textarea th:field="*{thanhPhan}" class="form-input w-full" rows="3" placeholder="Product Ingredients"></textarea>
+                                <label class="block text-sm font-medium mb-1">Nguyên liệu</label>
+                                <textarea th:field="*{thanhPhan}" class="form-input w-full" rows="3" placeholder="Nguyên liệu"></textarea>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium mb-1">Supplier</label>
+                                <label class="block text-sm font-medium mb-1">Nhà cung cấp</label>
                                 <select th:field="*{nhaCungCapId}" class="form-select w-full" required>
-                                    <option value="">Select Supplier</option>
+                                    <option value="">Chọn nhà cung cấp</option>
                                     <option th:each="nhaCungCap : ${nhaCungCaps}" th:value="${nhaCungCap.id}" th:text="${nhaCungCap.ten}" th:selected="${nhaCungCap.id} == *{nhaCungCapId}"></option>
                                 </select>
                             </div>
@@ -156,11 +156,11 @@
                     <div class="flex gap-2">
                         <button type="submit" id="submitBtn" class="btn bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">
                             <i data-lucide="save" class="size-4 inline mr-2"></i>
-                            <span th:text="${editMode} ? 'Update Product' : 'Save Product'"></span>
+                            <span th:text="${editMode} ? 'Cập nhật' : 'Lưu'"></span>
                         </button>
                         <a href="/admin/product" class="btn bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
                             <i data-lucide="x" class="size-4 inline mr-2"></i>
-                            Cancel
+                            Hủy
                         </a>
                     </div>
                 </div>

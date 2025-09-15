@@ -39,13 +39,6 @@ public class ChatbotService {
     }
     
     public String generateResponse(String userMessage, User user) {
-        // Lấy lịch sử chat gần đây
-        List<ChatMessage> recentMessages = chatMessageRepository
-                .findByUserOrderByCreatedAtDesc(user)
-                .stream()
-                .limit(5)
-                .toList();
-        
         // Xử lý các câu hỏi đặc biệt trước khi gọi AI
         String processedMessage = userMessage.toLowerCase().trim();
         String productInfo = "";
@@ -67,6 +60,10 @@ public class ChatbotService {
                 productInfo = productInfoService.getProductCategoriesInfo();
             }
         }
+        // Kiểm tra nếu khách hỏi về giá sản phẩm
+        else if (isPriceQuery(processedMessage)) {
+            productInfo = productInfoService.getProductsByPriceRange(userMessage);
+        }
         // Kiểm tra nếu khách hỏi về sản phẩm cụ thể
         else if (processedMessage.contains("sản phẩm") || 
                  processedMessage.contains("product") ||
@@ -85,35 +82,20 @@ public class ChatbotService {
             productInfo = productInfoService.getProductSummary();
         }
         
-        // Tạo context cho AI với thông tin sản phẩm thực tế
+        // Tạo context ngắn gọn để tiết kiệm quota
         StringBuilder context = new StringBuilder();
-        context.append("Bạn là một trợ lý AI thông minh cho cửa hàng thời trang 'Shop Reid'. ");
-        context.append("Hãy trả lời các câu hỏi về sản phẩm, đơn hàng, chính sách và hỗ trợ khách hàng. ");
-        context.append("Hãy trả lời bằng tiếng Việt một cách thân thiện, nhiệt tình và hữu ích.\n\n");
+        context.append("Bạn là trợ lý AI của Shop Reid. Trả lời bằng tiếng Việt thân thiện.\n\n");
         
-        // Thêm thông tin sản phẩm thực tế từ database
-        context.append("THÔNG TIN SẢN PHẨM HIỆN TẠI:\n");
-        context.append(productInfo);
-        context.append("\n");
-        
-        context.append("THÔNG TIN CỬA HÀNG:\n");
-        context.append("- Miễn phí vận chuyển cho đơn hàng trên 100,000 VNĐ\n");
-        context.append("- Hỗ trợ đổi trả trong 7 ngày\n");
-        context.append("- Giao hàng toàn quốc\n");
-        context.append("- Hotline: 0982172169\n");
-        context.append("- Website: /shop để xem tất cả sản phẩm\n\n");
-        
-        // Thêm lịch sử chat
-        for (int i = recentMessages.size() - 1; i >= 0; i--) {
-            ChatMessage msg = recentMessages.get(i);
-            if (msg.getMessageType() == ChatMessage.MessageType.USER) {
-                context.append("Người dùng: ").append(msg.getMessage()).append("\n");
-            } else {
-                context.append("AI: ").append(msg.getResponse()).append("\n");
-            }
+        // Chỉ thêm thông tin sản phẩm nếu cần thiết và giới hạn độ dài
+        if (productInfo != null && !productInfo.trim().isEmpty()) {
+            // Giới hạn độ dài thông tin sản phẩm để tiết kiệm quota
+            String limitedProductInfo = productInfo.length() > 2000 ? 
+                productInfo.substring(0, 2000) + "..." : productInfo;
+            context.append("SẢN PHẨM:\n").append(limitedProductInfo).append("\n\n");
         }
         
-        context.append("Người dùng: ").append(userMessage);
+        context.append("Chính sách: Miễn phí ship trên 100k, đổi trả 7 ngày, Hotline: 0982172169\n\n");
+        context.append("Hỏi: ").append(userMessage);
         
         // Gọi AI
         Response<AiMessage> response = chatModel.generate(
@@ -161,6 +143,24 @@ public class ChatbotService {
         }
         
         return "";
+    }
+    
+    private boolean isPriceQuery(String message) {
+        String lowerMessage = message.toLowerCase();
+        
+        // Kiểm tra các từ khóa về giá kết hợp với số
+        boolean hasPriceKeyword = lowerMessage.contains("giá") || 
+                                 lowerMessage.contains("price") ||
+                                 lowerMessage.contains("dưới") ||
+                                 lowerMessage.contains("từ") ||
+                                 lowerMessage.contains("đến") ||
+                                 lowerMessage.contains("khoảng") ||
+                                 lowerMessage.contains("tầm");
+        
+        boolean hasNumber = message.matches(".*\\d+.*");
+        
+        // Chỉ coi là câu hỏi về giá nếu có cả từ khóa và số
+        return hasPriceKeyword && hasNumber;
     }
     
     private String extractProductName(String message) {

@@ -9,7 +9,8 @@ class Chatbot {
     init() {
         this.createWidget();
         this.connectWebSocket();
-        this.loadChatHistory();
+        // Không load lịch sử chat khi khởi tạo
+        // this.loadChatHistory();
     }
     
     createWidget() {
@@ -98,6 +99,11 @@ class Chatbot {
         if (this.isOpen) {
             container.classList.add('show');
             toggle.classList.add('active');
+            
+            // Xóa tất cả tin nhắn cũ và chỉ hiển thị welcome message
+            this.clearChatMessages();
+            this.showWelcomeMessage();
+            
             // Focus vào input khi mở chat
             setTimeout(() => {
                 document.getElementById('chatbot-input-field').focus();
@@ -165,6 +171,12 @@ class Chatbot {
         // Ẩn typing indicator nếu có
         this.hideTypingIndicator();
         
+        // Ẩn welcome message khi có tin nhắn mới
+        const welcomeMessage = document.querySelector('.welcome-message');
+        if (welcomeMessage) {
+            welcomeMessage.style.display = 'none';
+        }
+        
         const messagesContainer = document.getElementById('chatbot-messages');
         const messageDiv = document.createElement('div');
         messageDiv.className = `chatbot-message ${type}`;
@@ -204,26 +216,41 @@ class Chatbot {
     }
     
     loadChatHistory() {
-        fetch('/api/chat/history')
-            .then(response => response.json())
-            .then(messages => {
-                if (messages && messages.length > 0) {
-                    // Ẩn welcome message nếu có lịch sử chat
-                    const welcomeMessage = document.querySelector('.welcome-message');
-                    if (welcomeMessage) {
-                        welcomeMessage.style.display = 'none';
-                    }
-                    
-                    messages.forEach(msg => {
-                        if (msg.messageType === 'USER') {
-                            this.displayMessage(msg.message, 'user');
-                        } else {
-                            this.displayMessage(msg.response, 'bot');
-                        }
-                    });
-                }
-            })
-            .catch(error => console.error('Error loading chat history:', error));
+        // Không load lịch sử chat nữa
+        // fetch('/api/chat/history')
+        //     .then(response => response.json())
+        //     .then(messages => {
+        //         if (messages && messages.length > 0) {
+        //             // Ẩn welcome message nếu có lịch sử chat
+        //             const welcomeMessage = document.querySelector('.welcome-message');
+        //             if (welcomeMessage) {
+        //                 welcomeMessage.style.display = 'none';
+        //             }
+        //             
+        //             messages.forEach(msg => {
+        //                 if (msg.messageType === 'USER') {
+        //                     this.displayMessage(msg.message, 'user');
+        //                 } else {
+        //                     this.displayMessage(msg.response, 'bot');
+        //                 }
+        //             });
+        //         }
+        //     })
+        //     .catch(error => console.error('Error loading chat history:', error));
+    }
+    
+    clearChatMessages() {
+        const messagesContainer = document.getElementById('chatbot-messages');
+        // Xóa tất cả tin nhắn cũ, chỉ giữ lại container
+        messagesContainer.innerHTML = '';
+    }
+    
+    showWelcomeMessage() {
+        const messagesContainer = document.getElementById('chatbot-messages');
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'welcome-message';
+        welcomeDiv.innerHTML = '👋 Xin chào! Tôi là trợ lý AI của cửa hàng. Tôi có thể giúp bạn tìm hiểu về sản phẩm, đơn hàng và các câu hỏi khác. Hãy hỏi tôi bất cứ điều gì!';
+        messagesContainer.appendChild(welcomeDiv);
     }
     
     getCurrentUserId() {

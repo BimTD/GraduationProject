@@ -2,7 +2,7 @@
 
 <html   xmlns:th="http://www.thymeleaf.org"
         lang="en" class="light scroll-smooth group" data-layout="vertical" data-sidebar="light" data-sidebar-size="lg" data-mode="light" data-topbar="light" data-skin="default" data-navbar="sticky" data-content="fluid" dir="ltr">
-<head th:replace="~{admin/fragments/head :: head('User Management')}"></head>
+<head th:replace="~{admin/fragments/head :: head('Quản lý người dùng')}"></head>
 
 <body class="text-base bg-body-bg text-body font-public dark:text-zink-100 dark:bg-zink-800 group-data-[skin=bordered]:bg-body-bordered group-data-[skin=bordered]:dark:bg-zink-700">
   <div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
@@ -20,13 +20,13 @@
 
         <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
           <div class="grow">
-            <h5 class="text-16">User Management</h5>
+            <h5 class="text-16">Người dùng</h5>
           </div>
           <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
             <li class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
-              <a href="#" class="text-slate-400 dark:text-zink-200">Dashboard</a>
+              <a href="#" class="text-slate-400 dark:text-zink-200">Tổng quan</a>
             </li>
-            <li class="text-slate-700 dark:text-zink-100">Users</li>
+            <li class="text-slate-700 dark:text-zink-100">Người dùng</li>
           </ul>
         </div>
 
@@ -47,7 +47,7 @@
                   <div class="flex gap-2 items-center">
                     <div class="relative">
                       <form th:action="@{/admin/user}" method="get" class="flex gap-2 items-center">
-                        <input type="text" name="search" id="searchInput" th:value="${search}" class="form-input border-slate-200" placeholder="Search by username, email, name, phone..." autocomplete="off">
+                        <input type="text" name="search" id="searchInput" th:value="${search}" class="form-input border-slate-200" placeholder="Tìm kiếm..." autocomplete="off">
                         <input type="hidden" name="status" th:value="${status}">
                         <input type="hidden" name="page" value="0">
                         <button type="submit" id="searchBtn" class="absolute right-2.5 top-2.5 bg-transparent border-none p-0">
@@ -69,9 +69,9 @@
                   <input type="hidden" name="search" th:value="${search}">
                   <input type="hidden" name="page" value="0">
                   <select name="status" id="statusFilter" class="form-input border-slate-200">
-                    <option th:value="''" th:selected="${status == null or status == ''}">All Status</option>
-                    <option th:value="enabled" th:selected="${status == 'enabled'}">Enabled</option>
-                    <option th:value="disabled" th:selected="${status == 'disabled'}">Disabled</option>
+                    <option th:value="''" th:selected="${status == null or status == ''}">Trạng thái</option>
+                    <option th:value="enabled" th:selected="${status == 'enabled'}">Đã bật</option>
+                    <option th:value="disabled" th:selected="${status == 'disabled'}">Vô hiệu hóa</option>
                   </select>
                   <button type="submit" class="btn bg-custom-500 text-white hover:bg-custom-600 transition-all px-4 py-2 rounded">
                     <i data-lucide="filter" class="size-4"></i>
@@ -88,13 +88,13 @@
                 <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
                   <tr>
                     <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">STT</th>
-                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Username</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Tài khoản</th>
                     <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Email</th>
-                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Full Name</th>
-                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Phone</th>
-                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Provider</th>
-                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Status</th>
-                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Action</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Họ tên</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Số điện thoại</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Phương thức</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Trạng thái</th>
+                    <th class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500">Hành động</th>
                   </tr>
                 </thead>
                 <tbody class="list">
@@ -109,8 +109,8 @@
                     <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${user.soDienThoai != null ? user.soDienThoai : 'N/A'}"></td>
                     <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500" th:text="${user.provider != null ? user.provider : 'Local'}"></td>
                     <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-b border-slate-200 dark:border-zink-500">
-                      <span th:if="${user.enabled == '1'}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Enabled</span>
-                      <span th:if="${user.enabled == '0'}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Disabled</span>
+                      <span th:if="${user.enabled == '1'}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Đã bật</span>
+                      <span th:if="${user.enabled == '0'}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Vô hiệu hóa</span>
                     </td>
                     <td class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-500 Action">
                       <div class="flex gap-2">
@@ -141,7 +141,7 @@
             <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
               <div class="grow">
                 <p class="text-slate-500 dark:text-zink-200">
-                  Showing <b th:text="${users != null ? users.size() : 0}"></b> of <b th:text="${totalElements}"></b> Results
+                  Hiển thị <b th:text="${users != null ? users.size() : 0}"></b> trong <b th:text="${totalElements}"></b> kết qủa
                 </p>
               </div>
               <div class="flex items-center gap-2">
@@ -151,7 +151,7 @@
                   <input type="hidden" name="page" th:value="${page}" />
 
                   <div class="flex items-center gap-2">
-                    <label for="size" class="whitespace-nowrap">Items per page:</label>
+                    <label for="size" class="whitespace-nowrap">Số lượng mỗi trang:</label>
                     <select name="size" id="size" class="form-input border-slate-200" onchange="this.form.submit()">
                       <option th:value="5" th:selected="${size == 5}">5</option>
                       <option th:value="10" th:selected="${size == 10}">10</option>
@@ -165,7 +165,7 @@
               <div class="col-sm-auto mt-sm-0">
                 <div class="flex gap-2 pagination-wrap justify-content-center">
                   <a th:href="@{/admin/user(page=${prevPage}, size=${size}, search=${search}, status=${status})}" th:classappend="${page == 0} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-prev">
-                    <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Prev
+                    <i class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i> Trước
                   </a>
                   <ul class="flex flex-wrap items-center gap-2 pagination">
                     <li th:each="i : ${#numbers.sequence(0, lastPage)}">
@@ -177,7 +177,7 @@
                     </li>
                   </ul>
                   <a th:href="@{/admin/user(page=${nextPage}, size=${size}, search=${search}, status=${status})}" th:classappend="${page == lastPage} ? 'disabled' : ''" class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 page-item pagination-next">
-                    Next <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
+                    Sau <i class="ml-1 size-4 rtl:rotate-180" data-lucide="chevron-right"></i>
                   </a>
                 </div>
               </div>

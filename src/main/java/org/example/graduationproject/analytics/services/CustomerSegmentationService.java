@@ -11,44 +11,44 @@ import java.util.List;
 
 @Service
 public class CustomerSegmentationService {
-    
+
     @Autowired
     private KMeansService kMeansService;
-    
+
     @Autowired
     private RFMAnalysisService rfmAnalysisService;
-    
+
     public ClusterResult performCustomerSegmentation() {
         return kMeansService.performKMeansClustering(4); // 4 cụm khách hàng chuẩn RFM
     }
-    
+
     public List<CustomerCluster> getCustomerSegments() {
         return kMeansService.getLatestClusters();
     }
-    
+
     public CustomerCluster getCustomerSegment(User user) {
         RFMData rfmData = rfmAnalysisService.getRFMDataForUser(user);
         if (rfmData == null || rfmData.getClusterId() == null) {
             return null;
         }
-        
+
         List<CustomerCluster> clusters = kMeansService.getLatestClusters();
         return clusters.stream()
-            .filter(cluster -> cluster.getId().equals(rfmData.getClusterId()))
-            .findFirst()
-            .orElse(null);
+                .filter(cluster -> cluster.getId().equals(rfmData.getClusterId()))
+                .findFirst()
+                .orElse(null);
     }
-    
+
     public List<RFMData> getCustomersInSegment(Integer clusterId) {
         return rfmAnalysisService.getRFMDataByCluster(clusterId);
     }
-    
+
     public String getCustomerRecommendations(User user) {
         CustomerCluster segment = getCustomerSegment(user);
         if (segment == null) {
             return "Không có dữ liệu phân tích cho khách hàng này.";
         }
-        
+
         switch (segment.getClusterName()) {
             case "Champions":
                 return "Khách hàng VIP - Ưu tiên chăm sóc, cung cấp sản phẩm cao cấp, chương trình ưu đãi đặc biệt";
