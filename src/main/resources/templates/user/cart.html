@@ -14,7 +14,7 @@
                 <div class="col-lg-7 col-md-12">
                     <div class="welcome_text">
                         <ul>
-                            <li>Free shipping on orders over 100,000 VND</li>
+                            <li>Miễn phí vận chuyển cho đơn hàng trên 100.000 VND</li>
 
                         </ul>
                     </div>
@@ -22,16 +22,16 @@
                 <div class="col-lg-5 col-md-12">
                     <div class="top_right text-right">
                         <ul>
-                            <li class="top_links"><a href="#">Account<i class="ion-chevron-down"></i></a>
+                            <li class="top_links"><a href="#">Tài khoản<i class="ion-chevron-down"></i></a>
 
                             </li>
-                            <li class="language"><a href="#">Language<i class="ion-chevron-down"></i></a>
+                            <li class="language"><a href="#">Ngôn ngữ<i class="ion-chevron-down"></i></a>
                                 <ul class="dropdown_language">
-                                    <li><a href="#">Vietnamese</a></li>
-                                    <li><a href="#">English</a></li>
+                                    <li><a href="#">Tiếng Việt</a></li>
+                                    <li><a href="#">Tiếng Anh</a></li>
                                 </ul>
                             </li>
-                            <li class="currency"><a href="#">Suport</a>
+                            <li class="currency"><a href="#">Hỗ trợ</a>
 
                             </li>
                         </ul>
@@ -76,18 +76,18 @@
                     <div class="cart_area">
                         <div class="middel_links">
                             <ul th:if="${!isAuthenticated}">
-                                <li><a th:href="@{/login}">Login</a></li>
+                                <li><a th:href="@{/login}">Đăng nhập</a></li>
                                 <li>/</li>
-                                <li><a th:href="@{/register}">Register</a></li>
+                                <li><a th:href="@{/register}">Đăng ký</a></li>
                             </ul>
                             <ul th:if="${isAuthenticated}">
                                 <li><span th:text="${username}">Xin chào, User</span></li>
                                 <li>/</li>
-                                <li><a th:href="@{/logout}" style="color: #ff4444;">Logout</a></li>
+                                <li><a th:href="@{/logout}" style="color: #ff4444;">Đăng xuất</a></li>
                             </ul>
                         </div>
                         <div class="cart_link">
-                            <a href="/cart"><i class="fa fa-shopping-basket"></i>Cart <span class="cart_count" th:if="${isAuthenticated}">0</span></a>
+                            <a href="/cart"><i class="fa fa-shopping-basket"></i><span class="cart_count" th:if="${isAuthenticated}">0</span></a>
                         </div>
                     </div>
                 </div>
@@ -106,24 +106,24 @@
                             <div class="main_menu">
                                 <nav>
                                     <ul>
-                                        <li class="active"><a href="#">Home</a>
+                                        <li class="active"><a href="#">Trang chủ</a>
 
                                         </li>
-                                        <li class="mega_items"><a href="#">shop</a>
+                                        <li class="mega_items"><a href="#">Cửa hàng</a>
 
                                         </li>
-                                        <li><a href="#">blog</a>
+                                        <li><a href="#">Tin tức</a>
 
                                         </li>
-                                        <li><a href="#">About us</a></li>
-                                        <li><a href="#">Contact Us</a></li>
+                                        <li><a href="#">Giới thiệu</a></li>
+                                        <li><a href="#">Liên hệ</a></li>
                                     </ul>
                                 </nav>
                             </div>
                         </div>
 
                         <div class="contact_phone">
-                            <p>Call Free Support: <a href="tel:0982172169">0982172169</a></p>
+                            <p>Gọi hỗ trợ miễn phí: <a href="tel:0982172169">0982172169</a></p>
                         </div>
                     </div>
                 </div>
@@ -141,7 +141,7 @@
             <div class="col-12">
                 <div class="breadcrumb_content">
                     <ul>
-                        <li><a href="/home">home</a></li>
+                        <li><a href="/home">Trang chủ</a></li>
                         <li>Giỏ hàng</li>
                     </ul>
                 </div>

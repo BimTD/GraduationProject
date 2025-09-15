@@ -473,15 +473,15 @@
               <a href="#"><i class="fa fa-plus"></i></a>
               <div class="action_button">
                 <ul>
-                  <li><a title="add to cart" href="cart.html"><i class="fa fa-shopping-basket" aria-hidden="true"></i></a></li>
-                  <li><a href="wishlist.html" title="Add to Wishlist"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
-                  <li><a href="compare.html" title="Add to Compare"><i class="fa fa-sliders" aria-hidden="true"></i></a></li>
+                  <li><a title="add to cart" href="#"><i class="fa fa-shopping-basket" aria-hidden="true"></i></a></li>
+                  <li><a href="#" title="Add to Wishlist"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                  <li><a href="#" title="Add to Compare"><i class="fa fa-sliders" aria-hidden="true"></i></a></li>
                 </ul>
               </div>
             </div>
           </div>
           <div class="quick_button">
-            <a href="#" class="btn-quick-view" data-product-id="${product.id}" data-bs-toggle="modal" data-bs-target="#modal_box" title="quick_view">+ quick view</a>
+            <a href="#" class="btn-quick-view" data-product-id="${product.id}" data-bs-toggle="modal" data-bs-target="#modal_box" title="quick_view">+ xem nhanh</a>
           </div>
           ${discountHtml}
         </div>

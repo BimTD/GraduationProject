@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Reid - login</title>
+    <title>Reid - Đăng nhập</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/fe/img/favicon.ico}">
@@ -27,21 +27,21 @@
                 <div class="col-lg-7 col-md-12">
                     <div class="welcome_text">
                         <ul>
-                            <li>Free shipping on orders over 100,000 VNĐ</li>
+                            <li>Miễn phí vận chuyển cho đơn hàng trên 100.000 VNĐ</li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-5 col-md-12">
                     <div class="top_right text-right">
                         <ul>
-                            <li class="top_links"><a href="#">Account<i class="ion-chevron-down"></i></a></li>
-                            <li class="language"><a href="#">Language<i class="ion-chevron-down"></i></a>
+                            <li class="top_links"><a href="#">Tài khoản<i class="ion-chevron-down"></i></a></li>
+                            <li class="language"><a href="#">Ngôn ngữ<i class="ion-chevron-down"></i></a>
                                 <ul class="dropdown_language">
-                                    <li><a href="#">Vietnamese</a></li>
-                                    <li><a href="#">English</a></li>
+                                    <li><a href="#">Tiếng Việt</a></li>
+                                    <li><a href="#">Tiếng Anh</a></li>
                                 </ul>
                             </li>
-                            <li class="currency"><a href="#">Suport</a></li>
+                            <li class="currency"><a href="#">Hỗ trợ</a></li>
                         </ul>
                     </div>
                 </div>
@@ -68,13 +68,13 @@
                     <div class="cart_area">
                         <div class="middel_links">
                             <ul>
-                                <li><a th:href="@{/login}">Login</a></li>
+                                <li><a th:href="@{/login}">Đăng nhập</a></li>
                                 <li>/</li>
-                                <li><a th:href="@{/register}">Register</a></li>
+                                <li><a th:href="@{/register}">Đăng ký</a></li>
                             </ul>
                         </div>
                         <div class="cart_link">
-                            <a href="/home"><i class="fa fa-home"></i>Home</a>
+                            <a href="/home"><i class="fa fa-home"></i></a>
                         </div>
                     </div>
                 </div>
@@ -93,18 +93,18 @@
                             <div class="main_menu">
                                 <nav>
                                     <ul>
-                                        <li><a th:href="@{/home}">Home</a></li>
-                                        <li><a th:href="@{/home}">Shop</a></li>
-                                        <li><a href="#">Blog</a></li>
-                                        <li><a href="#">About us</a></li>
-                                        <li><a href="#">Contact Us</a></li>
+                                        <li><a th:href="@{/home}">Trang chủ</a></li>
+                                        <li><a th:href="@{/home}">Cửa hàng</a></li>
+                                        <li><a href="#">Tin tức</a></li>
+                                        <li><a href="#">Giới thiệu</a></li>
+                                        <li><a href="#">Liên hệ</a></li>
                                     </ul>
                                 </nav>
                             </div>
                         </div>
 
                         <div class="contact_phone">
-                            <p>Call Free Support: <a href="tel:0982172169">0982172169</a></p>
+                            <p>Gọi hỗ trợ miễn phí: <a href="tel:0982172169">0982172169</a></p>
                         </div>
                     </div>
                 </div>
@@ -122,9 +122,9 @@
             <div class="col-12">
                 <div class="breadcrumb_content">
                     <ul>
-                        <li><a th:href="@{/home}">home</a></li>
+                        <li><a th:href="@{/home}">Trang chủ</a></li>
                         <li>/</li>
-                        <li>login</li>
+                        <li>Đăng nhập</li>
                     </ul>
                 </div>
             </div>
@@ -140,23 +140,23 @@
             <!--login area start-->
             <div class="col-lg-6 col-md-6">
                 <div class="account_form">
-                    <h2>login</h2>
+                    <h2>Đăng Nhập</h2>
                     <form th:action="@{/login}" method="post">
                         <p>
-                            <label>Username <span>*</span></label>
+                            <label>Tài khoản <span>*</span></label>
                             <input type="text" name="username" required />
                         </p>
                         <p>
-                            <label>Passwords <span>*</span></label>
+                            <label>Mật khẩu <span>*</span></label>
                             <input type="password" name="password" required />
                         </p>
                         <div class="login_submit">
-                            <a href="#">Lost your password?</a>
+                            <a href="#">Quên mật khẩu?</a>
                             <label for="remember">
                                 <input id="remember" type="checkbox">
-                                Remember me
+                                Lưu tài khoản
                             </label>
-                            <button type="submit">login</button>
+                            <button type="submit">đăng nhập</button>
                         </div>
                         <div th:if="${error}" th:text="${error}" style="color:red; margin-top: 10px; text-align: center;"></div>
                         <div th:if="${message}" th:text="${message}" style="color:green; margin-top: 10px; text-align: center;"></div>
@@ -168,26 +168,26 @@
             <!--register area start-->
             <div class="col-lg-6 col-md-6">
                 <div class="account_form register">
-                    <h2>Register </h2>
+                    <h2>Đăng ký </h2>
                     <p style="margin-bottom: 20px; color: #666;">
-                        Create a new account to use the full features of the system
+                        Tạo một tài khoản mới để sử dụng đầy đủ các tính năng của hệ thống
                     </p>
                     <div class="login_submit">
                         <a th:href="@{/register}" class="register-link-btn"
                            style="display: inline-block; background: #ff6a28; color: white;
                                   padding: 12px 24px; text-decoration: none; border-radius: 50px;
                                   font-weight: 500; transition: background 0.3s; text-align: center; width: 100%;">
-                            Sign up now
+                            Đăng ký ngay
                         </a>
                     </div>
                     <div style="margin-top: 20px; text-align: center;">
-                        <p style="color: #666; font-size: 14px;">Or</p>
+                        <p style="color: #666; font-size: 14px;">Hoặc</p>
                         <a href="/oauth2/authorization/google" class="google_login_btn"
                            style="display: inline-block; background: #ff6a28; color: white;
                                   padding: 12px 24px; text-decoration: none; border-radius: 50px;
                                   font-weight: 500; transition: background 0.3s; margin-top: 10px;">
                             <i class="fa fa-google" style="margin-right: 8px;"></i>
-                            Sign in with Google
+                            Đăng nhập bằng Google
                         </a>
                     </div>
                 </div>

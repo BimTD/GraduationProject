@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Reid - Register</title>
+    <title>Reid - Đăng ký</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/fe/img/favicon.ico}">
@@ -27,21 +27,21 @@
                 <div class="col-lg-7 col-md-12">
                     <div class="welcome_text">
                         <ul>
-                            <li>Free shipping on orders over 100,000 VNĐ</li>
+                            <li>Miễn phí vận chuyển cho đơn hàng trên 100.000 VNĐ</li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-5 col-md-12">
                     <div class="top_right text-right">
                         <ul>
-                            <li class="top_links"><a href="#">Account<i class="ion-chevron-down"></i></a></li>
-                            <li class="language"><a href="#">Language<i class="ion-chevron-down"></i></a>
+                            <li class="top_links"><a href="#">Tài khoản<i class="ion-chevron-down"></i></a></li>
+                            <li class="language"><a href="#">Ngôn ngữ<i class="ion-chevron-down"></i></a>
                                 <ul class="dropdown_language">
-                                    <li><a href="#">Vietnamese</a></li>
-                                    <li><a href="#">English</a></li>
+                                    <li><a href="#">Tiếng Việt</a></li>
+                                    <li><a href="#">Tiếng Anh</a></li>
                                 </ul>
                             </li>
-                            <li class="currency"><a href="#">Suport</a></li>
+                            <li class="currency"><a href="#">Hỗ trợ</a></li>
                         </ul>
                     </div>
                 </div>
@@ -68,13 +68,13 @@
                     <div class="cart_area">
                         <div class="middel_links">
                             <ul>
-                                <li><a th:href="@{/login}">Login</a></li>
+                                <li><a th:href="@{/login}">Đăng nhập</a></li>
                                 <li>/</li>
-                                <li><a th:href="@{/register}">Register</a></li>
+                                <li><a th:href="@{/register}">Đăng ký</a></li>
                             </ul>
                         </div>
                         <div class="cart_link">
-                            <a href="/home"><i class="fa fa-home"></i>Home</a>
+                            <a href="/home"><i class="fa fa-home"></i></a>
                         </div>
                     </div>
                 </div>
@@ -93,18 +93,18 @@
                             <div class="main_menu">
                                 <nav>
                                     <ul>
-                                        <li><a th:href="@{/home}">Home</a></li>
-                                        <li><a th:href="@{/home}">Shop</a></li>
-                                        <li><a href="#">Blog</a></li>
-                                        <li><a href="#">About us</a></li>
-                                        <li><a href="#">Contact Us</a></li>
+                                        <li><a th:href="@{/home}">Trang chủ</a></li>
+                                        <li><a th:href="@{/home}">Cửa hàng</a></li>
+                                        <li><a href="#">Tin tức</a></li>
+                                        <li><a href="#">Giới thiệu</a></li>
+                                        <li><a href="#">Liên hệ</a></li>
                                     </ul>
                                 </nav>
                             </div>
                         </div>
 
                         <div class="contact_phone">
-                            <p>Call Free Support: <a href="tel:0982172169">0982172169</a></p>
+                            <p>Gọi hỗ trợ miễn phí: <a href="tel:0982172169">0982172169</a></p>
                         </div>
                     </div>
                 </div>
@@ -122,9 +122,9 @@
             <div class="col-12">
                 <div class="breadcrumb_content">
                     <ul>
-                        <li><a th:href="@{/home}">home</a></li>
+                        <li><a th:href="@{/home}">Trang chủ</a></li>
                         <li>/</li>
-                        <li>Register</li>
+                        <li>Đăng ký</li>
                     </ul>
                 </div>
             </div>
@@ -140,7 +140,7 @@
             <!--Register area start-->
             <div class="col-lg-6 col-md-6">
                 <div class="account_form">
-                    <h2>Register</h2>
+                    <h2>Đăng ký</h2>
                     <!-- Error Message -->
                     <div th:if="${error}" class="error-message" th:text="${error}"></div>
 
@@ -149,34 +149,34 @@
 
                     <form th:action="@{/register}" method="post" id="registerForm">
                         <div class="form-group">
-                            <label for="username">Username <span style="color: red;">*</span></label>
+                            <label for="username">Tài khoản <span style="color: red;">*</span></label>
                             <input type="text" id="username" name="username" required
-                                   th:value="${username}" placeholder="Enter username">
+                                   th:value="${username}" placeholder="Nhập tài khoản">
                         </div>
 
                         <div class="form-group" style="margin-top: 20px;">
                             <label for="email">Email <span style="color: red;">*</span></label>
                             <input type="email" id="email" name="email" required
-                                   th:value="${email}" placeholder="Enter email">
+                                   th:value="${email}" placeholder="Nhập email">
                         </div>
 
                         <div class="form-group" style="margin-top: 20px;">
-                            <label for="password">Password <span style="color: red;">*</span></label>
+                            <label for="password">Mật khẩu <span style="color: red;">*</span></label>
                             <input type="password" id="password" name="password" required
-                                   placeholder="Enter password">
+                                   placeholder="Nhập mật khẩu">
                             <div class="password-requirements">
-                                Password must be at least 6 characters
+                                Mật khẩu phải có ít nhất 6 ký tự
                             </div>
                         </div>
 
                         <div class="form-group" style="margin-top: 20px; margin-bottom: 15px;">
-                            <label for="confirmPassword">Confirm Password <span style="color: red;">*</span></label>
+                            <label for="confirmPassword">Xác nhận mật khẩu <span style="color: red;">*</span></label>
                             <input type="password" id="confirmPassword" name="confirmPassword" required
-                                   placeholder="Re-enter password">
+                                   placeholder="Nhập lại mật khẩu">
                         </div>
 
                         <div style="text-align: right;">
-                            <button type="submit" class="register-btn">Register</button>
+                            <button type="submit" class="register-btn">Đăng ký</button>
                         </div>
                     </form>
 
@@ -186,26 +186,26 @@
 
             <div class="col-lg-6 col-md-6">
                 <div class="account_form register">
-                    <h2>Login </h2>
+                    <h2>Đăng nhập </h2>
                     <div class="login-link">
-                        Already have an account?
+                        Bạn đã có tài khoản?
                     </div>
                     <div class="login_submit" style="margin-top: 20px;">
                         <a th:href="@{/login}" class="register-link-btn"
                            style="display: inline-block; background: #ff6a28; color: white;
                                   padding: 12px 24px; text-decoration: none; border-radius: 50px;
                                   font-weight: 500; transition: background 0.3s; text-align: center; width: 100%;">
-                            Sign in now
+                            Đăng nhập ngay
                         </a>
                     </div>
                     <div style="margin-top: 20px; text-align: center;">
-                        <p style="color: #666; font-size: 14px;">Or</p>
+                        <p style="color: #666; font-size: 14px;">Hoặc</p>
                         <a href="/oauth2/authorization/google" class="google_login_btn"
                            style="display: inline-block; background: #ff6a28; color: white;
                                   padding: 12px 24px; text-decoration: none; border-radius: 50px;
                                   font-weight: 500; transition: background 0.3s; margin-top: 10px;">
                             <i class="fa fa-google" style="margin-right: 8px;"></i>
-                            Sign in with Google
+                            Đăng nhập bằng Google
                         </a>
                     </div>
                 </div>
@@ -240,26 +240,26 @@
 
         // Validate username
         if (username.length < 3) {
-            showError('username', 'Username must be at least 3 characters');
+            showError('username', 'Tên người dùng phải có ít nhất 3 ký tự');
             hasError = true;
         }
 
         // Validate email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            showError('email', 'Invalid email');
+            showError('email', 'Email không hợp lệ');
             hasError = true;
         }
 
         // Validate password
         if (password.length < 6) {
-            showError('password', 'Password must be at least 6 characters');
+            showError('password', 'Mật khẩu phải có ít nhất 6 ký tự');
             hasError = true;
         }
 
         // Validate confirm password
         if (password !== confirmPassword) {
-            showError('confirmPassword', 'Confirmation password does not match');
+            showError('confirmPassword', 'Mật khẩu xác nhận không khớp');
             hasError = true;
         }
 

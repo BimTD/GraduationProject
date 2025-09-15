@@ -19,9 +19,9 @@
             <div class="col-12">
                 <div class="breadcrumb_content">
                     <ul>
-                        <li><a href="index.html">home</a></li>
+                        <li><a href="index.html">Trang Chủ</a></li>
                         <li>/</li>
-                        <li>shop</li>
+                        <li>Của hàng</li>
                     </ul>
                 </div>
             </div>
@@ -39,58 +39,58 @@
                     <!--sidebar widget start-->
                     <div class="sidebar_widget">
                         <div class="widget_list widget_filter">
-                            <h2>Filter by price</h2>
+                            <h2>Lọc theo giá</h2>
                             <form id="price-filter-form" method="get">
                                 <div id="slider-range"></div>
                                 <div class="price-inputs">
                                     <input type="text" id="min-price" name="minPrice" readonly>
                                     <input type="text" id="max-price" name="maxPrice" readonly>
                                 </div>
-                                <button type="submit">Filter</button>
+                                <button type="submit">Lọc</button>
                             </form>
                         </div>
                         <div class="widget_list widget_categories">
-                            <h2>Product categories</h2>
+                            <h2>Danh mục sản phẩm</h2>
                             <ul>
                                 <li th:each="category : ${categories}">
                                     <a th:href="@{/shop(categoryId=${category.id}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, sort=${param.sort})}" 
                                        th:text="${category.ten}">
-                                        Category
+                                        Danh mục
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
                         <div class="widget_list widget_categories">
-                            <h2>Manufacturer</h2>
+                            <h2>Nhãn hiệu</h2>
                             <ul>
                                 <li th:each="brand : ${brands}">
                                     <a th:href="@{/shop(brandId=${brand.id}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, sort=${param.sort})}" 
                                        th:text="${brand.ten}">
-                                        Brand
+                                        Nhãn hiệu
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         <div class="widget_list widget_categories">
-                            <h2>Select By Color</h2>
+                            <h2>Chọn theo màu sắc</h2>
                             <ul>
                                 <li th:each="color : ${colors}">
                                     <a th:href="@{/shop(colorId=${color.id}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, sort=${param.sort})}" 
                                        th:text="${color.maMau}">
-                                        Color
+                                        Màu sắc
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         <div class="widget_list tag-cloud">
-                            <h2>Popular Tags</h2>
+                            <h2>Thẻ phổ biến</h2>
                             <div class="tag_widget">
                                 <ul>
                                     <li th:each="tag : ${popularTags}">
                                         <a th:href="@{/shop(tag=${tag}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, sort=${param.sort})}" 
                                            th:text="${tag}">
-                                            Tag
+                                            Thẻ
                                         </a>
                                     </li>
                                 </ul>
@@ -104,7 +104,7 @@
                     <!--shop wrapper start-->
                     <!--shop toolbar start-->
                     <div class="shop_title">
-                        <h1>shop</h1>
+                        <h1>Cửa hàng</h1>
                         <div class="shop-search-info" th:if="${param.search}">
                             <p class="search-results-info">
                                 Kết quả tìm kiếm cho: <strong th:text="${param.search}">"từ khóa"</strong>
@@ -127,21 +127,21 @@
 
                             <form class="select_option" id="sort-form" method="get">
                                 <select name="sort" id="short">
-                                    <option value="">Default sorting</option>
-                                    <option value="name_asc">Sort by name: A to Z</option>
-                                    <option value="name_desc">Sort by name: Z to A</option>
-                                    <option value="price_asc">Sort by price: low to high</option>
-                                    <option value="price_desc">Sort by price: high to low</option>
-                                    <option value="newest">Sort by newest</option>
-                                    <option value="oldest">Sort by oldest</option>
+                                    <option value="">Sắp xếp mặc định</option>
+                                    <option value="name_asc">Sắp xếp theo tên: A đến Z</option>
+                                    <option value="name_desc">Sắp xếp theo tên: Z đến A</option>
+                                    <option value="price_asc">Sắp xếp theo giá: thấp đến cao</option>
+                                    <option value="price_desc">Sắp xếp theo giá: cao đến thấp</option>
+                                    <option value="newest">Sắp xếp theo mới nhất</option>
+                                    <option value="oldest">Sắp xếp theo cũ nhất</option>
                                 </select>
                             </form>
 
 
                         </div>
                         <div class="page_amount">
-                            <p th:text="'Showing ' + ${products.number * products.size + 1} + '–' + ${products.number * products.size + products.numberOfElements} + ' of ' + ${totalProducts} + ' results'">
-                                Showing 1–9 of 21 results
+                            <p th:text="'Hiển thị ' + ${products.number * products.size + 1} + '–' + ${products.number * products.size + products.numberOfElements} + ' trong ' + ${totalProducts} + ' kêt quả'">
+                                Hiển thị 1–9 trong số 21 kết quả
                             </p>
                         </div>
                     </div>
@@ -180,7 +180,7 @@
                                         </div>
                                     </div>
                                     <div class="quick_button">
-                                        <a href="#" class="btn-quick-view" th:attr="data-product-id=${product.id}" data-bs-toggle="modal" data-bs-target="#modal_box" title="quick_view">+ quick view</a>
+                                        <a href="#" class="btn-quick-view" th:attr="data-product-id=${product.id}" data-bs-toggle="modal" data-bs-target="#modal_box" title="quick_view">+ xem nhanh</a>
                                     </div>
 
                                     <div class="double_base" th:if="${product.khuyenMai != null and product.khuyenMai > 0}">
@@ -188,20 +188,20 @@
                                             <span th:text="'-' + ${product.khuyenMai} + '%'">-7%</span>
                                         </div>
                                         <div class="label_product">
-                                            <span>new</span>
+                                            <span>mới</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="product_content grid_content">
-                                    <h3><a th:href="@{'/product-details/' + ${product.id}}" th:text="${product.ten}">Product Name</a></h3>
-                                    <span class="current_price" th:text="${#numbers.formatDecimal(product.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Price</span>
+                                    <h3><a th:href="@{'/product-details/' + ${product.id}}" th:text="${product.ten}">Tên sản phẩm</a></h3>
+                                    <span class="current_price" th:text="${#numbers.formatDecimal(product.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá</span>
                                     <span class="old_price" th:if="${product.khuyenMai != null and product.khuyenMai > 0}" 
-                                          th:text="${#numbers.formatDecimal(product.giaBan * (100 - product.khuyenMai) / 100, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Old Price</span>
+                                          th:text="${#numbers.formatDecimal(product.giaBan * (100 - product.khuyenMai) / 100, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá cũ</span>
                                 </div>
 
                                 <div class="product_content list_content">
-                                    <h3><a th:href="@{'/product-details/' + ${product.id}}" th:text="${product.ten}">Product Name</a></h3>
+                                    <h3><a th:href="@{'/product-details/' + ${product.id}}" th:text="${product.ten}">Tên sản phẩm</a></h3>
                                     <div class="product_ratting">
                                         <ul>
                                             <li><a href="#"><i class="fa fa-star"></i></a></li>
@@ -212,9 +212,9 @@
                                         </ul>
                                     </div>
                                     <div class="product_price">
-                                        <span class="current_price" th:text="${#numbers.formatDecimal(product.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Price</span>
+                                        <span class="current_price" th:text="${#numbers.formatDecimal(product.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá</span>
                                         <span class="old_price" th:if="${product.khuyenMai != null and product.khuyenMai > 0}" 
-                                              th:text="${#numbers.formatDecimal(product.giaBan * (100 - product.khuyenMai) / 100, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Old Price</span>
+                                              th:text="${#numbers.formatDecimal(product.giaBan * (100 - product.khuyenMai) / 100, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá cũ</span>
                                     </div>
                                     <div class="product_desc">
                                         <p th:text="${product.moTa}">Product description</p>
@@ -300,15 +300,15 @@
                 </div>
                 <div class="variants_selects">
                   <div class="variants_size">
-                    <h2>size</h2>
+                    <h2>Kích cỡ</h2>
                     <select id="qv-size" class="select_option">
-                      <option value="">Chọn size</option>
+                      <option value="">Chọn kích cỡ</option>
                     </select>
                   </div>
                   <div class="variants_color">
-                    <h2>color</h2>
+                    <h2>Màu sắc</h2>
                     <select id="qv-color" class="select_option">
-                      <option value="">Chọn màu</option>
+                      <option value="">Chọn màu sắc</option>
                     </select>
                   </div>
                   <div style="margin-top:10px">
@@ -317,7 +317,7 @@
                   <div class="modal_add_to_cart">
                     <form action="#">
                       <input id="qv-qty" min="1" max="100" step="1" value="1" type="number">
-                      <button type="button" id="qv-add">add to cart</button>
+                      <button type="button" id="qv-add">Thêm vào giỏ hàng</button>
                     </form>
                   </div>
                 </div>

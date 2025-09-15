@@ -15,7 +15,7 @@
             <div class="col-12">
                 <div class="breadcrumb_content">
                     <ul>
-                        <li><a th:href="@{/home}">home</a></li>
+                        <li><a th:href="@{/home}">Trang chủ</a></li>
                         <li>/</li>
                         <li th:text="${product.name}">product details</li>
                     </ul>
@@ -30,7 +30,7 @@
 <div th:if="${error != null}" class="container mt-4">
     <div class="alert alert-danger" role="alert">
         <h4 class="alert-heading">Lỗi!</h4>
-        <p th:text="${error}">Error message</p>
+        <p th:text="${error}">Thông báo lỗi</p>
         <hr>
         <p class="mb-0"><a th:href="@{/home}" class="btn btn-primary">Quay về trang chủ</a></p>
     </div>
@@ -72,8 +72,8 @@
                                 <li><a href="#"><i class="fa fa-star"></i></a></li>
                                 <li><a href="#"><i class="fa fa-star"></i></a></li>
                                 <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                <li class="review"><a href="#"> 1 review </a></li>
-                                <li class="review"><a href="#"> Write a review </a></li>
+                                <li class="review"><a href="#"> 1 đánh giá </a></li>
+                                <li class="review"><a href="#"> Viết bài đánh giá </a></li>
                             </ul>
                         </div>
                         <div class="product_price">
@@ -129,7 +129,7 @@
 
                     </form>
                     <div class="priduct_social">
-                        <h3>Share on:</h3>
+                        <h3>Chia sẻ trên:</h3>
                         <ul>
                             <li><a href="#"><i class="fa fa-rss"></i></a></li>
                             <li><a href="#"><i class="fa fa-vimeo"></i></a></li>
@@ -155,13 +155,13 @@
                     <div class="product_info_button">
                         <ul class="nav" role="tablist">
                             <li >
-                                <a class="active" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">More info</a>
+                                <a class="active" data-bs-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Thông tin thêm</a>
                             </li>
                             <li>
-                                <a data-bs-toggle="tab" href="#sheet" role="tab" aria-controls="sheet" aria-selected="false">Data sheet</a>
+                                <a data-bs-toggle="tab" href="#sheet" role="tab" aria-controls="sheet" aria-selected="false">Bảng dữ liệu</a>
                             </li>
                             <li>
-                                <a data-bs-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Reviews</a>
+                                <a data-bs-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Đánh giá</a>
                             </li>
                         </ul>
                     </div>
@@ -207,7 +207,7 @@
                         </div>
                         <div class="tab-pane fade" id="reviews" role="tabpanel" >
                             <div class="product_info_content">
-                                <p>Fashion has been creating well-designed collections since 2010. The brand offers feminine designs delivering stylish separates and statement dresses which have since evolved into a full ready-to-wear collection in which every item is a vital part of a woman's wardrobe. The result? Cool, easy, chic looks with youthful elegance and unmistakable signature style. All the beautiful pieces are made in Italy and manufactured with the greatest attention. Now Fashion extends to a range of accessories including shoes, hats, belts and more!</p>
+                                <p>Fashion đã tạo nên những bộ sưu tập được thiết kế tinh tế từ năm 2010. Thương hiệu mang đến những thiết kế nữ tính, với những bộ trang phục rời sành điệu và những chiếc váy nổi bật, sau đó đã phát triển thành một bộ sưu tập may sẵn hoàn chỉnh, trong đó mỗi món đồ đều là một phần thiết yếu trong tủ đồ của phái đẹp. Kết quả là gì? Những thiết kế thời trang sành điệu, đơn giản, sang trọng với nét thanh lịch trẻ trung và phong cách đặc trưng không thể nhầm lẫn. Tất cả những sản phẩm tuyệt đẹp đều được sản xuất tại Ý với sự tỉ mỉ cao nhất. Giờ đây, Fashion mở rộng sang các loại phụ kiện như giày dép, mũ nón, thắt lưng và nhiều hơn nữa!</p>
                             </div>
                             <div class="product_info_inner">
                                 <div class="product_ratting mb-10">
@@ -218,25 +218,25 @@
                                         <li><a href="#"><i class="fa fa-star"></i></a></li>
                                         <li><a href="#"><i class="fa fa-star"></i></a></li>
                                     </ul>
-                                    <strong>Posthemes</strong>
+                                    <strong>Hậu tố</strong>
                                     <p>09/07/2022</p>
                                 </div>
                                 <div class="product_demo">
-                                    <strong>demo</strong>
-                                    <p>That's OK!</p>
+                                    <strong>thử nghiệm</strong>
+                                    <p>OK!</p>
                                 </div>
                             </div>
                             <div class="product_review_form">
                                 <form action="#">
-                                    <h2>Add a review </h2>
-                                    <p>Your email address will not be published. Required fields are marked </p>
+                                    <h2>Thêm đánh giá </h2>
+                                    <p>Địa chỉ email của bạn sẽ không được công bố. Các trường bắt buộc được đánh dấu</p>
                                     <div class="row">
                                         <div class="col-12">
-                                            <label for="review_comment">Your review </label>
+                                            <label for="review_comment">Đánh giá của bạn </label>
                                             <textarea name="comment" id="review_comment" ></textarea>
                                         </div>
                                         <div class="col-lg-6 col-md-6">
-                                            <label for="author">Name</label>
+                                            <label for="author">Tên</label>
                                             <input id="author"  type="text">
 
                                         </div>
@@ -245,7 +245,7 @@
                                             <input id="email"  type="text">
                                         </div>
                                     </div>
-                                    <button type="submit">Submit</button>
+                                    <button type="submit">Gửi</button>
                                 </form>
                             </div>
                         </div>
@@ -263,8 +263,8 @@
         <div class="row">
             <div class="col-12">
                 <div class="section_title">
-                    <h2>Related Products</h2>
-                    <p>Contemporary, minimal and modern designs embody the Lavish Alice handwriting</p>
+                    <h2>Sản phẩm liên quan</h2>
+                    <p>Thiết kế đương đại, tối giản và hiện đại thể hiện nét chữ viết tay Lavish Alice</p>
                 </div>
             </div>
         </div>
@@ -342,13 +342,13 @@
                 </div>
                 <div class="variants_selects">
                   <div class="variants_size">
-                    <h2>size</h2>
+                    <h2>Kích cỡ</h2>
                     <select id="qv-size" class="select_option">
-                      <option value="">Chọn size</option>
+                      <option value="">Chọn kích cỡ</option>
                     </select>
                   </div>
                   <div class="variants_color">
-                    <h2>color</h2>
+                    <h2>Màu sắc</h2>
                     <select id="qv-color" class="select_option">
                       <option value="">Chọn màu</option>
                     </select>
@@ -359,7 +359,7 @@
                   <div class="modal_add_to_cart">
                     <form action="#">
                       <input id="qv-qty" min="1" max="100" step="1" value="1" type="number">
-                      <button type="button" id="qv-add">add to cart</button>
+                      <button type="button" id="qv-add">Thêm vào giỏ hàng</button>
                     </form>
                   </div>
                 </div>
