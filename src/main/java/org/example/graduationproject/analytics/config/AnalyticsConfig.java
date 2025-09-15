@@ -41,3 +41,6 @@ public class AnalyticsConfig {
     public Rfm getRfm() { return rfm; }
     public void setRfm(Rfm rfm) { this.rfm = rfm; }
 }
+
+
+

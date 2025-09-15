@@ -105,4 +105,9 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
                                             @Param("startTerm") String startTerm,
                                             @Param("categoryId") Integer categoryId, 
                                             Pageable pageable);
+    
+    // Methods for ProductInfoService
+    List<SanPham> findByLoaiTenAndTrangThaiHoatDong(String tenLoai, Boolean trangThaiHoatDong);
+    long countByTrangThaiHoatDong(Boolean trangThaiHoatDong);
+    List<SanPham> findByTenContainingIgnoreCaseAndTrangThaiHoatDong(String ten, Boolean trangThaiHoatDong);
 }

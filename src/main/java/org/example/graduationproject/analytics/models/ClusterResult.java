@@ -18,3 +18,5 @@ public class ClusterResult {
     private String analysisDate;
     private double silhouetteScore; // Đánh giá chất lượng clustering
 }
+
+

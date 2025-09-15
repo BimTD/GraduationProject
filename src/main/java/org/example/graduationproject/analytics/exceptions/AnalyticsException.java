@@ -10,3 +10,4 @@ public class AnalyticsException extends RuntimeException {
         super(message, cause);
     }
 }
+

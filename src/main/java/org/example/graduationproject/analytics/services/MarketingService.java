@@ -1,7 +1,6 @@
 package org.example.graduationproject.analytics.services;
 
 import org.example.graduationproject.analytics.models.CustomerCluster;
-import org.example.graduationproject.analytics.models.RFMData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -407,3 +406,6 @@ public class MarketingService {
         return overview;
     }
 }
+
+
+

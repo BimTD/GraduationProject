@@ -13,3 +13,6 @@ public interface CustomerClusterRepository extends JpaRepository<CustomerCluster
     @Query("SELECT c FROM CustomerCluster c WHERE c.createdDate = (SELECT MAX(c2.createdDate) FROM CustomerCluster c2)")
     List<CustomerCluster> findLatestClusters();
 }
+
+
+
