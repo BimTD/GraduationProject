@@ -56,7 +56,7 @@ public class BrandController {
     @PostMapping("/add")
     public String addBrand(@ModelAttribute("brand") NhanHieu nhanHieu, RedirectAttributes redirectAttributes) {
         nhanHieuService.save(nhanHieu);
-        redirectAttributes.addFlashAttribute("success", "Brand added successfully!");
+        redirectAttributes.addFlashAttribute("success", "Đã thêm thương hiệu thành công!");
         return "redirect:/admin/brand";
     }
 
@@ -94,14 +94,14 @@ public class BrandController {
     @PostMapping("/update")
     public String updateBrand(@ModelAttribute("brand") NhanHieu nhanHieu, RedirectAttributes redirectAttributes) {
         nhanHieuService.save(nhanHieu);
-        redirectAttributes.addFlashAttribute("success", "Brand update successful!");
+        redirectAttributes.addFlashAttribute("success", "Đã cập nhật thương hiệu thành công!");
         return "redirect:/admin/brand";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteBrand(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         nhanHieuService.deleteById(id);
-        redirectAttributes.addFlashAttribute("success", "Brand removal successful!");
+        redirectAttributes.addFlashAttribute("success", "Đã xóa thương hiệu thành công!");
         return "redirect:/admin/brand";
     }
 }

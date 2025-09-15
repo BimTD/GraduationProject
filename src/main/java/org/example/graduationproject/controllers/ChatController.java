@@ -40,7 +40,7 @@ public class ChatController {
     public ChatResponseDTO sendMessage(ChatRequestDTO request, Principal principal) {
         try {
             User user = userRepository.findByUsername(principal.getName())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
             
             // Tạo phản hồi từ AI
             String aiResponse = chatbotService.generateResponse(request.getMessage(), user);
@@ -71,7 +71,7 @@ public class ChatController {
     @ResponseBody
     public List<ChatResponseDTO> getChatHistory(Principal principal) {
         User user = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
         return chatbotService.getChatHistory(user).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -82,9 +82,9 @@ public class ChatController {
     public ResponseEntity<String> markAsRead(@RequestParam Long messageId, Principal principal) {
         try {
             chatbotService.markAsRead(messageId);
-            return ResponseEntity.ok("Message marked as read");
+            return ResponseEntity.ok("Tin nhắn được đánh dấu là đã đọc");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error marking message as read");
+            return ResponseEntity.badRequest().body("Lỗi đánh dấu tin nhắn là đã đọc");
         }
     }
     
@@ -95,7 +95,7 @@ public class ChatController {
             String products = productInfoService.getAllProductsByCategory();
             return ResponseEntity.ok(products);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error getting products: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Lỗi khi nhận sản phẩm: " + e.getMessage());
         }
     }
     
@@ -106,7 +106,7 @@ public class ChatController {
             String product = productInfoService.getProductDetails(productName);
             return ResponseEntity.ok(product);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error searching product: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Lỗi khi tìm kiếm sản phẩm: " + e.getMessage());
         }
     }
     
@@ -117,7 +117,7 @@ public class ChatController {
             String products = productInfoService.getProductsByCategory(categoryName);
             return ResponseEntity.ok(products);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error getting products by category: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Lỗi khi lấy sản phẩm theo danh mục: " + e.getMessage());
         }
     }
     

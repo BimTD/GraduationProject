@@ -64,7 +64,7 @@ public class CategoryController {
     @PostMapping("/category/add")
     public String addCategory(@ModelAttribute("category") Loai loai, RedirectAttributes redirectAttributes) {
         loaiService.saveLoai(loai);
-        redirectAttributes.addFlashAttribute("success", "Add category success!");
+        redirectAttributes.addFlashAttribute("success", "Thêm danh mục thành công!");
         return "redirect:/admin/category";
     }
 
@@ -109,14 +109,14 @@ public class CategoryController {
     @PostMapping("/category/update")
     public String updateCategory(@ModelAttribute("category") Loai loai, RedirectAttributes redirectAttributes) {
         loaiService.saveLoai(loai);
-        redirectAttributes.addFlashAttribute("success", "Update category success!");
+        redirectAttributes.addFlashAttribute("success", "Cập nhật danh mục thành công!");
         return "redirect:/admin/category";
     }
 
     @GetMapping("/category/delete/{id}")
     public String deleteCategory(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         loaiService.deleteLoai(id);
-        redirectAttributes.addFlashAttribute("success", "Delete category success!");
+        redirectAttributes.addFlashAttribute("success", "Xóa danh mục thành công!");
         return "redirect:/admin/category";
     }
     

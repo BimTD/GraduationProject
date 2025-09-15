@@ -76,7 +76,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         
         // Role mặc định là USER
         Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Role USER not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy vai trò NGƯỜI DÙNG"));
         
         UserRole userRoleEntity = new UserRole();
         userRoleEntity.setUser(user);

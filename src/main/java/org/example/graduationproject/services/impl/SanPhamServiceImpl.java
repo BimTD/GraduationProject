@@ -144,7 +144,7 @@ public class SanPhamServiceImpl implements SanPhamService {
     public void updateProductWithUrls(ProductDTO productDTO, String imageUrls) throws Exception {
         SanPham sanPham = sanPhamRepository.findById(productDTO.getId()).orElse(null);
         if (sanPham == null) {
-            throw new Exception("Product not found with id: " + productDTO.getId());
+            throw new Exception("Không tìm thấy sản phẩm có id: " + productDTO.getId());
         }
         
         sanPham.setTen(productDTO.getTen());
@@ -333,7 +333,7 @@ public class SanPhamServiceImpl implements SanPhamService {
     @Override
     public void deleteProductById(Integer id) {
         SanPham sanPham = findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No products found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm nào!"));
         deleteById(id);
     }
     
@@ -345,7 +345,7 @@ public class SanPhamServiceImpl implements SanPhamService {
     @Override
     public void toggleProductActiveStatus(Integer id, boolean active) {
         SanPham sanPham = findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No products found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm nào!"));
         sanPham.setTrangThaiHoatDong(active);
         sanPhamRepository.save(sanPham);
     }

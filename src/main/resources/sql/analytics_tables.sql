@@ -40,10 +40,10 @@ CREATE INDEX IX_CustomerClusters_Name ON CustomerClusters(cluster_name);
 -- Insert sample clusters
 INSERT INTO CustomerClusters (cluster_name, cluster_description, recency_avg, frequency_avg, monetary_avg, customer_count, created_date)
 VALUES 
-('Champions', 'Khách hàng VIP - mua hàng thường xuyên, giá trị cao', 15.5, 25.2, 8000000.00, 150, GETDATE()),
-('Loyal Customers', 'Khách hàng trung thành - mua hàng đều đặn', 45.8, 12.5, 3500000.00, 300, GETDATE()),
-('At Risk', 'Khách hàng có nguy cơ rời bỏ - cần chăm sóc đặc biệt', 120.3, 8.2, 1800000.00, 200, GETDATE()),
-('Lost', 'Khách hàng đã mất - cần chiến lược win-back', 250.7, 3.1, 800000.00, 100, GETDATE());
+('Champions', 'Khách hàng VIP - mua hàng thường xuyên, giá trị cao', 15.5, 25.2, 8000000.00, 0, GETDATE()),
+('Loyal Customers', 'Khách hàng trung thành - mua hàng đều đặn', 45.8, 12.5, 3500000.00, 0, GETDATE()),
+('At Risk', 'Khách hàng có nguy cơ rời bỏ - cần chăm sóc đặc biệt', 120.3, 8.2, 1800000.00, 0, GETDATE()),
+('Lost', 'Khách hàng đã mất - cần chiến lược win-back', 250.7, 3.1, 800000.00, 0, GETDATE());
 
 -- 4. Create view for easy querying
 CREATE VIEW v_CustomerSegments AS

@@ -101,7 +101,7 @@ public class SanPhamBienTheServiceImpl implements SanPhamBienTheService {
         Size size = sizeRepository.findById(productVariantDTO.getSizeId()).orElse(null);
 
         if (sanPham == null || mauSac == null || size == null) {
-            throw new IllegalArgumentException("Invalid product information, color or size!");
+            throw new IllegalArgumentException("Thông tin sản phẩm, màu sắc hoặc kích thước không hợp lệ!");
         }
 
         SanPhamBienThe sanPhamBienThe = new SanPhamBienThe();
@@ -116,14 +116,14 @@ public class SanPhamBienTheServiceImpl implements SanPhamBienTheService {
     @Override
     public SanPhamBienThe updateProductVariant(ProductVariantDTO productVariantDTO) {
         SanPhamBienThe sanPhamBienThe = getSanPhamBienTheById(productVariantDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("No variant products found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm biến thể nào!"));
 
         SanPham sanPham = sanPhamRepository.findById(productVariantDTO.getSanPhamId()).orElse(null);
         MauSac mauSac = mauSacRepository.findById(productVariantDTO.getMauSacId()).orElse(null);
         Size size = sizeRepository.findById(productVariantDTO.getSizeId()).orElse(null);
 
         if (sanPham == null || mauSac == null || size == null) {
-            throw new IllegalArgumentException("Invalid product information, color or size!");
+            throw new IllegalArgumentException("Thông tin sản phẩm, màu sắc hoặc kích thước không hợp lệ!");
         }
 
         sanPhamBienThe.setSoLuongTon(productVariantDTO.getSoLuongTon());
@@ -154,21 +154,21 @@ public class SanPhamBienTheServiceImpl implements SanPhamBienTheService {
     @Override
     public void deleteProductVariantById(Integer id) {
         SanPhamBienThe sanPhamBienThe = getSanPhamBienTheById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No variant products found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm biến thể nào!"));
         deleteSanPhamBienThe(id);
     }
     
     @Override
     public List<SanPhamBienThe> createBulkProductVariants(BulkProductVariantDTO bulkDTO) {
         SanPham sanPham = sanPhamRepository.findById(bulkDTO.getSanPhamId())
-                .orElseThrow(() -> new IllegalArgumentException("Product not found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm!"));
         
         if (bulkDTO.getMauSacIds() == null || bulkDTO.getMauSacIds().isEmpty()) {
-            throw new IllegalArgumentException("Color list cannot be empty!");
+            throw new IllegalArgumentException("Danh sách màu không được để trống!");
         }
         
         if (bulkDTO.getSizeIds() == null || bulkDTO.getSizeIds().isEmpty()) {
-            throw new IllegalArgumentException("Size list cannot be empty!");
+            throw new IllegalArgumentException("Danh sách kích thước không được để trống!");
         }
         
         List<SanPhamBienThe> createdVariants = new ArrayList<>();
@@ -178,9 +178,9 @@ public class SanPhamBienTheServiceImpl implements SanPhamBienTheService {
                 // Kiểm tra xem biến thể đã tồn tại chưa
                 if (!existsProductVariant(bulkDTO.getSanPhamId(), mauSacId, sizeId)) {
                     MauSac mauSac = mauSacRepository.findById(mauSacId)
-                            .orElseThrow(() -> new IllegalArgumentException("Color not found with ID: " + mauSacId));
+                            .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy màu có ID: " + mauSacId));
                     Size size = sizeRepository.findById(sizeId)
-                            .orElseThrow(() -> new IllegalArgumentException("Size not found with ID: " + sizeId));
+                            .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy kích thước với ID: " + sizeId));
                     
                     SanPhamBienThe sanPhamBienThe = new SanPhamBienThe();
                     sanPhamBienThe.setSoLuongTon(bulkDTO.getSoLuongTon());
@@ -200,14 +200,14 @@ public class SanPhamBienTheServiceImpl implements SanPhamBienTheService {
     @Override
     public BulkProductVariantDTO.BulkCreateResult createBulkProductVariantsWithResult(BulkProductVariantDTO bulkDTO) {
         SanPham sanPham = sanPhamRepository.findById(bulkDTO.getSanPhamId())
-                .orElseThrow(() -> new IllegalArgumentException("Product not found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm!"));
         
         if (bulkDTO.getMauSacIds() == null || bulkDTO.getMauSacIds().isEmpty()) {
-            throw new IllegalArgumentException("Color list cannot be empty!");
+            throw new IllegalArgumentException("Danh sách màu không được để trống!");
         }
         
         if (bulkDTO.getSizeIds() == null || bulkDTO.getSizeIds().isEmpty()) {
-            throw new IllegalArgumentException("Size list cannot be empty!");
+            throw new IllegalArgumentException("Danh sách kích thước không được để trống!");
         }
         
         List<SanPhamBienThe> createdVariants = new ArrayList<>();
@@ -220,11 +220,11 @@ public class SanPhamBienTheServiceImpl implements SanPhamBienTheService {
         
         for (Integer mauSacId : bulkDTO.getMauSacIds()) {
             MauSac mauSac = mauSacRepository.findById(mauSacId)
-                    .orElseThrow(() -> new IllegalArgumentException("Color not found with ID: " + mauSacId));
+                    .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy màu có ID: " + mauSacId));
             
             for (Integer sizeId : bulkDTO.getSizeIds()) {
                 Size size = sizeRepository.findById(sizeId)
-                        .orElseThrow(() -> new IllegalArgumentException("Size not found with ID: " + sizeId));
+                        .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy kích thước với ID: " + sizeId));
                 
                 String variantDetail = String.format("%s - %s (%s)", 
                     sanPham.getTen(), 
@@ -274,7 +274,7 @@ public class SanPhamBienTheServiceImpl implements SanPhamBienTheService {
     @Override
     public BulkProductVariantDTO getAvailableColorsAndSizesForProduct(Integer sanPhamId) {
         SanPham sanPham = sanPhamRepository.findById(sanPhamId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm!"));
         
         BulkProductVariantDTO bulkDTO = new BulkProductVariantDTO();
         bulkDTO.setSanPhamId(sanPhamId);

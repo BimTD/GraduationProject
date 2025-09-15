@@ -31,9 +31,9 @@ public class NotificationController {
     public ResponseEntity<String> markAsRead(@PathVariable Long id) {
         try {
             notificationService.markAsRead(id);
-            return ResponseEntity.ok("Marked as read");
+            return ResponseEntity.ok("Đã đánh dấu là đã đọc");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error marking notification as read");
+            return ResponseEntity.badRequest().body("Lỗi khi đánh dấu thông báo là đã đọc");
         }
     }
 

@@ -124,9 +124,9 @@ public class ProductController {
     public String addProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("imageUrls") String imageUrls, RedirectAttributes redirectAttributes) {
         try {
             sanPhamService.saveProductWithUrls(productDTO, imageUrls);
-            redirectAttributes.addFlashAttribute("success", "Product added successfully!");
+            redirectAttributes.addFlashAttribute("success", "Sản phẩm đã được thêm thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error adding product: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi thêm sản phẩm: " + e.getMessage());
         }
         return "redirect:/admin/product";
     }
@@ -135,9 +135,9 @@ public class ProductController {
     public String updateProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("imageUrls") String imageUrls, RedirectAttributes redirectAttributes) {
         try {
             sanPhamService.updateProductWithUrls(productDTO, imageUrls);
-            redirectAttributes.addFlashAttribute("success", "Product updated successfully!");
+            redirectAttributes.addFlashAttribute("success", "Sản phẩm đã được cập nhật thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error updating product: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật sản phẩm: " + e.getMessage());
         }
         return "redirect:/admin/product";
     }
@@ -164,9 +164,9 @@ public class ProductController {
     public String deleteProduct(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             sanPhamService.deleteProductById(id);
-            redirectAttributes.addFlashAttribute("success", "Product deleted successfully!");
+            redirectAttributes.addFlashAttribute("success", "Đã xóa sản phẩm thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error while deleting product: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi xóa sản phẩm: " + e.getMessage());
         }
         return "redirect:/admin/product";
     }

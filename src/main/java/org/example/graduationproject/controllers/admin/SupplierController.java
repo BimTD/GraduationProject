@@ -71,14 +71,14 @@ public class SupplierController {
     @PostMapping("/add")
     public String addSupplier(@ModelAttribute("supplier") NhaCungCap nhaCungCap, RedirectAttributes redirectAttributes) {
         nhaCungCapService.save(nhaCungCap);
-        redirectAttributes.addFlashAttribute("success", "Supplier added successfully!");
+        redirectAttributes.addFlashAttribute("success", "Đã thêm nhà cung cấp thành công!");
         return "redirect:/admin/supplier";
     }
 
     @PostMapping("/update")
     public String updateSupplier(@ModelAttribute("supplier") NhaCungCap nhaCungCap, RedirectAttributes redirectAttributes) {
         nhaCungCapService.save(nhaCungCap);
-        redirectAttributes.addFlashAttribute("success", "Supplier update successful!");
+        redirectAttributes.addFlashAttribute("success", "Cập nhật nhà cung cấp thành công!");
         return "redirect:/admin/supplier";
     }
 
@@ -90,7 +90,7 @@ public class SupplierController {
     @GetMapping("/delete/{id}")
     public String deleteSupplier(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         nhaCungCapService.deleteById(id);
-        redirectAttributes.addFlashAttribute("success", "Supplier deleted successfully!");
+        redirectAttributes.addFlashAttribute("success", "Nhà cung cấp đã bị xóa thành công!");
         return "redirect:/admin/supplier";
     }
 }

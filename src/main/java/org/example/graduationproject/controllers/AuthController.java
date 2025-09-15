@@ -23,15 +23,15 @@ public class AuthController {
                         Model model) {
 
         if (error != null) {
-            model.addAttribute("error", "Incorrect username or password!");
+            model.addAttribute("error", "Tên người dùng hoặc mật khẩu không đúng!");
         }
 
         if (logout != null) {
-            model.addAttribute("message", "You have successfully logged out!");
+            model.addAttribute("message", "Bạn đã đăng xuất thành công!");
         }
 
         if (registered != null) {
-            model.addAttribute("message", "Registration successful! Please login.");
+            model.addAttribute("message", "Đăng ký thành công! Vui lòng đăng nhập.");
         }
 
         return "login";
@@ -67,7 +67,7 @@ public class AuthController {
 
         // Kiểm tra password và confirm password
         if (!password.equals(confirmPassword)) {
-            model.addAttribute("error", "Confirmation password does not match!");
+            model.addAttribute("error", "Mật khẩu xác nhận không khớp!");
             return "register";
         }
 

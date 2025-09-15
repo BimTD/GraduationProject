@@ -169,29 +169,29 @@ public class GioHangServiceImpl implements GioHangService {
             // Validate authentication
             User currentUser = authenticationService.getCurrentUser();
             if (currentUser == null) {
-                throw new AuthenticationException("User not authenticated");
+                throw new AuthenticationException("Người dùng chưa được xác thực");
             }
 
             // Validate input
             if (addToCartDTO.getProductId() == null || addToCartDTO.getQuantity() == null) {
-                throw new ValidationException("Product ID and quantity are required");
+                throw new ValidationException("Mã sản phẩm và số lượng là bắt buộc");
             }
 
             if (addToCartDTO.getQuantity() <= 0) {
-                throw new ValidationException("Quantity must be greater than 0");
+                throw new ValidationException("Số lượng phải lớn hơn 0");
             }
 
             // Add to cart
             boolean success = addToCart(currentUser, addToCartDTO);
             if (success) {
-                return CartResponseDTO.success("Product added to cart successfully");
+                return CartResponseDTO.success("Sản phẩm đã được thêm vào giỏ hàng thành công");
             } else {
-                return CartResponseDTO.error("Failed to add product to cart");
+                return CartResponseDTO.error("Không thể thêm sản phẩm vào giỏ hàng");
             }
         } catch (AuthenticationException | ValidationException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Unexpected error occurred", e);
+            throw new RuntimeException("Đã xảy ra lỗi không mong muốn", e);
         }
     }
 
@@ -201,29 +201,29 @@ public class GioHangServiceImpl implements GioHangService {
             // Validate authentication
             User currentUser = authenticationService.getCurrentUser();
             if (currentUser == null) {
-                throw new AuthenticationException("User not authenticated");
+                throw new AuthenticationException("Người dùng chưa được xác thực");
             }
 
             // Validate input
             if (updateCartItemDTO.getItemId() == null || updateCartItemDTO.getQuantity() == null) {
-                throw new ValidationException("Cart item ID and quantity are required");
+                throw new ValidationException("Cần phải nhập ID và số lượng mặt hàng trong giỏ hàng");
             }
 
             if (updateCartItemDTO.getQuantity() <= 0) {
-                throw new ValidationException("Quantity must be greater than 0");
+                throw new ValidationException("Số lượng phải lớn hơn 0");
             }
 
             // Update cart item
             boolean success = updateCartItemQuantity(currentUser, updateCartItemDTO.getItemId(), updateCartItemDTO.getQuantity());
             if (success) {
-                return CartResponseDTO.success("Cart item updated successfully");
+                return CartResponseDTO.success("Đã cập nhật thành công mục giỏ hàng");
             } else {
-                return CartResponseDTO.error("Failed to update cart item");
+                return CartResponseDTO.error("Không cập nhật được sản phẩm trong giỏ hàng");
             }
         } catch (AuthenticationException | ValidationException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Unexpected error occurred", e);
+            throw new RuntimeException("Đã xảy ra lỗi không mong muốn", e);
         }
     }
 
@@ -233,25 +233,25 @@ public class GioHangServiceImpl implements GioHangService {
             // Validate authentication
             User currentUser = authenticationService.getCurrentUser();
             if (currentUser == null) {
-                throw new AuthenticationException("User not authenticated");
+                throw new AuthenticationException("Người dùng chưa được xác thực");
             }
 
             // Validate input
             if (removeCartItemDTO.getItemId() == null) {
-                throw new ValidationException("Cart item ID is required");
+                throw new ValidationException("Mã sản phẩm giỏ hàng là bắt buộc");
             }
 
             // Remove from cart
             boolean success = removeFromCart(currentUser, removeCartItemDTO.getItemId());
             if (success) {
-                return CartResponseDTO.success("Item removed from cart successfully");
+                return CartResponseDTO.success("Đã xóa sản phẩm khỏi giỏ hàng thành công");
             } else {
-                return CartResponseDTO.error("Failed to remove item from cart");
+                return CartResponseDTO.error("Không thể xóa sản phẩm khỏi giỏ hàng");
             }
         } catch (AuthenticationException | ValidationException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Unexpected error occurred", e);
+            throw new RuntimeException("Đã xảy ra lỗi không mong muốn", e);
         }
     }
 
@@ -261,22 +261,22 @@ public class GioHangServiceImpl implements GioHangService {
             // Validate authentication
             User currentUser = authenticationService.getCurrentUser();
             if (currentUser == null) {
-                throw new AuthenticationException("User not authenticated");
+                throw new AuthenticationException("Người dùng chưa được xác thực");
             }
 
             // Get active cart
             GioHang activeCart = getActiveCart(currentUser);
             if (activeCart == null) {
-                return CartResponseDTO.success("Cart is empty", 0);
+                return CartResponseDTO.success("Giỏ hàng trống", 0);
             }
 
             // Count items in cart
             int itemCount = activeCart.getChiTietGioHangs().size();
-            return CartResponseDTO.success("Cart item count retrieved successfully", itemCount);
+            return CartResponseDTO.success("Đã lấy lại số lượng mặt hàng trong giỏ hàng thành công", itemCount);
         } catch (AuthenticationException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Unexpected error occurred", e);
+            throw new RuntimeException("Đã xảy ra lỗi không mong muốn", e);
         }
     }
 }

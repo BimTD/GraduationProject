@@ -29,15 +29,15 @@ public class UserRegistrationService {
 
     public RegistrationResult registerUser(String username, String email, String password) {
         if (userRepository.findByUsername(username).isPresent()) {
-            return new RegistrationResult(false, "Username already exists!");
+            return new RegistrationResult(false, "Tên người dùng đã tồn tại!");
         }
 
         if (userRepository.findByEmail(email).isPresent()) {
-            return new RegistrationResult(false, "Email already in use!");
+            return new RegistrationResult(false, "Email đã được sử dụng!");
         }
 
         if (password.length() < 6) {
-            return new RegistrationResult(false, "Password must be at least 6 characters!");
+            return new RegistrationResult(false, "Mật khẩu phải có ít nhất 6 ký tự!");
         }
 
         try {
@@ -53,16 +53,16 @@ public class UserRegistrationService {
 
             // Gán role USER mặc định
             Role userRole = roleRepository.findByName("ROLE_USER")
-                    .orElseThrow(() -> new RuntimeException("Role USER not found"));
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy vai trò NGƯỜI DÙNG"));
 
             UserRole userRoleEntity = new UserRole();
             userRoleEntity.setUser(newUser);
             userRoleEntity.setRole(userRole);
             userRoleRepository.save(userRoleEntity);
 
-            return new RegistrationResult(true, "Registration successful! Please login.");
+            return new RegistrationResult(true, "Đăng ký thành công! Vui lòng đăng nhập.");
         } catch (Exception e) {
-            return new RegistrationResult(false, "An error occurred while registering: " + e.getMessage());
+            return new RegistrationResult(false, "Đã xảy ra lỗi khi đăng ký: " + e.getMessage());
         }
     }
 
