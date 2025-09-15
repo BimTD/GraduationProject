@@ -57,7 +57,7 @@
 }
 
 .search-button {
-    background: #007bff;
+    background: #ff4444;
     border: none;
     border-radius: 50%;
     width: 40px;
@@ -72,7 +72,7 @@
 }
 
 .search-button:hover {
-    background: #0056b3;
+    background: #e63939;
     transform: scale(1.05);
 }
 
