@@ -18,10 +18,7 @@ public class AbandonedCartScheduler {
     @Scheduled(fixedRate = 7200000) // 2 giờ = 2 * 60 * 60 * 1000 ms
     public void updateAbandonedCarts() {
         try {
-            System.out.println("=== Bắt đầu cập nhật giỏ hàng bỏ dở ===");
             int updatedCount = abandonedCartService.updateAbandonedCarts(24);
-            System.out.println("Đã cập nhật " + updatedCount + " giỏ hàng bỏ dở");
-            System.out.println("=== Hoàn thành cập nhật giỏ hàng bỏ dở ===");
         } catch (Exception e) {
             System.err.println("Lỗi khi cập nhật giỏ hàng bỏ dở: " + e.getMessage());
             e.printStackTrace();
@@ -52,13 +49,6 @@ public class AbandonedCartScheduler {
     public void reportCartStats() {
         try {
             var stats = abandonedCartService.getAbandonedCartStats();
-            System.out.println("=== Thống kê giỏ hàng ===");
-            System.out.println("Giỏ hàng đang hoạt động: " + stats.get("totalActiveCarts"));
-            System.out.println("Giỏ hàng bỏ dở: " + stats.get("totalAbandonedCarts"));
-            System.out.println("Giỏ hàng đã đặt: " + stats.get("totalOrderedCarts"));
-            System.out.println("Giỏ hàng có thể bỏ dở (>24h): " + stats.get("potentialAbandonedCarts"));
-            System.out.println("Tỷ lệ bỏ dở: " + String.format("%.2f", stats.get("abandonmentRate")) + "%");
-            System.out.println("=== Kết thúc thống kê ===");
         } catch (Exception e) {
             System.err.println("Lỗi khi báo cáo thống kê: " + e.getMessage());
         }

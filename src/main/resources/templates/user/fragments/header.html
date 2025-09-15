@@ -6,7 +6,7 @@
                 <div class="col-lg-7 col-md-12">
                     <div class="welcome_text">
                         <ul>
-                            <li>Free shipping on orders over 100,000 VND</li>
+                            <li>Miễn phí vận chuyển cho đơn hàng trên 100.000 VND</li>
 
                         </ul>
                     </div>
@@ -15,7 +15,7 @@
                     <div class="top_right text-right">
                         <ul>
                             <li class="language" th:if="${isAuthenticated}">
-                                <a href="#">Account<i class="ion-chevron-down"></i></a>
+                                <a href="#">Tài khoản<i class="ion-chevron-down"></i></a>
                                 <ul class="dropdown_language">
                                     <li><a th:href="@{/profile}">Thông tin cá nhân</a></li>
                                     <li><a th:href="@{/orders}">Đơn hàng của tôi</a></li>
@@ -25,13 +25,13 @@
                             <li class="top_links" th:if="!${isAuthenticated}">
                                 <a th:href="@{/login}">Đăng nhập</a>
                             </li>
-                            <li class="language"><a href="#">Language<i class="ion-chevron-down"></i></a>
+                            <li class="language"><a href="#">Ngôn ngữ<i class="ion-chevron-down"></i></a>
                                 <ul class="dropdown_language">
-                                    <li><a href="#">Vietnamese</a></li>
-                                    <li><a href="#">English</a></li>
+                                    <li><a href="#">Tiếng Việt</a></li>
+                                    <li><a href="#">Tiếng Anh</a></li>
                                 </ul>
                             </li>
-                            <li class="currency"><a href="#">Suport</a>
+                            <li class="currency"><a href="#">Hỗ trợ</a>
 
                             </li>
                         </ul>
@@ -60,14 +60,14 @@
                     <div class="cart_area">
                         <div class="middel_links">
                             <ul th:if="!${isAuthenticated}">
-                                <li><a th:href="@{/login}">Login</a></li>
+                                <li><a th:href="@{/login}">Đăng nhập</a></li>
                                 <li>/</li>
-                                <li><a th:href="@{/register}">Register</a></li>
+                                <li><a th:href="@{/register}">Đăng ký</a></li>
                             </ul>
                             <ul th:if="${isAuthenticated}">
                                 <li><span th:text="${username}">Xin chào, User</span></li>
                                 <li>/</li>
-                                <li><a th:href="@{/logout}" style="color: #ff4444;">Logout</a></li>
+                                <li><a th:href="@{/logout}" style="color: #ff4444;">Đăng xuất</a></li>
                             </ul>
                         </div>
                         <!-- Notification Bell -->
@@ -83,7 +83,7 @@
                                 <div id="notification-list-dropdown" class="notification-list">
                                     <div class="text-center p-3">
                                         <div class="spinner-border text-primary" role="status">
-                                            <span class="visually-hidden">Loading...</span>
+                                            <span class="visually-hidden">Đang tải...</span>
                                         </div>
                                         <p class="mt-2 mb-0 text-muted">Đang tải thông báo...</p>
                                     </div>
@@ -94,7 +94,7 @@
                             </div>
                         </div>
                         <div class="cart_link">
-                            <a th:href="@{/cart}"><i class="fa fa-shopping-basket"></i>Cart <span class="cart_count" th:if="${isAuthenticated}">0</span></a>
+                            <a th:href="@{/cart}"><i class="fa fa-shopping-basket"></i><span class="cart_count" th:if="${isAuthenticated}">0</span></a>
                         </div>
                     </div>
                 </div>
@@ -113,20 +113,20 @@
                             <div class="main_menu">
                                 <nav>
                                     <ul>
-                                        <li th:classappend="${currentPage == '/home' or currentPage == '/'} ? 'active' : ''"><a th:href="@{/home}">Home</a></li>
-                                        <li th:classappend="${currentPage == '/shop' or (currentPage != null and #strings.startsWith(currentPage, '/product-details')) or currentPage == '/cart' or (currentPage != null and #strings.startsWith(currentPage, '/checkout'))} ? 'active' : ''"><a th:href="@{/shop}">Shop</a></li>
+                                        <li th:classappend="${currentPage == '/home' or currentPage == '/'} ? 'active' : ''"><a th:href="@{/home}">Trang chủ</a></li>
+                                        <li th:classappend="${currentPage == '/shop' or (currentPage != null and #strings.startsWith(currentPage, '/product-details')) or currentPage == '/cart' or (currentPage != null and #strings.startsWith(currentPage, '/checkout'))} ? 'active' : ''"><a th:href="@{/shop}">Cửa hàng</a></li>
                                         <li th:classappend="${currentPage == '/discount-codes'} ? 'active' : ''"><a th:href="@{/discount-codes}">Mã giảm giá</a></li>
                                         <li th:if="${isAuthenticated}" th:classappend="${currentPage != null and #strings.startsWith(currentPage, '/orders')} ? 'active' : ''"><a th:href="@{/orders}">Đơn hàng</a></li>
-                                        <li th:classappend="${currentPage == '/blog'} ? 'active' : ''"><a th:href="@{/blog}">Blog</a></li>
-                                        <li th:classappend="${currentPage == '/about'} ? 'active' : ''"><a th:href="@{/about}">About us</a></li>
-                                        <li th:classappend="${currentPage == '/contact'} ? 'active' : ''"><a th:href="@{/contact}">Contact Us</a></li>
+                                        <li th:classappend="${currentPage == '/blog'} ? 'active' : ''"><a th:href="@{/blog}">Tin tức</a></li>
+                                        <li th:classappend="${currentPage == '/about'} ? 'active' : ''"><a th:href="@{/about}">Giới thiệu</a></li>
+                                        <li th:classappend="${currentPage == '/contact'} ? 'active' : ''"><a th:href="@{/contact}">Liên hệ</a></li>
                                     </ul>
                                 </nav>
                             </div>
                         </div>
 
                         <div class="contact_phone">
-                            <p>Call Free Support: <a href="tel:0982172169">0982172169</a></p>
+                            <p>Gọi hỗ trợ miễn phí: <a href="tel:0982172169">0982172169</a></p>
                         </div>
                     </div>
                 </div>
