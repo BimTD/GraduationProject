@@ -7,6 +7,7 @@ import org.example.graduationproject.exceptions.ValidationException;
 import org.example.graduationproject.models.GioHang;
 import org.example.graduationproject.models.HoaDon;
 import org.example.graduationproject.models.User;
+import org.example.graduationproject.repositories.HoaDonRepository;
 import org.example.graduationproject.services.AuthenticationService;
 import org.example.graduationproject.services.CheckoutService;
 import org.example.graduationproject.services.GioHangService;
@@ -14,6 +15,8 @@ import org.example.graduationproject.services.HoaDonService;
 import org.example.graduationproject.services.MaGiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class CheckoutServiceImpl implements CheckoutService {
@@ -29,6 +32,9 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     @Autowired
     private MaGiamGiaService maGiamGiaService;
+    
+    @Autowired
+    private HoaDonRepository hoaDonRepository;
 
     @Override
     public CheckoutResponseDTO getCheckoutPageDataWithValidation() {
@@ -129,6 +135,16 @@ public class CheckoutServiceImpl implements CheckoutService {
         } else {
             throw new ValidationException("Mã giảm giá không hợp lệ hoặc không áp dụng được cho đơn hàng này");
         }
+    }
+    
+    @Override
+    public HoaDon getHoaDonById(Integer orderId) {
+        if (orderId == null) {
+            return null;
+        }
+        
+        Optional<HoaDon> hoaDonOpt = hoaDonRepository.findById(orderId);
+        return hoaDonOpt.orElse(null);
     }
 }
 

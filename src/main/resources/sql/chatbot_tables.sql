@@ -17,3 +17,6 @@ CREATE INDEX idx_chat_messages_is_read ON chat_messages(is_read);
 CREATE INDEX idx_chat_messages_message_type ON chat_messages(message_type);
 
 
+
+
+

@@ -230,6 +230,29 @@
                                     <input type="radio" id="card" name="loaiThanhToan" value="CREDIT_CARD">
                                     <label for="card">Thẻ tín dụng</label>
                                 </div>
+                                <div class="payment_option">
+                                    <input type="radio" id="sepay" name="loaiThanhToan" value="SEPAY">
+                                    <label for="sepay">SePay QR Code</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- SePay QR Code Section -->
+                        <div id="sepay-qr-section" class="sepay-qr-section" style="display: none;">
+                            <div class="qr-container">
+                                <h4>Quét QR Code để thanh toán</h4>
+                                <div class="qr-code-container">
+                                    <img id="sepay-qr-image" src="" alt="SePay QR Code" style="max-width: 200px; height: auto;">
+                                </div>
+                                <div class="qr-info">
+                                    <p><strong>Số tiền:</strong> <span id="qr-amount">0 VNĐ</span></p>
+                                    <p><strong>Mô tả:</strong> <span id="qr-description">Thanh toán đơn hàng</span></p>
+                                    <p><strong>Trạng thái:</strong> <span id="qr-status">Đang chờ thanh toán</span></p>
+                                </div>
+                                <div class="qr-actions">
+                                    <button type="button" id="check-payment-status" class="btn-check-status">Kiểm tra thanh toán</button>
+                                    <button type="button" id="cancel-payment" class="btn-cancel-payment">Hủy thanh toán</button>
+                                </div>
                             </div>
                         </div>
                         
@@ -504,6 +527,105 @@
     text-decoration: none;
     transform: translateY(-1px);
 }
+
+/* SePay QR Code Styles */
+.sepay-qr-section {
+    background-color: #f8f9fa;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.qr-container h4 {
+    color: #007bff;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.qr-code-container {
+    margin: 15px 0;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.qr-info {
+    margin: 15px 0;
+    text-align: left;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.qr-info p {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.qr-info strong {
+    color: #495057;
+}
+
+.qr-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-check-status {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-check-status:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.btn-cancel-payment {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel-payment:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.payment_option {
+    margin-bottom: 10px;
+}
+
+.payment_option input[type="radio"] {
+    margin-right: 8px;
+}
+
+.payment_option label {
+    cursor: pointer;
+    font-weight: 500;
+    color: #495057;
+}
 </style>
 
 <script>
@@ -511,6 +633,8 @@
 let appliedDiscountCodes = []; // Danh sách mã giảm giá đã áp dụng
 let totalDiscountAmount = 0; // Tổng số tiền giảm giá
 let originalSubtotal = 0;
+let currentSePayTransaction = null; // Giao dịch SePay hiện tại
+let paymentStatusInterval = null; // Interval để kiểm tra trạng thái thanh toán
 
 // ===== GLOBAL FUNCTIONS =====
 
@@ -613,6 +737,18 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        const selectedPaymentMethod = document.querySelector('input[name="loaiThanhToan"]:checked').value;
+        
+        // Nếu chọn SePay, tạo giao dịch trước
+        if (selectedPaymentMethod === 'SEPAY') {
+            createSePayPayment();
+        } else {
+            processNormalCheckout();
+        }
+    });
+    
+    // Xử lý thanh toán bình thường
+    function processNormalCheckout() {
         // Disable button để tránh double click
         placeOrderBtn.disabled = true;
         placeOrderBtn.textContent = 'Đang xử lý...';
@@ -683,7 +819,89 @@ document.addEventListener('DOMContentLoaded', function() {
             placeOrderBtn.disabled = false;
             placeOrderBtn.textContent = 'Đặt hàng ngay';
         });
-    });
+    }
+    
+    // Tạo giao dịch SePay
+    function createSePayPayment() {
+        // Disable button để tránh double click
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.textContent = 'Đang tạo giao dịch...';
+        
+        // Lấy dữ liệu từ form
+        const formData = {
+            ho: document.getElementById('ho').value,
+            ten: document.getElementById('ten').value,
+            tenCongTy: document.getElementById('tenCongTy').value,
+            quocGia: document.getElementById('quocGia').value,
+            diaChi1: document.getElementById('diaChi1').value,
+            diaChi2: document.getElementById('diaChi2').value,
+            thanhPho: document.getElementById('thanhPho').value,
+            tinhHuyen: document.getElementById('tinhHuyen').value,
+            soDienThoai: document.getElementById('soDienThoai').value,
+            email: document.getElementById('email').value,
+            ghiChu: document.getElementById('ghiChu').value,
+            loaiThanhToan: 'SEPAY',
+            phiGiaoHang: 0,
+            tongTien: originalSubtotal,
+            maGiamGia: appliedDiscountCodes.length > 0 ? appliedDiscountCodes[0] : null,
+            maGiamGiaList: appliedDiscountCodes,
+            giaTriGiamGia: totalDiscountAmount,
+            tongTienSauGiamGia: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, '')),
+            diaChiGiaoHang: document.getElementById('diaChi1').value + 
+                           (document.getElementById('diaChi2').value ? ', ' + document.getElementById('diaChi2').value : '') + 
+                           ', ' + document.getElementById('thanhPho').value + 
+                           ', ' + document.getElementById('tinhHuyen').value + 
+                           ', ' + document.getElementById('quocGia').value,
+            tenNguoiNhan: document.getElementById('ho').value + ' ' + document.getElementById('ten').value
+        };
+        
+        // Tạo đơn hàng trước
+        fetch('/checkout/process', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Tạo giao dịch SePay
+                const sepayData = {
+                    orderId: data.orderId,
+                    amount: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, '')),
+                    description: 'Thanh toán đơn hàng #' + data.orderId
+                };
+                
+                return fetch('/checkout/create-sepay-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(sepayData)
+                });
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .then(response => response.json())
+        .then(sepayData => {
+            if (sepayData.success) {
+                // Hiển thị QR code
+                showSePayQR(sepayData.transaction);
+                showNotification('Giao dịch SePay đã được tạo. Vui lòng quét QR code để thanh toán.', 'info');
+            } else {
+                throw new Error(sepayData.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Có lỗi xảy ra: ' + error.message, 'error');
+            // Reset button
+            placeOrderBtn.disabled = false;
+            placeOrderBtn.textContent = 'Đặt hàng ngay';
+        });
+    }
     
     // Validate form
     function validateForm() {
@@ -830,6 +1048,160 @@ function showNewDiscountMessage(message, type) {
         }, 5000);
     }
 }
+
+// ===== SEPAY FUNCTIONS =====
+
+// Hiển thị QR code SePay
+function showSePayQR(transaction) {
+    currentSePayTransaction = transaction;
+    
+    // Cập nhật thông tin QR
+    document.getElementById('sepay-qr-image').src = transaction.qrCodeUrl;
+    document.getElementById('qr-amount').textContent = formatCurrency(transaction.amount);
+    document.getElementById('qr-description').textContent = 'Thanh toán đơn hàng #' + transaction.orderId;
+    document.getElementById('qr-status').textContent = 'Đang chờ thanh toán';
+    
+    // Hiển thị section QR
+    document.getElementById('sepay-qr-section').style.display = 'block';
+    
+    // Ẩn nút đặt hàng
+    document.getElementById('place-order-btn').style.display = 'none';
+    
+    // Bắt đầu kiểm tra trạng thái thanh toán
+    startPaymentStatusCheck();
+}
+
+// Bắt đầu kiểm tra trạng thái thanh toán
+function startPaymentStatusCheck() {
+    if (paymentStatusInterval) {
+        clearInterval(paymentStatusInterval);
+    }
+    
+    paymentStatusInterval = setInterval(() => {
+        checkPaymentStatus();
+    }, 5000); // Kiểm tra mỗi 5 giây
+}
+
+// Dừng kiểm tra trạng thái thanh toán
+function stopPaymentStatusCheck() {
+    if (paymentStatusInterval) {
+        clearInterval(paymentStatusInterval);
+        paymentStatusInterval = null;
+    }
+}
+
+// Kiểm tra trạng thái thanh toán
+function checkPaymentStatus() {
+    if (!currentSePayTransaction) return;
+    
+    fetch(`/checkout/sepay-status/${currentSePayTransaction.transactionId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.transaction) {
+                const transaction = data.transaction;
+                updatePaymentStatus(transaction.status);
+                
+                if (transaction.status === 'SUCCESS') {
+                    stopPaymentStatusCheck();
+                    showNotification('Thanh toán thành công!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/orders/' + transaction.orderId;
+                    }, 2000);
+                } else if (transaction.status === 'FAILED' || transaction.status === 'CANCELLED') {
+                    stopPaymentStatusCheck();
+                    showNotification('Thanh toán thất bại hoặc đã bị hủy.', 'error');
+                    hideSePayQR();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error checking payment status:', error);
+        });
+}
+
+// Cập nhật trạng thái thanh toán
+function updatePaymentStatus(status) {
+    const statusElement = document.getElementById('qr-status');
+    if (statusElement) {
+        switch (status) {
+            case 'PENDING':
+                statusElement.textContent = 'Đang chờ thanh toán';
+                statusElement.style.color = '#ffc107';
+                break;
+            case 'SUCCESS':
+                statusElement.textContent = 'Thanh toán thành công';
+                statusElement.style.color = '#28a745';
+                break;
+            case 'FAILED':
+                statusElement.textContent = 'Thanh toán thất bại';
+                statusElement.style.color = '#dc3545';
+                break;
+            case 'CANCELLED':
+                statusElement.textContent = 'Đã hủy thanh toán';
+                statusElement.style.color = '#6c757d';
+                break;
+            default:
+                statusElement.textContent = 'Trạng thái không xác định';
+                statusElement.style.color = '#6c757d';
+        }
+    }
+}
+
+// Ẩn QR code SePay
+function hideSePayQR() {
+    document.getElementById('sepay-qr-section').style.display = 'none';
+    document.getElementById('place-order-btn').style.display = 'block';
+    document.getElementById('place-order-btn').disabled = false;
+    document.getElementById('place-order-btn').textContent = 'Đặt hàng ngay';
+    currentSePayTransaction = null;
+    stopPaymentStatusCheck();
+}
+
+// Hủy thanh toán SePay
+function cancelSePayPayment() {
+    if (!currentSePayTransaction) return;
+    
+    if (confirm('Bạn có chắc chắn muốn hủy thanh toán này?')) {
+        fetch(`/api/sepay/cancel/${currentSePayTransaction.transactionId}`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Đã hủy thanh toán', 'info');
+                hideSePayQR();
+            } else {
+                showNotification('Không thể hủy thanh toán: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error cancelling payment:', error);
+            showNotification('Có lỗi xảy ra khi hủy thanh toán', 'error');
+        });
+    }
+}
+
+// Event listeners cho SePay
+document.addEventListener('DOMContentLoaded', function() {
+    // Kiểm tra trạng thái thanh toán
+    const checkStatusBtn = document.getElementById('check-payment-status');
+    if (checkStatusBtn) {
+        checkStatusBtn.addEventListener('click', function() {
+            if (currentSePayTransaction) {
+                checkPaymentStatus();
+                showNotification('Đang kiểm tra trạng thái thanh toán...', 'info');
+            }
+        });
+    }
+    
+    // Hủy thanh toán
+    const cancelPaymentBtn = document.getElementById('cancel-payment');
+    if (cancelPaymentBtn) {
+        cancelPaymentBtn.addEventListener('click', function() {
+            cancelSePayPayment();
+        });
+    }
+});
 </script>
 </body>
 </html>

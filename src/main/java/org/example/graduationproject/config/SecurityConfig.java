@@ -48,6 +48,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/search/**").permitAll()
                         .requestMatchers("/api/categories/**").permitAll()
+                        .requestMatchers("/api/sepay/webhook").permitAll()
+                        .requestMatchers("/api/sepay/webhook/test").permitAll()
                         .requestMatchers("/api/cart/**").authenticated()
                         .requestMatchers("/cart").authenticated()
                         .requestMatchers("/checkout/**").authenticated()

@@ -2,6 +2,7 @@ package org.example.graduationproject.services;
 
 import org.example.graduationproject.dto.CheckoutDTO;
 import org.example.graduationproject.dto.CheckoutResponseDTO;
+import org.example.graduationproject.models.HoaDon;
 
 public interface CheckoutService {
     
@@ -9,6 +10,9 @@ public interface CheckoutService {
     CheckoutResponseDTO getCheckoutPageDataWithValidation();
     CheckoutResponseDTO processCheckoutWithValidation(CheckoutDTO checkoutDTO);
     CheckoutResponseDTO validateMaGiamGia(String maGiamGia);
+    
+    // Method to get HoaDon by ID
+    HoaDon getHoaDonById(Integer orderId);
 }
 
 
