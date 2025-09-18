@@ -43,7 +43,7 @@ public class ChatbotService {
         String processedMessage = userMessage.toLowerCase().trim();
         String productInfo = "";
         
-        // Kiểm tra nếu khách hỏi về tất cả sản phẩm
+        // Kiểm tra nếu khách hỏi về tất cả sản phẩm phẩm
         if (processedMessage.contains("tất cả sản phẩm") || 
             processedMessage.contains("danh sách sản phẩm") ||
             processedMessage.contains("show me all products") ||
