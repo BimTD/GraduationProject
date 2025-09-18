@@ -94,23 +94,163 @@
             <!-- Objectives -->
             <div class="card mb-5">
                 <div class="card-body">
-                    <h5 class="mb-4 text-16">
-                        <i data-lucide="target" class="inline-block size-4 mr-2"></i>
-                        Mục Tiêu Marketing
-                    </h5>
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div>
-                            <h6 class="mb-2 text-sm font-medium text-slate-600 dark:text-zink-300">Mục tiêu chính:</h6>
-                            <p class="text-sm text-slate-500 dark:text-zink-400" th:text="${strategy.objectives.primary}">Primary objective</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <h5 class="text-16">
+                            <i data-lucide="target" class="inline-block size-4 mr-2"></i>
+                            Mục Tiêu Marketing
+                        </h5>
+                        <button type="button" id="addObjectiveBtn" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-custom-500 border border-custom-500 rounded-md hover:bg-custom-600 hover:border-custom-600 focus:bg-custom-600 focus:border-custom-600 focus:text-white focus:outline-none focus:ring-2 focus:ring-custom-500 focus:ring-offset-2">
+                            <i data-lucide="plus" class="size-4"></i>
+                            Thêm Mục Tiêu
+                        </button>
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div th:if="${#lists.isEmpty(strategy.marketingObjectives)}" class="text-center py-12">
+                        <div class="mx-auto w-24 h-24 mb-4 text-slate-400">
+                            <i data-lucide="target" class="w-full h-full"></i>
                         </div>
-                        <div>
-                            <h6 class="mb-2 text-sm font-medium text-slate-600 dark:text-zink-300">Mục tiêu phụ:</h6>
-                            <p class="text-sm text-slate-500 dark:text-zink-400" th:text="${strategy.objectives.secondary}">Secondary objective</p>
+                        <h3 class="mb-2 text-lg font-medium text-slate-600 dark:text-zink-300">Chưa có mục tiêu marketing</h3>
+                        <p class="mb-6 text-slate-500 dark:text-zink-400">Hãy thêm mục tiêu marketing đầu tiên cho cụm khách hàng này.</p>
+                        <button type="button" id="addFirstObjectiveBtn" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-custom-500 border border-custom-500 rounded-md hover:bg-custom-600 hover:border-custom-600 focus:bg-custom-600 focus:border-custom-600 focus:text-white focus:outline-none focus:ring-2 focus:ring-custom-500 focus:ring-offset-2">
+                            <i data-lucide="plus" class="size-4"></i>
+                            Thêm Mục Tiêu Đầu Tiên
+                        </button>
+                    </div>
+                    
+                    <!-- High Priority Objectives -->
+                    <div th:if="${#lists.size(strategy.marketingObjectives.?[priority == 'HIGH'])} > 0" class="mb-6">
+                        <h6 class="mb-3 text-sm font-medium text-red-600 dark:text-red-400">
+                            <i data-lucide="alert-triangle" class="inline-block size-4 mr-1"></i>
+                            Ưu tiên cao
+                        </h6>
+                        <div th:each="objective : ${strategy.marketingObjectives}" th:if="${objective['priority'] == 'HIGH'}">
+                            <div class="p-4 mb-3 border-l-4 rounded-r-md" 
+                                 th:class="${objective['isActive']} ? 'border-red-500 bg-red-50 dark:bg-red-500/10' : 'border-gray-400 bg-gray-50 dark:bg-gray-500/10'">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <h6 class="mb-2 text-sm font-medium" th:text="${objective['primaryObjective']}">Primary Objective</h6>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${objective['secondaryObjective']}">Secondary Objective</p>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${objective['kpi']}">KPI</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="px-2 py-1 text-xs font-medium text-white bg-red-500 rounded" th:text="${objective['priority']}">Priority</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${objective['status']}">Status</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${objective['targetValue']}">Target Value</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${objective['measurementPeriod']}">Period</span>
+                                            <span th:if="${!objective['isActive']}" class="px-2 py-1 text-xs font-medium text-white bg-gray-500 rounded">Đã tạm dừng</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 ml-4">
+                                        <button class="edit-objective-btn px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500" 
+                                                th:data-objective-id="${objective['id']}">
+                                            <i data-lucide="edit" class="inline-block size-3 mr-1"></i>
+                                            Chỉnh sửa
+                                        </button>
+                                        <button class="delete-objective-btn px-3 py-1 text-xs font-medium text-white bg-red-500 rounded hover:bg-red-600" 
+                                                th:data-objective-id="${objective['id']}">
+                                            <i data-lucide="trash-2" class="inline-block size-3 mr-1"></i>
+                                            Xóa
+                                        </button>
+                                        <button class="toggle-objective-btn px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600" 
+                                                th:data-objective-id="${objective['id']}" th:data-is-active="${objective['isActive']}">
+                                            <i data-lucide="play" class="inline-block size-3 mr-1" th:if="${objective['isActive']}"></i>
+                                            <i data-lucide="pause" class="inline-block size-3 mr-1" th:unless="${objective['isActive']}"></i>
+                                            <span th:text="${objective['isActive']} ? 'Tạm dừng' : 'Kích hoạt'">Thực hiện</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="mt-4">
-                        <h6 class="mb-2 text-sm font-medium text-slate-600 dark:text-zink-300">KPI mục tiêu:</h6>
-                        <span class="inline-flex items-center px-3 py-1 text-sm font-medium text-white rounded-full bg-custom-500" th:text="${strategy.objectives.kpi}">KPI</span>
+
+                    <!-- Medium Priority Objectives -->
+                    <div th:if="${#lists.size(strategy.marketingObjectives.?[priority == 'MEDIUM'])} > 0" class="mb-6">
+                        <h6 class="mb-3 text-sm font-medium text-yellow-600 dark:text-yellow-400">
+                            <i data-lucide="clock" class="inline-block size-4 mr-1"></i>
+                            Ưu tiên trung bình
+                        </h6>
+                        <div th:each="objective : ${strategy.marketingObjectives}" th:if="${objective['priority'] == 'MEDIUM'}">
+                            <div class="p-4 mb-3 border-l-4 rounded-r-md" 
+                                 th:class="${objective['isActive']} ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-500/10' : 'border-gray-400 bg-gray-50 dark:bg-gray-500/10'">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <h6 class="mb-2 text-sm font-medium" th:text="${objective['primaryObjective']}">Primary Objective</h6>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${objective['secondaryObjective']}">Secondary Objective</p>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${objective['kpi']}">KPI</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded" th:text="${objective['priority']}">Priority</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${objective['status']}">Status</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${objective['targetValue']}">Target Value</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${objective['measurementPeriod']}">Period</span>
+                                            <span th:if="${!objective['isActive']}" class="px-2 py-1 text-xs font-medium text-white bg-gray-500 rounded">Đã tạm dừng</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 ml-4">
+                                        <button class="edit-objective-btn px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500" 
+                                                th:data-objective-id="${objective['id']}">
+                                            <i data-lucide="edit" class="inline-block size-3 mr-1"></i>
+                                            Chỉnh sửa
+                                        </button>
+                                        <button class="delete-objective-btn px-3 py-1 text-xs font-medium text-white bg-red-500 rounded hover:bg-red-600" 
+                                                th:data-objective-id="${objective['id']}">
+                                            <i data-lucide="trash-2" class="inline-block size-3 mr-1"></i>
+                                            Xóa
+                                        </button>
+                                        <button class="toggle-objective-btn px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600" 
+                                                th:data-objective-id="${objective['id']}" th:data-is-active="${objective['isActive']}">
+                                            <i data-lucide="play" class="inline-block size-3 mr-1" th:if="${objective['isActive']}"></i>
+                                            <i data-lucide="pause" class="inline-block size-3 mr-1" th:unless="${objective['isActive']}"></i>
+                                            <span th:text="${objective['isActive']} ? 'Tạm dừng' : 'Kích hoạt'">Thực hiện</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Low Priority Objectives -->
+                    <div th:if="${#lists.size(strategy.marketingObjectives.?[priority == 'LOW'])} > 0">
+                        <h6 class="mb-3 text-sm font-medium text-green-600 dark:text-green-400">
+                            <i data-lucide="check-circle" class="inline-block size-4 mr-1"></i>
+                            Ưu tiên thấp
+                        </h6>
+                        <div th:each="objective : ${strategy.marketingObjectives}" th:if="${objective['priority'] == 'LOW'}">
+                            <div class="p-4 mb-3 border-l-4 rounded-r-md" 
+                                 th:class="${objective['isActive']} ? 'border-green-500 bg-green-50 dark:bg-green-500/10' : 'border-gray-400 bg-gray-50 dark:bg-gray-500/10'">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <h6 class="mb-2 text-sm font-medium" th:text="${objective['primaryObjective']}">Primary Objective</h6>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${objective['secondaryObjective']}">Secondary Objective</p>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${objective['kpi']}">KPI</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="px-2 py-1 text-xs font-medium text-white bg-green-500 rounded" th:text="${objective['priority']}">Priority</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${objective['status']}">Status</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${objective['targetValue']}">Target Value</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${objective['measurementPeriod']}">Period</span>
+                                            <span th:if="${!objective['isActive']}" class="px-2 py-1 text-xs font-medium text-white bg-gray-500 rounded">Đã tạm dừng</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 ml-4">
+                                        <button class="edit-objective-btn px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500" 
+                                                th:data-objective-id="${objective['id']}">
+                                            <i data-lucide="edit" class="inline-block size-3 mr-1"></i>
+                                            Chỉnh sửa
+                                        </button>
+                                        <button class="delete-objective-btn px-3 py-1 text-xs font-medium text-white bg-red-500 rounded hover:bg-red-600" 
+                                                th:data-objective-id="${objective['id']}">
+                                            <i data-lucide="trash-2" class="inline-block size-3 mr-1"></i>
+                                            Xóa
+                                        </button>
+                                        <button class="toggle-objective-btn px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600" 
+                                                th:data-objective-id="${objective['id']}" th:data-is-active="${objective['isActive']}">
+                                            <i data-lucide="play" class="inline-block size-3 mr-1" th:if="${objective['isActive']}"></i>
+                                            <i data-lucide="pause" class="inline-block size-3 mr-1" th:unless="${objective['isActive']}"></i>
+                                            <span th:text="${objective['isActive']} ? 'Tạm dừng' : 'Kích hoạt'">Thực hiện</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -118,10 +258,29 @@
             <!-- Marketing Tactics -->
             <div class="card">
                 <div class="card-body">
-                    <h5 class="mb-4 text-16">
-                        <i data-lucide="lightbulb" class="inline-block size-4 mr-2"></i>
-                        Chiến Thuật Marketing
-                    </h5>
+                    <div class="flex items-center justify-between mb-4">
+                        <h5 class="text-16">
+                            <i data-lucide="lightbulb" class="inline-block size-4 mr-2"></i>
+                            Chiến Thuật Marketing
+                        </h5>
+                        <button type="button" id="addTacticBtn" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-custom-500 border border-custom-500 rounded-md hover:bg-custom-600 hover:border-custom-600 focus:bg-custom-600 focus:border-custom-600 focus:text-white focus:outline-none focus:ring-2 focus:ring-custom-500 focus:ring-offset-2">
+                            <i data-lucide="plus" class="size-4"></i>
+                            Thêm Chiến Thuật
+                        </button>
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div th:if="${#lists.isEmpty(strategy.marketingTactics)}" class="text-center py-12">
+                        <div class="mx-auto w-24 h-24 mb-4 text-slate-400">
+                            <i data-lucide="lightbulb" class="w-full h-full"></i>
+                        </div>
+                        <h3 class="mb-2 text-lg font-medium text-slate-600 dark:text-zink-300">Chưa có chiến thuật marketing</h3>
+                        <p class="mb-6 text-slate-500 dark:text-zink-400">Hãy thêm chiến thuật marketing đầu tiên cho cụm khách hàng này.</p>
+                        <button type="button" id="addFirstTacticBtn" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-custom-500 border border-custom-500 rounded-md hover:bg-custom-600 hover:border-custom-600 focus:bg-custom-600 focus:border-custom-600 focus:text-white focus:outline-none focus:ring-2 focus:ring-custom-500 focus:ring-offset-2">
+                            <i data-lucide="plus" class="size-4"></i>
+                            Thêm Chiến Thuật Đầu Tiên
+                        </button>
+                    </div>
                     
                     <!-- High Priority Tactics -->
                     <div th:if="${#lists.size(strategy.marketingTactics.?[priority == 'HIGH'])} > 0" class="mb-6">
@@ -129,28 +288,38 @@
                             <i data-lucide="alert-triangle" class="inline-block size-4 mr-1"></i>
                             Ưu tiên cao
                         </h6>
-                        <div th:each="tactic : ${strategy.marketingTactics}" th:if="${tactic.priority == 'HIGH'}">
-                            <div class="p-4 mb-3 border-l-4 border-red-500 bg-red-50 dark:bg-red-500/10 rounded-r-md">
+                        <div th:each="tactic : ${strategy.marketingTactics}" th:if="${tactic['priority'] == 'HIGH'}">
+                            <div class="p-4 mb-3 border-l-4 rounded-r-md" 
+                                 th:class="${tactic['isActive']} ? 'border-red-500 bg-red-50 dark:bg-red-500/10' : 'border-gray-400 bg-gray-50 dark:bg-gray-500/10'">
                                 <div class="flex items-start justify-between">
                                     <div class="flex-1">
-                                        <h6 class="mb-2 text-sm font-medium" th:text="${tactic.title}">Tactic Title</h6>
-                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${tactic.description}">Description</p>
+                                        <h6 class="mb-2 text-sm font-medium" th:text="${tactic['title']}">Tactic Title</h6>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${tactic['description']}">Description</p>
                                         <div class="flex flex-wrap gap-2">
-                                            <span class="px-2 py-1 text-xs font-medium text-white bg-red-500 rounded" th:text="${tactic.priority}">Priority</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.category}">Category</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedImpact}">Impact</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedCost}">Cost</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.timeToImplement}">Time</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-white bg-red-500 rounded" th:text="${tactic['priority']}">Priority</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['category']}">Category</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['estimatedImpact']}">Impact</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['estimatedCost']}">Cost</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['timeToImplement']}">Time</span>
+                                            <span th:if="${!tactic['isActive']}" class="px-2 py-1 text-xs font-medium text-white bg-gray-500 rounded">Đã tạm dừng</span>
                                         </div>
                                     </div>
                                     <div class="flex gap-2 ml-4">
-                                        <button class="px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500">
+                                        <button class="edit-tactic-btn px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500" 
+                                                th:data-tactic-id="${tactic['id']}">
                                             <i data-lucide="edit" class="inline-block size-3 mr-1"></i>
                                             Chỉnh sửa
                                         </button>
-                                        <button class="px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600">
-                                            <i data-lucide="play" class="inline-block size-3 mr-1"></i>
-                                            Thực hiện
+                                        <button class="delete-tactic-btn px-3 py-1 text-xs font-medium text-white bg-red-500 rounded hover:bg-red-600" 
+                                                th:data-tactic-id="${tactic['id']}">
+                                            <i data-lucide="trash-2" class="inline-block size-3 mr-1"></i>
+                                            Xóa
+                                        </button>
+                                        <button class="toggle-tactic-btn px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600" 
+                                                th:data-tactic-id="${tactic['id']}" th:data-is-active="${tactic['isActive']}">
+                                            <i data-lucide="play" class="inline-block size-3 mr-1" th:if="${tactic['isActive']}"></i>
+                                            <i data-lucide="pause" class="inline-block size-3 mr-1" th:unless="${tactic['isActive']}"></i>
+                                            <span th:text="${tactic['isActive']} ? 'Tạm dừng' : 'Kích hoạt'">Thực hiện</span>
                                         </button>
                                     </div>
                                 </div>
@@ -164,28 +333,38 @@
                             <i data-lucide="clock" class="inline-block size-4 mr-1"></i>
                             Ưu tiên trung bình
                         </h6>
-                        <div th:each="tactic : ${strategy.marketingTactics}" th:if="${tactic.priority == 'MEDIUM'}">
-                            <div class="p-4 mb-3 border-l-4 border-yellow-500 bg-yellow-50 dark:bg-yellow-500/10 rounded-r-md">
+                        <div th:each="tactic : ${strategy.marketingTactics}" th:if="${tactic['priority'] == 'MEDIUM'}">
+                            <div class="p-4 mb-3 border-l-4 rounded-r-md" 
+                                 th:class="${tactic['isActive']} ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-500/10' : 'border-gray-400 bg-gray-50 dark:bg-gray-500/10'">
                                 <div class="flex items-start justify-between">
                                     <div class="flex-1">
-                                        <h6 class="mb-2 text-sm font-medium" th:text="${tactic.title}">Tactic Title</h6>
-                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${tactic.description}">Description</p>
+                                        <h6 class="mb-2 text-sm font-medium" th:text="${tactic['title']}">Tactic Title</h6>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${tactic['description']}">Description</p>
                                         <div class="flex flex-wrap gap-2">
-                                            <span class="px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded" th:text="${tactic.priority}">Priority</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.category}">Category</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedImpact}">Impact</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedCost}">Cost</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.timeToImplement}">Time</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded" th:text="${tactic['priority']}">Priority</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['category']}">Category</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['estimatedImpact']}">Impact</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['estimatedCost']}">Cost</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['timeToImplement']}">Time</span>
+                                            <span th:if="${!tactic['isActive']}" class="px-2 py-1 text-xs font-medium text-white bg-gray-500 rounded">Đã tạm dừng</span>
                                         </div>
                                     </div>
                                     <div class="flex gap-2 ml-4">
-                                        <button class="px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500">
+                                        <button class="edit-tactic-btn px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500" 
+                                                th:data-tactic-id="${tactic['id']}">
                                             <i data-lucide="edit" class="inline-block size-3 mr-1"></i>
                                             Chỉnh sửa
                                         </button>
-                                        <button class="px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600">
-                                            <i data-lucide="play" class="inline-block size-3 mr-1"></i>
-                                            Thực hiện
+                                        <button class="delete-tactic-btn px-3 py-1 text-xs font-medium text-white bg-red-500 rounded hover:bg-red-600" 
+                                                th:data-tactic-id="${tactic['id']}">
+                                            <i data-lucide="trash-2" class="inline-block size-3 mr-1"></i>
+                                            Xóa
+                                        </button>
+                                        <button class="toggle-tactic-btn px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600" 
+                                                th:data-tactic-id="${tactic['id']}" th:data-is-active="${tactic['isActive']}">
+                                            <i data-lucide="play" class="inline-block size-3 mr-1" th:if="${tactic['isActive']}"></i>
+                                            <i data-lucide="pause" class="inline-block size-3 mr-1" th:unless="${tactic['isActive']}"></i>
+                                            <span th:text="${tactic['isActive']} ? 'Tạm dừng' : 'Kích hoạt'">Thực hiện</span>
                                         </button>
                                     </div>
                                 </div>
@@ -199,28 +378,38 @@
                             <i data-lucide="check-circle" class="inline-block size-4 mr-1"></i>
                             Ưu tiên thấp
                         </h6>
-                        <div th:each="tactic : ${strategy.marketingTactics}" th:if="${tactic.priority == 'LOW'}">
-                            <div class="p-4 mb-3 border-l-4 border-green-500 bg-green-50 dark:bg-green-500/10 rounded-r-md">
+                        <div th:each="tactic : ${strategy.marketingTactics}" th:if="${tactic['priority'] == 'LOW'}">
+                            <div class="p-4 mb-3 border-l-4 rounded-r-md" 
+                                 th:class="${tactic['isActive']} ? 'border-green-500 bg-green-50 dark:bg-green-500/10' : 'border-gray-400 bg-gray-50 dark:bg-gray-500/10'">
                                 <div class="flex items-start justify-between">
                                     <div class="flex-1">
-                                        <h6 class="mb-2 text-sm font-medium" th:text="${tactic.title}">Tactic Title</h6>
-                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${tactic.description}">Description</p>
+                                        <h6 class="mb-2 text-sm font-medium" th:text="${tactic['title']}">Tactic Title</h6>
+                                        <p class="mb-3 text-sm text-slate-600 dark:text-zink-300" th:text="${tactic['description']}">Description</p>
                                         <div class="flex flex-wrap gap-2">
-                                            <span class="px-2 py-1 text-xs font-medium text-white bg-green-500 rounded" th:text="${tactic.priority}">Priority</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.category}">Category</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedImpact}">Impact</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.estimatedCost}">Cost</span>
-                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic.timeToImplement}">Time</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-white bg-green-500 rounded" th:text="${tactic['priority']}">Priority</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['category']}">Category</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['estimatedImpact']}">Impact</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['estimatedCost']}">Cost</span>
+                                            <span class="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-200 dark:bg-zink-500 dark:text-zink-300 rounded" th:text="${tactic['timeToImplement']}">Time</span>
+                                            <span th:if="${!tactic['isActive']}" class="px-2 py-1 text-xs font-medium text-white bg-gray-500 rounded">Đã tạm dừng</span>
                                         </div>
                                     </div>
                                     <div class="flex gap-2 ml-4">
-                                        <button class="px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500">
+                                        <button class="edit-tactic-btn px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500" 
+                                                th:data-tactic-id="${tactic['id']}">
                                             <i data-lucide="edit" class="inline-block size-3 mr-1"></i>
                                             Chỉnh sửa
                                         </button>
-                                        <button class="px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600">
-                                            <i data-lucide="play" class="inline-block size-3 mr-1"></i>
-                                            Thực hiện
+                                        <button class="delete-tactic-btn px-3 py-1 text-xs font-medium text-white bg-red-500 rounded hover:bg-red-600" 
+                                                th:data-tactic-id="${tactic['id']}">
+                                            <i data-lucide="trash-2" class="inline-block size-3 mr-1"></i>
+                                            Xóa
+                                        </button>
+                                        <button class="toggle-tactic-btn px-3 py-1 text-xs font-medium text-white bg-green-500 rounded hover:bg-green-600" 
+                                                th:data-tactic-id="${tactic['id']}" th:data-is-active="${tactic['isActive']}">
+                                            <i data-lucide="play" class="inline-block size-3 mr-1" th:if="${tactic['isActive']}"></i>
+                                            <i data-lucide="pause" class="inline-block size-3 mr-1" th:unless="${tactic['isActive']}"></i>
+                                            <span th:text="${tactic['isActive']} ? 'Tạm dừng' : 'Kích hoạt'">Thực hiện</span>
                                         </button>
                                     </div>
                                 </div>
@@ -236,7 +425,707 @@
 
 </div>
 
+<!-- Modal Add/Edit Marketing Objective -->
+<div id="objectiveModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="objective-modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="relative inline-block w-full max-w-2xl px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-xl shadow-2xl dark:bg-zink-600 sm:my-8 sm:align-middle sm:p-0">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-zink-500">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-custom-100 text-custom-500 dark:bg-custom-500/20">
+                        <i data-lucide="target" class="size-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-slate-700 dark:text-zink-100" id="objective-modal-title">
+                            Thêm Mục Tiêu Marketing
+                        </h3>
+                        <p class="text-sm text-slate-500 dark:text-zink-400">Tạo mục tiêu marketing mới cho cụm khách hàng này</p>
+                    </div>
+                </div>
+                <button type="button" class="text-slate-400 hover:text-slate-600 dark:text-zink-400 dark:hover:text-zink-200 transition-colors duration-200" id="closeObjectiveModal">
+                    <i data-lucide="x" class="size-6"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="px-6 py-4">
+                <form id="objectiveForm" class="space-y-4">
+                    <input type="hidden" id="objectiveId" name="id">
+                    <input type="hidden" id="objectiveClusterId" th:value="${strategy.clusterId}" name="clusterId">
+                    
+                    <!-- Basic Information Section -->
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-1 h-4 bg-custom-500 rounded-full"></div>
+                            <h4 class="text-base font-medium text-slate-700 dark:text-zink-100">Thông tin cơ bản</h4>
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <label for="objectivePrimary" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                Mục tiêu chính <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="objectivePrimary" name="primaryObjective" required 
+                                   placeholder="Nhập mục tiêu chính"
+                                   class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200">
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <label for="objectiveSecondary" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                Mục tiêu phụ
+                            </label>
+                            <input type="text" id="objectiveSecondary" name="secondaryObjective" 
+                                   placeholder="Nhập mục tiêu phụ"
+                                   class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200">
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <label for="objectiveKpi" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                KPI mục tiêu
+                            </label>
+                            <input type="text" id="objectiveKpi" name="kpi" 
+                                   placeholder="Ví dụ: Tăng 20% AOV, 15% frequency"
+                                   class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200">
+                        </div>
+                    </div>
+
+                    <!-- Additional Information Section -->
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-1 h-4 bg-sky-500 rounded-full"></div>
+                            <h4 class="text-base font-medium text-slate-700 dark:text-zink-100">Thông tin bổ sung</h4>
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <label for="objectiveDescription" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                Mô tả chi tiết
+                            </label>
+                            <textarea id="objectiveDescription" name="description" rows="3" 
+                                      placeholder="Mô tả chi tiết về mục tiêu marketing"
+                                      class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200 resize-none"></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="space-y-1">
+                                <label for="objectiveTargetValue" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Giá trị mục tiêu
+                                </label>
+                                <input type="text" id="objectiveTargetValue" name="targetValue" 
+                                       placeholder="Ví dụ: 20%, 1000 VNĐ"
+                                       class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200">
+                            </div>
+                            <div class="space-y-1">
+                                <label for="objectivePeriod" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Thời gian đo lường
+                                </label>
+                                <input type="text" id="objectivePeriod" name="measurementPeriod" 
+                                       placeholder="Ví dụ: 3 tháng, 6 tháng"
+                                       class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="space-y-1">
+                                <label for="objectivePriority" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Ưu tiên
+                                </label>
+                                <select id="objectivePriority" name="priority" 
+                                        class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 transition-colors duration-200">
+                                    <option value="HIGH">🔴 Cao</option>
+                                    <option value="MEDIUM" selected>🟡 Trung bình</option>
+                                    <option value="LOW">🟢 Thấp</option>
+                                </select>
+                            </div>
+                            <div class="space-y-1">
+                                <label for="objectiveStatus" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Trạng thái
+                                </label>
+                                <select id="objectiveStatus" name="status" 
+                                        class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 transition-colors duration-200">
+                                    <option value="DRAFT">📝 Nháp</option>
+                                    <option value="ACTIVE" selected>✅ Hoạt động</option>
+                                    <option value="COMPLETED">🎯 Hoàn thành</option>
+                                    <option value="CANCELLED">❌ Hủy bỏ</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <label for="objectiveNotes" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                Ghi chú
+                            </label>
+                            <textarea id="objectiveNotes" name="notes" rows="2" 
+                                      placeholder="Thêm ghi chú hoặc lưu ý..."
+                                      class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200 resize-none"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-end gap-3 px-6 py-3 border-t border-slate-200 dark:border-zink-500 bg-slate-50 dark:bg-zink-700/50">
+                <button type="button" id="cancelObjectiveBtn" 
+                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-100 dark:hover:bg-zink-500 transition-colors duration-200">
+                    <i data-lucide="x" class="size-4"></i>
+                    Hủy
+                </button>
+                <button type="button" id="saveObjectiveBtn" 
+                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-custom-500 border border-custom-500 rounded-md shadow-sm hover:bg-custom-600 hover:border-custom-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-500 transition-colors duration-200">
+                    <i data-lucide="save" class="size-4"></i>
+                    <span id="saveObjectiveButtonText">Lưu</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Add/Edit Marketing Tactic -->
+<div id="tacticModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="relative inline-block w-full max-w-2xl px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-xl shadow-2xl dark:bg-zink-600 sm:my-8 sm:align-middle sm:p-0">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-zink-500">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-custom-100 text-custom-500 dark:bg-custom-500/20">
+                        <i data-lucide="lightbulb" class="size-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-slate-700 dark:text-zink-100" id="modal-title">
+                            Thêm Chiến Thuật Marketing
+                        </h3>
+                        <p class="text-sm text-slate-500 dark:text-zink-400">Tạo chiến thuật marketing mới cho cụm khách hàng này</p>
+                    </div>
+                </div>
+                <button type="button" class="text-slate-400 hover:text-slate-600 dark:text-zink-400 dark:hover:text-zink-200 transition-colors duration-200" id="closeModal">
+                    <i data-lucide="x" class="size-6"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="px-6 py-4">
+                <form id="tacticForm" class="space-y-4">
+                    <input type="hidden" id="tacticId" name="id">
+                    <input type="hidden" id="clusterId" th:value="${strategy.clusterId}" name="clusterId">
+                    
+                    <!-- Basic Information Section -->
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-1 h-4 bg-custom-500 rounded-full"></div>
+                            <h4 class="text-base font-medium text-slate-700 dark:text-zink-100">Thông tin cơ bản</h4>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="space-y-1">
+                                <label for="tacticName" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Tên chiến thuật <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="tacticName" name="name" required 
+                                       placeholder="Nhập tên chiến thuật"
+                                       class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200">
+                            </div>
+                            <div class="space-y-1">
+                                <label for="tacticTitle" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Tiêu đề <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="tacticTitle" name="title" required 
+                                       placeholder="Nhập tiêu đề chiến thuật"
+                                       class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200">
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <label for="tacticDescription" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                Mô tả chi tiết <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="tacticDescription" name="description" rows="3" required 
+                                      placeholder="Mô tả chi tiết về chiến thuật marketing"
+                                      class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200 resize-none"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Classification Section -->
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-1 h-4 bg-sky-500 rounded-full"></div>
+                            <h4 class="text-base font-medium text-slate-700 dark:text-zink-100">Phân loại & Ưu tiên</h4>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                            <div class="space-y-1">
+                                <label for="tacticPriority" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Ưu tiên <span class="text-red-500">*</span>
+                                </label>
+                                <select id="tacticPriority" name="priority" required 
+                                        class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 transition-colors duration-200">
+                                    <option value="">Chọn ưu tiên</option>
+                                    <option value="HIGH">🔴 Cao</option>
+                                    <option value="MEDIUM">🟡 Trung bình</option>
+                                    <option value="LOW">🟢 Thấp</option>
+                                </select>
+                            </div>
+                            <div class="space-y-1">
+                                <label for="tacticCategory" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Danh mục <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="tacticCategory" name="category" required 
+                                       placeholder="Email Marketing, Social Media..."
+                                       class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200">
+                            </div>
+                            <div class="space-y-1">
+                                <label for="tacticStatus" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Trạng thái
+                                </label>
+                                <select id="tacticStatus" name="status" 
+                                        class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 transition-colors duration-200">
+                                    <option value="DRAFT">📝 Nháp</option>
+                                    <option value="ACTIVE">✅ Hoạt động</option>
+                                    <option value="COMPLETED">🎯 Hoàn thành</option>
+                                    <option value="CANCELLED">❌ Hủy bỏ</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Impact & Resources Section -->
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-1 h-4 bg-emerald-500 rounded-full"></div>
+                            <h4 class="text-base font-medium text-slate-700 dark:text-zink-100">Tác động & Nguồn lực</h4>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                            <div class="space-y-1">
+                                <label for="tacticImpact" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Tác động
+                                </label>
+                                <select id="tacticImpact" name="estimatedImpact" 
+                                        class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 transition-colors duration-200">
+                                    <option value="">Chọn tác động</option>
+                                    <option value="High Impact">🚀 Cao</option>
+                                    <option value="Medium Impact">📈 Trung bình</option>
+                                    <option value="Low Impact">📊 Thấp</option>
+                                </select>
+                            </div>
+                            <div class="space-y-1">
+                                <label for="tacticCost" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Chi phí
+                                </label>
+                                <select id="tacticCost" name="estimatedCost" 
+                                        class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 transition-colors duration-200">
+                                    <option value="">Chọn chi phí</option>
+                                    <option value="High Cost">💰 Cao</option>
+                                    <option value="Medium Cost">💵 Trung bình</option>
+                                    <option value="Low Cost">💸 Thấp</option>
+                                </select>
+                            </div>
+                            <div class="space-y-1">
+                                <label for="tacticTime" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Thời gian
+                                </label>
+                                <select id="tacticTime" name="timeToImplement" 
+                                        class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 transition-colors duration-200">
+                                    <option value="">Chọn thời gian</option>
+                                    <option value="1-2 weeks">⚡ 1-2 tuần</option>
+                                    <option value="2-4 weeks">📅 2-4 tuần</option>
+                                    <option value="4-8 weeks">🗓️ 4-8 tuần</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Section -->
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-1 h-4 bg-orange-500 rounded-full"></div>
+                            <h4 class="text-base font-medium text-slate-700 dark:text-zink-100">Thông tin tài chính</h4>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="space-y-1">
+                                <label for="tacticBudget" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    Ngân sách (VNĐ)
+                                </label>
+                                <div class="relative">
+                                    <input type="number" id="tacticBudget" name="budgetRequired" min="0" step="1000" 
+                                           placeholder="0"
+                                           class="block w-full px-3 py-2 pl-7 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-zink-400 text-sm">₫</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <label for="tacticROI" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                    ROI (%)
+                                </label>
+                                <div class="relative">
+                                    <input type="number" id="tacticROI" name="expectedROI" min="0" max="1000" step="0.01" 
+                                           placeholder="0.00"
+                                           class="block w-full px-3 py-2 pr-7 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-zink-400 text-sm">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information Section -->
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-1 h-4 bg-purple-500 rounded-full"></div>
+                            <h4 class="text-base font-medium text-slate-700 dark:text-zink-100">Thông tin bổ sung</h4>
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <label for="tacticNotes" class="block text-sm font-medium text-slate-700 dark:text-zink-300">
+                                Ghi chú
+                            </label>
+                            <textarea id="tacticNotes" name="notes" rows="2" 
+                                      placeholder="Thêm ghi chú hoặc lưu ý..."
+                                      class="block w-full px-3 py-2 text-sm border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:ring-2 focus:ring-custom-500 focus:border-custom-500 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:placeholder-zink-400 transition-colors duration-200 resize-none"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-end gap-3 px-6 py-3 border-t border-slate-200 dark:border-zink-500 bg-slate-50 dark:bg-zink-700/50">
+                <button type="button" id="cancelTacticBtn" 
+                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-100 dark:hover:bg-zink-500 transition-colors duration-200">
+                    <i data-lucide="x" class="size-4"></i>
+                    Hủy
+                </button>
+                <button type="button" id="saveTacticBtn" 
+                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-custom-500 border border-custom-500 rounded-md shadow-sm hover:bg-custom-600 hover:border-custom-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-500 transition-colors duration-200">
+                    <i data-lucide="save" class="size-4"></i>
+                    <span id="saveButtonText">Lưu</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div th:replace="~{admin/fragments/script :: script}"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const clusterId = document.getElementById('clusterId').value;
+    let currentTacticId = null;
+    
+    // Modal elements
+    const tacticModal = document.getElementById('tacticModal');
+    const tacticForm = document.getElementById('tacticForm');
+    const addTacticBtn = document.getElementById('addTacticBtn');
+    const closeModal = document.getElementById('closeModal');
+    const cancelTacticBtn = document.getElementById('cancelTacticBtn');
+    const saveTacticBtn = document.getElementById('saveTacticBtn');
+    
+    // Event listeners
+    addTacticBtn.addEventListener('click', () => openModal());
+    document.getElementById('addFirstTacticBtn')?.addEventListener('click', () => openModal());
+    closeModal.addEventListener('click', () => closeModalFunc());
+    cancelTacticBtn.addEventListener('click', () => closeModalFunc());
+    saveTacticBtn.addEventListener('click', () => saveTactic());
+    
+    // Edit buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-tactic-btn')) {
+            const tacticId = e.target.closest('.edit-tactic-btn').dataset.tacticId;
+            editTactic(tacticId);
+        }
+        
+        if (e.target.closest('.delete-tactic-btn')) {
+            const tacticId = e.target.closest('.delete-tactic-btn').dataset.tacticId;
+            deleteTactic(tacticId);
+        }
+        
+        if (e.target.closest('.toggle-tactic-btn')) {
+            const tacticId = e.target.closest('.toggle-tactic-btn').dataset.tacticId;
+            toggleTactic(tacticId);
+        }
+    });
+    
+    function openModal(tactic = null) {
+        currentTacticId = tactic ? tactic.id : null;
+        
+        if (tactic) {
+            document.getElementById('modal-title').textContent = 'Chỉnh sửa Chiến Thuật Marketing';
+            document.getElementById('saveButtonText').textContent = 'Cập nhật chiến thuật';
+            document.getElementById('tacticId').value = tactic.id;
+            document.getElementById('tacticName').value = tactic.name;
+            document.getElementById('tacticTitle').value = tactic.title;
+            document.getElementById('tacticDescription').value = tactic.description;
+            document.getElementById('tacticPriority').value = tactic.priority;
+            document.getElementById('tacticCategory').value = tactic.category;
+            document.getElementById('tacticStatus').value = tactic.status || 'DRAFT';
+            document.getElementById('tacticImpact').value = tactic.estimatedImpact || '';
+            document.getElementById('tacticCost').value = tactic.estimatedCost || '';
+            document.getElementById('tacticTime').value = tactic.timeToImplement || '';
+            document.getElementById('tacticBudget').value = tactic.budgetRequired || '';
+            document.getElementById('tacticROI').value = tactic.expectedROI || '';
+            document.getElementById('tacticNotes').value = tactic.notes || '';
+        } else {
+            document.getElementById('modal-title').textContent = 'Thêm Chiến Thuật Marketing';
+            document.getElementById('saveButtonText').textContent = 'Lưu chiến thuật';
+            tacticForm.reset();
+            document.getElementById('tacticId').value = '';
+        }
+        
+        tacticModal.classList.remove('hidden');
+    }
+    
+    function closeModalFunc() {
+        tacticModal.classList.add('hidden');
+        currentTacticId = null;
+    }
+    
+    function editTactic(tacticId) {
+        fetch(`/admin/marketing/tactics/${tacticId}`)
+            .then(response => response.json())
+            .then(tactic => {
+                openModal(tactic);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi tải thông tin chiến thuật');
+            });
+    }
+    
+    function saveTactic() {
+        const formData = new FormData(tacticForm);
+        const tacticData = Object.fromEntries(formData.entries());
+        
+        // Convert budget and ROI to numbers
+        if (tacticData.budgetRequired) {
+            tacticData.budgetRequired = parseFloat(tacticData.budgetRequired);
+        }
+        if (tacticData.expectedROI) {
+            tacticData.expectedROI = parseFloat(tacticData.expectedROI);
+        }
+        
+        const url = currentTacticId ? `/admin/marketing/tactics/${currentTacticId}` : '/admin/marketing/tactics';
+        const method = currentTacticId ? 'PUT' : 'POST';
+        
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(tacticData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Lỗi: ' + data.error);
+            } else {
+                alert('Lưu chiến thuật thành công!');
+                closeModalFunc();
+                location.reload(); // Reload page to show updated data
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi lưu chiến thuật');
+        });
+    }
+    
+    function deleteTactic(tacticId) {
+        if (confirm('Bạn có chắc chắn muốn xóa chiến thuật này?')) {
+            fetch(`/admin/marketing/tactics/${tacticId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Lỗi: ' + data.error);
+                } else {
+                    alert('Chiến thuật đã được xóa!');
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi xóa chiến thuật');
+            });
+        }
+    }
+    
+    function toggleTactic(tacticId) {
+        fetch(`/admin/marketing/tactics/${tacticId}/toggle`, {
+            method: 'PATCH'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Lỗi: ' + data.error);
+            } else {
+                alert('Cập nhật trạng thái thành công!');
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi cập nhật trạng thái');
+        });
+    }
+    
+    // ========== OBJECTIVES MANAGEMENT ==========
+    
+    // Objective modal elements
+    const objectiveModal = document.getElementById('objectiveModal');
+    const objectiveForm = document.getElementById('objectiveForm');
+    const addObjectiveBtn = document.getElementById('addObjectiveBtn');
+    const closeObjectiveModal = document.getElementById('closeObjectiveModal');
+    const cancelObjectiveBtn = document.getElementById('cancelObjectiveBtn');
+    const saveObjectiveBtn = document.getElementById('saveObjectiveBtn');
+    const objectivesList = document.getElementById('objectivesList');
+    
+    let currentObjectiveId = null;
+    
+    // Event listeners for objectives
+    addObjectiveBtn.addEventListener('click', () => openObjectiveModal());
+    document.getElementById('addFirstObjectiveBtn')?.addEventListener('click', () => openObjectiveModal());
+    closeObjectiveModal.addEventListener('click', () => closeObjectiveModalFunc());
+    cancelObjectiveBtn.addEventListener('click', () => closeObjectiveModalFunc());
+    saveObjectiveBtn.addEventListener('click', () => saveObjective());
+    
+    // Event delegation for objective buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-objective-btn')) {
+            const objectiveId = e.target.closest('.edit-objective-btn').dataset.objectiveId;
+            editObjective(objectiveId);
+        }
+        
+        if (e.target.closest('.delete-objective-btn')) {
+            const objectiveId = e.target.closest('.delete-objective-btn').dataset.objectiveId;
+            deleteObjective(objectiveId);
+        }
+        
+        if (e.target.closest('.toggle-objective-btn')) {
+            const objectiveId = e.target.closest('.toggle-objective-btn').dataset.objectiveId;
+            toggleObjective(objectiveId);
+        }
+    });
+    
+    
+    function openObjectiveModal(objective = null) {
+        currentObjectiveId = objective ? objective.id : null;
+        
+        if (objective) {
+            document.getElementById('objective-modal-title').textContent = 'Chỉnh sửa Mục Tiêu Marketing';
+            document.getElementById('saveObjectiveButtonText').textContent = 'Cập nhật';
+            document.getElementById('objectiveId').value = objective.id;
+            document.getElementById('objectivePrimary').value = objective.primaryObjective;
+            document.getElementById('objectiveSecondary').value = objective.secondaryObjective || '';
+            document.getElementById('objectiveKpi').value = objective.kpi || '';
+            document.getElementById('objectiveDescription').value = objective.description || '';
+            document.getElementById('objectiveTargetValue').value = objective.targetValue || '';
+            document.getElementById('objectivePeriod').value = objective.measurementPeriod || '';
+            document.getElementById('objectivePriority').value = objective.priority || 'MEDIUM';
+            document.getElementById('objectiveStatus').value = objective.status || 'ACTIVE';
+            document.getElementById('objectiveNotes').value = objective.notes || '';
+        } else {
+            document.getElementById('objective-modal-title').textContent = 'Thêm Mục Tiêu Marketing';
+            document.getElementById('saveObjectiveButtonText').textContent = 'Lưu';
+            objectiveForm.reset();
+            document.getElementById('objectiveId').value = '';
+        }
+        
+        objectiveModal.classList.remove('hidden');
+    }
+    
+    function closeObjectiveModalFunc() {
+        objectiveModal.classList.add('hidden');
+        currentObjectiveId = null;
+    }
+    
+    function editObjective(objectiveId) {
+        fetch(`/admin/marketing/objectives/${objectiveId}`)
+            .then(response => response.json())
+            .then(objective => {
+                openObjectiveModal(objective);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi tải thông tin mục tiêu');
+            });
+    }
+    
+    function saveObjective() {
+        const formData = new FormData(objectiveForm);
+        const objectiveData = Object.fromEntries(formData.entries());
+        
+        const url = currentObjectiveId ? `/admin/marketing/objectives/${currentObjectiveId}` : '/admin/marketing/objectives';
+        const method = currentObjectiveId ? 'PUT' : 'POST';
+        
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(objectiveData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Lỗi: ' + data.error);
+            } else {
+                alert('Lưu mục tiêu thành công!');
+                closeObjectiveModalFunc();
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi lưu mục tiêu');
+        });
+    }
+    
+    function deleteObjective(objectiveId) {
+        if (confirm('Bạn có chắc chắn muốn xóa mục tiêu này?')) {
+            fetch(`/admin/marketing/objectives/${objectiveId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Lỗi: ' + data.error);
+                } else {
+                    alert('Mục tiêu đã được xóa!');
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi xóa mục tiêu');
+            });
+        }
+    }
+    
+    function toggleObjective(objectiveId) {
+        fetch(`/admin/marketing/objectives/${objectiveId}/toggle`, {
+            method: 'PATCH'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Lỗi: ' + data.error);
+            } else {
+                alert('Cập nhật trạng thái thành công!');
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi cập nhật trạng thái');
+        });
+    }
+});
+</script>
 
 </body>
 </html>

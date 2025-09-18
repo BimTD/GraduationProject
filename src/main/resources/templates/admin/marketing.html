@@ -146,10 +146,14 @@
                         </div>
 
                         <!-- Objectives -->
-                        <div class="mb-4">
+                        <div class="mb-4" th:if="${strategy.objectives != null}">
                             <h6 class="mb-2 text-sm font-medium text-slate-500 dark:text-zink-200">Mục tiêu:</h6>
                             <p class="text-sm text-slate-600 dark:text-zink-300 mb-1" th:text="${strategy.objectives.primary}">Primary objective</p>
                             <p class="text-xs text-slate-500 dark:text-zink-200" th:text="${strategy.objectives.kpi}">KPI</p>
+                        </div>
+                        <div class="mb-4" th:if="${strategy.objectives == null}">
+                            <h6 class="mb-2 text-sm font-medium text-slate-500 dark:text-zink-200">Mục tiêu:</h6>
+                            <p class="text-sm text-slate-500 dark:text-zink-300">Chưa có mục tiêu marketing</p>
                         </div>
 
                         <!-- Action Button -->

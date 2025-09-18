@@ -1,6 +1,10 @@
 package org.example.graduationproject.analytics.services;
 
 import org.example.graduationproject.analytics.models.CustomerCluster;
+import org.example.graduationproject.analytics.models.MarketingTactic;
+import org.example.graduationproject.analytics.models.MarketingObjective;
+import org.example.graduationproject.analytics.repositories.MarketingTacticRepository;
+import org.example.graduationproject.analytics.repositories.MarketingObjectiveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +19,12 @@ public class MarketingService {
     
     @Autowired
     private RFMAnalysisService rfmAnalysisService;
+    
+    @Autowired
+    private MarketingTacticRepository marketingTacticRepository;
+    
+    @Autowired
+    private MarketingObjectiveRepository marketingObjectiveRepository;
     
     // Đề xuất chiến thuật marketing cho từng cluster
     public Map<String, Object> getMarketingStrategies() {
@@ -51,13 +61,17 @@ public class MarketingService {
         characteristics.put("monetaryAvg", cluster.getMonetaryAvg());
         strategy.put("characteristics", characteristics);
         
-        // Chiến thuật marketing
-        List<Map<String, Object>> marketingTactics = getMarketingTactics(cluster);
+        // Chiến thuật marketing từ database
+        List<Map<String, Object>> marketingTactics = getMarketingTacticsFromDatabase(cluster.getId());
         strategy.put("marketingTactics", marketingTactics);
         
         // Mục tiêu và KPIs
         Map<String, Object> objectives = getMarketingObjectives(cluster);
         strategy.put("objectives", objectives);
+        
+        // Marketing Objectives từ database
+        List<Map<String, Object>> marketingObjectives = getMarketingObjectivesFromDatabase(cluster.getId());
+        strategy.put("marketingObjectives", marketingObjectives);
         
         // Ưu tiên thực hiện
         strategy.put("priority", getPriority(cluster));
@@ -65,248 +79,82 @@ public class MarketingService {
         return strategy;
     }
     
-    // Lấy chiến thuật marketing cụ thể cho từng cluster
-    private List<Map<String, Object>> getMarketingTactics(CustomerCluster cluster) {
-        List<Map<String, Object>> tactics = new ArrayList<>();
+    // Lấy chiến thuật marketing từ database
+    private List<Map<String, Object>> getMarketingTacticsFromDatabase(Integer clusterId) {
+        List<MarketingTactic> tactics = marketingTacticRepository.findByClusterIdOrderByPriorityAscCreatedDateDesc(clusterId);
         
-        switch (cluster.getClusterName()) {
-            case "Champions":
-                tactics.addAll(getChampionsTactics());
-                break;
-            case "Loyal Customers":
-                tactics.addAll(getLoyalCustomersTactics());
-                break;
-            case "At Risk":
-                tactics.addAll(getAtRiskTactics());
-                break;
-            case "Lost":
-                tactics.addAll(getLostTactics());
-                break;
-            default:
-                tactics.addAll(getDefaultTactics());
-        }
-        
-        return tactics;
+        // Trả về danh sách chiến thuật từ database (có thể rỗng)
+        return tactics.stream()
+                .map(this::convertTacticToMap)
+                .collect(Collectors.toList());
     }
     
-    // Chiến thuật cho Champions (VIP)
-    private List<Map<String, Object>> getChampionsTactics() {
-        List<Map<String, Object>> tactics = new ArrayList<>();
+    // Lấy mục tiêu marketing từ database
+    private List<Map<String, Object>> getMarketingObjectivesFromDatabase(Integer clusterId) {
+        List<MarketingObjective> objectives = marketingObjectiveRepository.findByClusterIdOrderByPriorityAscCreatedDateDesc(clusterId);
         
-        tactics.add(createTactic(
-            "VIP Program",
-            "Tạo chương trình VIP đặc biệt",
-            "Tặng thẻ VIP, ưu đãi độc quyền, sản phẩm mới trước",
-            "HIGH",
-            "Loyalty Program"
-        ));
-        
-        tactics.add(createTactic(
-            "Premium Products",
-            "Giới thiệu sản phẩm cao cấp",
-            "Ưu tiên giới thiệu sản phẩm mới, phiên bản giới hạn",
-            "HIGH",
-            "Product Marketing"
-        ));
-        
-        tactics.add(createTactic(
-            "Personal Service",
-            "Dịch vụ cá nhân hóa",
-            "Tư vấn riêng, giao hàng ưu tiên, hỗ trợ 24/7",
-            "MEDIUM",
-            "Customer Service"
-        ));
-        
-        tactics.add(createTactic(
-            "Referral Program",
-            "Chương trình giới thiệu",
-            "Tặng thưởng khi giới thiệu khách hàng mới",
-            "MEDIUM",
-            "Referral Marketing"
-        ));
-        
-        return tactics;
+        // Trả về danh sách mục tiêu từ database (có thể rỗng)
+        return objectives.stream()
+                .map(this::convertObjectiveToMap)
+                .collect(Collectors.toList());
     }
     
-    // Chiến thuật cho Loyal Customers
-    private List<Map<String, Object>> getLoyalCustomersTactics() {
-        List<Map<String, Object>> tactics = new ArrayList<>();
-        
-        tactics.add(createTactic(
-            "Loyalty Rewards",
-            "Chương trình tích điểm",
-            "Tích điểm cho mỗi đơn hàng, đổi quà tặng",
-            "HIGH",
-            "Loyalty Program"
-        ));
-        
-        tactics.add(createTactic(
-            "Cross-selling",
-            "Bán chéo sản phẩm",
-            "Gợi ý sản phẩm bổ sung, combo tiết kiệm",
-            "HIGH",
-            "Cross-selling"
-        ));
-        
-        tactics.add(createTactic(
-            "Seasonal Campaigns",
-            "Chiến dịch theo mùa",
-            "Khuyến mãi đặc biệt theo mùa, ngày lễ",
-            "MEDIUM",
-            "Seasonal Marketing"
-        ));
-        
-        tactics.add(createTactic(
-            "Email Marketing",
-            "Email marketing cá nhân hóa",
-            "Gửi email với sản phẩm phù hợp, khuyến mãi",
-            "MEDIUM",
-            "Email Marketing"
-        ));
-        
-        return tactics;
+    
+    // Chuyển đổi MarketingTactic thành Map
+    private Map<String, Object> convertTacticToMap(MarketingTactic tactic) {
+        Map<String, Object> tacticMap = new HashMap<>();
+        tacticMap.put("id", tactic.getId());
+        tacticMap.put("name", tactic.getName());
+        tacticMap.put("title", tactic.getTitle());
+        tacticMap.put("description", tactic.getDescription());
+        tacticMap.put("priority", tactic.getPriority());
+        tacticMap.put("category", tactic.getCategory());
+        tacticMap.put("estimatedImpact", tactic.getEstimatedImpact());
+        tacticMap.put("estimatedCost", tactic.getEstimatedCost());
+        tacticMap.put("timeToImplement", tactic.getTimeToImplement());
+        tacticMap.put("budgetRequired", tactic.getBudgetRequired());
+        tacticMap.put("expectedROI", tactic.getExpectedROI());
+        tacticMap.put("status", tactic.getStatus());
+        tacticMap.put("isActive", tactic.getIsActive());
+        tacticMap.put("createdDate", tactic.getCreatedDate());
+        tacticMap.put("updatedDate", tactic.getUpdatedDate());
+        tacticMap.put("createdBy", tactic.getCreatedBy());
+        tacticMap.put("notes", tactic.getNotes());
+        return tacticMap;
     }
     
-    // Chiến thuật cho At Risk
-    private List<Map<String, Object>> getAtRiskTactics() {
-        List<Map<String, Object>> tactics = new ArrayList<>();
-        
-        tactics.add(createTactic(
-            "Win-back Campaign",
-            "Chiến dịch win-back",
-            "Khuyến mãi mạnh, ưu đãi đặc biệt để thu hút lại",
-            "HIGH",
-            "Retention Marketing"
-        ));
-        
-        tactics.add(createTactic(
-            "Personal Outreach",
-            "Liên hệ trực tiếp",
-            "Gọi điện, SMS cá nhân để tìm hiểu lý do",
-            "HIGH",
-            "Direct Marketing"
-        ));
-        
-        tactics.add(createTactic(
-            "Survey & Feedback",
-            "Khảo sát và phản hồi",
-            "Gửi khảo sát để hiểu nhu cầu, cải thiện dịch vụ",
-            "MEDIUM",
-            "Customer Research"
-        ));
-        
-        tactics.add(createTactic(
-            "Limited Time Offers",
-            "Ưu đãi có thời hạn",
-            "Khuyến mãi giới hạn thời gian để tạo cảm giác cấp bách",
-            "MEDIUM",
-            "Urgency Marketing"
-        ));
-        
-        return tactics;
-    }
     
-    // Chiến thuật cho Lost
-    private List<Map<String, Object>> getLostTactics() {
-        List<Map<String, Object>> tactics = new ArrayList<>();
-        
-        tactics.add(createTactic(
-            "Reactivation Campaign",
-            "Chiến dịch kích hoạt lại",
-            "Khuyến mãi mạnh nhất, ưu đãi đặc biệt",
-            "HIGH",
-            "Reactivation Marketing"
-        ));
-        
-        tactics.add(createTactic(
-            "New Product Launch",
-            "Ra mắt sản phẩm mới",
-            "Thông báo sản phẩm mới, ưu đãi đặc biệt",
-            "MEDIUM",
-            "Product Launch"
-        ));
-        
-        tactics.add(createTactic(
-            "Exit Survey",
-            "Khảo sát lý do rời bỏ",
-            "Tìm hiểu lý do để cải thiện dịch vụ",
-            "LOW",
-            "Customer Research"
-        ));
-        
-        tactics.add(createTactic(
-            "Long-term Nurturing",
-            "Nuôi dưỡng dài hạn",
-            "Gửi nội dung giá trị, không bán hàng",
-            "LOW",
-            "Content Marketing"
-        ));
-        
-        return tactics;
-    }
-    
-    // Chiến thuật mặc định
-    private List<Map<String, Object>> getDefaultTactics() {
-        List<Map<String, Object>> tactics = new ArrayList<>();
-        
-        tactics.add(createTactic(
-            "General Marketing",
-            "Marketing tổng quát",
-            "Áp dụng chiến thuật marketing chung",
-            "MEDIUM",
-            "General Marketing"
-        ));
-        
-        return tactics;
-    }
-    
-    // Tạo một chiến thuật
-    private Map<String, Object> createTactic(String name, String title, String description, String priority, String category) {
-        Map<String, Object> tactic = new HashMap<>();
-        tactic.put("name", name);
-        tactic.put("title", title);
-        tactic.put("description", description);
-        tactic.put("priority", priority);
-        tactic.put("category", category);
-        tactic.put("estimatedImpact", getEstimatedImpact(priority));
-        tactic.put("estimatedCost", getEstimatedCost(priority));
-        tactic.put("timeToImplement", getTimeToImplement(priority));
-        return tactic;
-    }
-    
-    // Lấy mục tiêu marketing cho cluster
+    // Lấy mục tiêu marketing cho cluster từ database
     private Map<String, Object> getMarketingObjectives(CustomerCluster cluster) {
-        Map<String, Object> objectives = new HashMap<>();
+        List<MarketingObjective> objectives = marketingObjectiveRepository.findByClusterIdAndIsActiveTrueOrderByPriorityAscCreatedDateDesc(cluster.getId());
         
-        switch (cluster.getClusterName()) {
-            case "Champions":
-                objectives.put("primary", "Tăng giá trị đơn hàng và tần suất mua");
-                objectives.put("secondary", "Tăng tỷ lệ giới thiệu và retention");
-                objectives.put("kpi", "Tăng 20% AOV, 15% frequency");
-                break;
-            case "Loyal Customers":
-                objectives.put("primary", "Duy trì loyalty và tăng cross-selling");
-                objectives.put("secondary", "Chuyển đổi lên Champions");
-                objectives.put("kpi", "Tăng 10% AOV, 5% frequency");
-                break;
-            case "At Risk":
-                objectives.put("primary", "Ngăn chặn churn và win-back");
-                objectives.put("secondary", "Khôi phục tần suất mua hàng");
-                objectives.put("kpi", "Giảm 50% churn rate, tăng 30% reactivation");
-                break;
-            case "Lost":
-                objectives.put("primary", "Kích hoạt lại và thu hút về");
-                objectives.put("secondary", "Tìm hiểu lý do rời bỏ");
-                objectives.put("kpi", "Tăng 20% reactivation rate");
-                break;
-            default:
-                objectives.put("primary", "Tăng engagement và conversion");
-                objectives.put("secondary", "Cải thiện customer experience");
-                objectives.put("kpi", "Tăng 10% engagement rate");
+        if (objectives.isEmpty()) {
+            // Trả về null nếu chưa có mục tiêu trong database
+            return null;
         }
         
-        return objectives;
+        // Lấy mục tiêu đầu tiên (có thể có nhiều mục tiêu nhưng hiển thị cái chính)
+        MarketingObjective mainObjective = objectives.get(0);
+        
+        Map<String, Object> objectiveMap = new HashMap<>();
+        objectiveMap.put("id", mainObjective.getId());
+        objectiveMap.put("primary", mainObjective.getPrimaryObjective());
+        objectiveMap.put("secondary", mainObjective.getSecondaryObjective());
+        objectiveMap.put("kpi", mainObjective.getKpi());
+        objectiveMap.put("description", mainObjective.getDescription());
+        objectiveMap.put("targetValue", mainObjective.getTargetValue());
+        objectiveMap.put("measurementPeriod", mainObjective.getMeasurementPeriod());
+        objectiveMap.put("priority", mainObjective.getPriority());
+        objectiveMap.put("status", mainObjective.getStatus());
+        objectiveMap.put("isActive", mainObjective.getIsActive());
+        objectiveMap.put("createdDate", mainObjective.getCreatedDate());
+        objectiveMap.put("updatedDate", mainObjective.getUpdatedDate());
+        objectiveMap.put("createdBy", mainObjective.getCreatedBy());
+        objectiveMap.put("notes", mainObjective.getNotes());
+        
+        return objectiveMap;
     }
+    
     
     // Lấy độ ưu tiên thực hiện
     private String getPriority(CustomerCluster cluster) {
@@ -324,47 +172,6 @@ public class MarketingService {
         }
     }
     
-    // Ước tính tác động
-    private String getEstimatedImpact(String priority) {
-        switch (priority) {
-            case "HIGH":
-                return "High Impact";
-            case "MEDIUM":
-                return "Medium Impact";
-            case "LOW":
-                return "Low Impact";
-            default:
-                return "Unknown";
-        }
-    }
-    
-    // Ước tính chi phí
-    private String getEstimatedCost(String priority) {
-        switch (priority) {
-            case "HIGH":
-                return "High Cost";
-            case "MEDIUM":
-                return "Medium Cost";
-            case "LOW":
-                return "Low Cost";
-            default:
-                return "Unknown";
-        }
-    }
-    
-    // Thời gian triển khai
-    private String getTimeToImplement(String priority) {
-        switch (priority) {
-            case "HIGH":
-                return "1-2 weeks";
-            case "MEDIUM":
-                return "2-4 weeks";
-            case "LOW":
-                return "4-8 weeks";
-            default:
-                return "Unknown";
-        }
-    }
     
     // Lấy chiến thuật cho một cluster cụ thể
     public Map<String, Object> getMarketingStrategyForCluster(Integer clusterId) {
@@ -405,7 +212,263 @@ public class MarketingService {
         
         return overview;
     }
+    
+    // ========== CRUD METHODS FOR MARKETING TACTICS ==========
+    
+    // Lấy tất cả chiến thuật của một cluster
+    public List<MarketingTactic> getTacticsByClusterId(Integer clusterId) {
+        return marketingTacticRepository.findByClusterIdOrderByPriorityAscCreatedDateDesc(clusterId);
+    }
+    
+    // Lấy chiến thuật theo ID
+    public MarketingTactic getTacticById(Integer tacticId) {
+        return marketingTacticRepository.findById(tacticId).orElse(null);
+    }
+    
+    // Tạo chiến thuật mới
+    public MarketingTactic createTactic(MarketingTactic tactic) {
+        // Kiểm tra tên chiến thuật đã tồn tại chưa
+        MarketingTactic existingTactic = marketingTacticRepository.findByNameAndClusterId(tactic.getName(), tactic.getClusterId());
+        if (existingTactic != null) {
+            throw new RuntimeException("Tên chiến thuật đã tồn tại trong cluster này");
+        }
+        
+        tactic.setCreatedDate(java.time.LocalDateTime.now());
+        tactic.setUpdatedDate(java.time.LocalDateTime.now());
+        return marketingTacticRepository.save(tactic);
+    }
+    
+    // Cập nhật chiến thuật
+    public MarketingTactic updateTactic(MarketingTactic tactic) {
+        MarketingTactic existingTactic = marketingTacticRepository.findById(tactic.getId()).orElse(null);
+        if (existingTactic == null) {
+            throw new RuntimeException("Không tìm thấy chiến thuật");
+        }
+        
+        // Kiểm tra tên chiến thuật đã tồn tại chưa (trừ chính nó)
+        MarketingTactic duplicateTactic = marketingTacticRepository.findByNameAndClusterId(tactic.getName(), tactic.getClusterId());
+        if (duplicateTactic != null && !duplicateTactic.getId().equals(tactic.getId())) {
+            throw new RuntimeException("Tên chiến thuật đã tồn tại trong cluster này");
+        }
+        
+        tactic.setUpdatedDate(java.time.LocalDateTime.now());
+        return marketingTacticRepository.save(tactic);
+    }
+    
+    // Xóa chiến thuật (xóa vĩnh viễn khỏi database)
+    public void deleteTactic(Integer tacticId) {
+        if (!marketingTacticRepository.existsById(tacticId)) {
+            throw new RuntimeException("Không tìm thấy chiến thuật");
+        }
+        marketingTacticRepository.deleteById(tacticId);
+    }
+    
+    
+    // Kích hoạt/vô hiệu hóa chiến thuật
+    public MarketingTactic toggleTacticStatus(Integer tacticId) {
+        MarketingTactic tactic = marketingTacticRepository.findById(tacticId).orElse(null);
+        if (tactic == null) {
+            throw new RuntimeException("Không tìm thấy chiến thuật");
+        }
+        
+        tactic.setIsActive(!tactic.getIsActive());
+        tactic.setUpdatedDate(java.time.LocalDateTime.now());
+        return marketingTacticRepository.save(tactic);
+    }
+    
+    // Cập nhật trạng thái chiến thuật
+    public MarketingTactic updateTacticStatus(Integer tacticId, String status) {
+        MarketingTactic tactic = marketingTacticRepository.findById(tacticId).orElse(null);
+        if (tactic == null) {
+            throw new RuntimeException("Không tìm thấy chiến thuật");
+        }
+        
+        tactic.setStatus(status);
+        tactic.setUpdatedDate(java.time.LocalDateTime.now());
+        return marketingTacticRepository.save(tactic);
+    }
+    
+    // Lấy thống kê chiến thuật theo cluster
+    public Map<String, Object> getTacticStatistics(Integer clusterId) {
+        Map<String, Object> stats = new HashMap<>();
+        
+        List<Object[]> priorityStats = marketingTacticRepository.getTacticCountByPriority(clusterId);
+        List<Object[]> categoryStats = marketingTacticRepository.getTacticCountByCategory(clusterId);
+        
+        Map<String, Long> priorityCount = new HashMap<>();
+        for (Object[] stat : priorityStats) {
+            priorityCount.put((String) stat[0], (Long) stat[1]);
+        }
+        
+        Map<String, Long> categoryCount = new HashMap<>();
+        for (Object[] stat : categoryStats) {
+            categoryCount.put((String) stat[0], (Long) stat[1]);
+        }
+        
+        stats.put("totalTactics", marketingTacticRepository.countByClusterId(clusterId));
+        stats.put("activeTactics", marketingTacticRepository.countByClusterIdAndStatus(clusterId, "ACTIVE"));
+        stats.put("priorityCount", priorityCount);
+        stats.put("categoryCount", categoryCount);
+        
+        return stats;
+    }
+    
+    // ========== MARKETING OBJECTIVES CRUD METHODS ==========
+    
+    // Lấy tất cả objectives theo cluster ID
+    public List<Map<String, Object>> getObjectivesByClusterId(Integer clusterId) {
+        List<MarketingObjective> objectives = marketingObjectiveRepository.findByClusterIdOrderByPriorityAscCreatedDateDesc(clusterId);
+        return objectives.stream()
+                .map(this::convertObjectiveToMap)
+                .collect(Collectors.toList());
+    }
+    
+    // Lấy objective theo ID
+    public Map<String, Object> getObjectiveById(Long objectiveId) {
+        MarketingObjective objective = marketingObjectiveRepository.findById(objectiveId).orElse(null);
+        if (objective == null) {
+            throw new RuntimeException("Không tìm thấy mục tiêu marketing");
+        }
+        return convertObjectiveToMap(objective);
+    }
+    
+    // Tạo objective mới
+    public Map<String, Object> createObjective(Map<String, Object> objectiveData) {
+        MarketingObjective objective = new MarketingObjective();
+        
+        // Xử lý clusterId có thể là String hoặc Integer
+        Object clusterIdObj = objectiveData.get("clusterId");
+        Integer clusterId;
+        if (clusterIdObj instanceof String) {
+            clusterId = Integer.parseInt((String) clusterIdObj);
+        } else {
+            clusterId = (Integer) clusterIdObj;
+        }
+        objective.setClusterId(clusterId);
+        objective.setPrimaryObjective((String) objectiveData.get("primaryObjective"));
+        objective.setSecondaryObjective((String) objectiveData.get("secondaryObjective"));
+        objective.setKpi((String) objectiveData.get("kpi"));
+        objective.setDescription((String) objectiveData.get("description"));
+        objective.setTargetValue((String) objectiveData.get("targetValue"));
+        objective.setMeasurementPeriod((String) objectiveData.get("measurementPeriod"));
+        objective.setPriority((String) objectiveData.getOrDefault("priority", "MEDIUM"));
+        objective.setStatus((String) objectiveData.getOrDefault("status", "ACTIVE"));
+        objective.setIsActive((Boolean) objectiveData.getOrDefault("isActive", true));
+        objective.setCreatedBy((String) objectiveData.getOrDefault("createdBy", "Admin"));
+        objective.setNotes((String) objectiveData.get("notes"));
+        
+        objective.setCreatedDate(java.time.LocalDateTime.now());
+        objective.setUpdatedDate(java.time.LocalDateTime.now());
+        
+        MarketingObjective savedObjective = marketingObjectiveRepository.save(objective);
+        return convertObjectiveToMap(savedObjective);
+    }
+    
+    // Cập nhật objective
+    public Map<String, Object> updateObjective(Long objectiveId, Map<String, Object> objectiveData) {
+        MarketingObjective objective = marketingObjectiveRepository.findById(objectiveId).orElse(null);
+        if (objective == null) {
+            throw new RuntimeException("Không tìm thấy mục tiêu marketing");
+        }
+        
+        if (objectiveData.containsKey("primaryObjective")) {
+            objective.setPrimaryObjective((String) objectiveData.get("primaryObjective"));
+        }
+        if (objectiveData.containsKey("secondaryObjective")) {
+            objective.setSecondaryObjective((String) objectiveData.get("secondaryObjective"));
+        }
+        if (objectiveData.containsKey("kpi")) {
+            objective.setKpi((String) objectiveData.get("kpi"));
+        }
+        if (objectiveData.containsKey("description")) {
+            objective.setDescription((String) objectiveData.get("description"));
+        }
+        if (objectiveData.containsKey("targetValue")) {
+            objective.setTargetValue((String) objectiveData.get("targetValue"));
+        }
+        if (objectiveData.containsKey("measurementPeriod")) {
+            objective.setMeasurementPeriod((String) objectiveData.get("measurementPeriod"));
+        }
+        if (objectiveData.containsKey("priority")) {
+            objective.setPriority((String) objectiveData.get("priority"));
+        }
+        if (objectiveData.containsKey("status")) {
+            objective.setStatus((String) objectiveData.get("status"));
+        }
+        if (objectiveData.containsKey("notes")) {
+            objective.setNotes((String) objectiveData.get("notes"));
+        }
+        
+        objective.setUpdatedDate(java.time.LocalDateTime.now());
+        
+        MarketingObjective savedObjective = marketingObjectiveRepository.save(objective);
+        return convertObjectiveToMap(savedObjective);
+    }
+    
+    // Xóa objective (permanent delete)
+    public void deleteObjective(Long objectiveId) {
+        if (!marketingObjectiveRepository.existsById(objectiveId)) {
+            throw new RuntimeException("Không tìm thấy mục tiêu marketing");
+        }
+        marketingObjectiveRepository.deleteById(objectiveId);
+    }
+    
+    // Toggle trạng thái active của objective
+    public Map<String, Object> toggleObjectiveStatus(Long objectiveId) {
+        MarketingObjective objective = marketingObjectiveRepository.findById(objectiveId).orElse(null);
+        if (objective == null) {
+            throw new RuntimeException("Không tìm thấy mục tiêu marketing");
+        }
+        
+        objective.setIsActive(!objective.getIsActive());
+        objective.setUpdatedDate(java.time.LocalDateTime.now());
+        
+        MarketingObjective savedObjective = marketingObjectiveRepository.save(objective);
+        return convertObjectiveToMap(savedObjective);
+    }
+    
+    // Cập nhật status của objective
+    public Map<String, Object> updateObjectiveStatus(Long objectiveId, String status) {
+        MarketingObjective objective = marketingObjectiveRepository.findById(objectiveId).orElse(null);
+        if (objective == null) {
+            throw new RuntimeException("Không tìm thấy mục tiêu marketing");
+        }
+        
+        objective.setStatus(status);
+        objective.setUpdatedDate(java.time.LocalDateTime.now());
+        
+        MarketingObjective savedObjective = marketingObjectiveRepository.save(objective);
+        return convertObjectiveToMap(savedObjective);
+    }
+    
+    // Chuyển đổi MarketingObjective thành Map
+    private Map<String, Object> convertObjectiveToMap(MarketingObjective objective) {
+        Map<String, Object> objectiveMap = new HashMap<>();
+        objectiveMap.put("id", objective.getId());
+        objectiveMap.put("clusterId", objective.getClusterId());
+        objectiveMap.put("primaryObjective", objective.getPrimaryObjective());
+        objectiveMap.put("secondaryObjective", objective.getSecondaryObjective());
+        objectiveMap.put("kpi", objective.getKpi());
+        objectiveMap.put("description", objective.getDescription());
+        objectiveMap.put("targetValue", objective.getTargetValue());
+        objectiveMap.put("measurementPeriod", objective.getMeasurementPeriod());
+        objectiveMap.put("priority", objective.getPriority());
+        objectiveMap.put("status", objective.getStatus());
+        objectiveMap.put("isActive", objective.getIsActive());
+        objectiveMap.put("createdDate", objective.getCreatedDate());
+        objectiveMap.put("updatedDate", objective.getUpdatedDate());
+        objectiveMap.put("createdBy", objective.getCreatedBy());
+        objectiveMap.put("notes", objective.getNotes());
+        return objectiveMap;
+    }
 }
+
+
+
+
+
+
+
 
 
 
