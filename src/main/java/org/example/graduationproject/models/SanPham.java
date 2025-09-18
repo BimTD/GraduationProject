@@ -22,29 +22,29 @@ public class SanPham {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(columnDefinition = "NVARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String ten;
     
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String moTa;
     
     private BigDecimal giaBan;
     private BigDecimal giaNhap;
     private BigDecimal khuyenMai;
     
-    @Column(columnDefinition = "NVARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String tag;
     
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String huongDan;
     
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String thanhPhan;
     
     private LocalDateTime ngayCapNhat;
     private LocalDateTime ngayTao;
     
-    @Column(columnDefinition = "NVARCHAR(50)")
+    @Column(columnDefinition = "VARCHAR(50)")
     private String trangThaiSanPham;
     
     private Boolean trangThaiHoatDong;

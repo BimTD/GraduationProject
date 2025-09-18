@@ -29,7 +29,7 @@ public class GioHang {
     private LocalDateTime ngayTao;
     private LocalDateTime ngayCapNhat;
 
-    @Column(columnDefinition = "NVARCHAR(50)")
+    @Column(columnDefinition = "VARCHAR(50)")
     private String trangThai; // "active", "ordered", "abandoned"
 
     @OneToMany(mappedBy = "gioHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

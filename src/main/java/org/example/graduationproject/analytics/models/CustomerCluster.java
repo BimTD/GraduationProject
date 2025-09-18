@@ -23,7 +23,7 @@ public class CustomerCluster {
     @Column(name = "cluster_name", length = 100, nullable = false)
     private String clusterName; // "Champions", "Loyal Customers", "At Risk", "Lost"
 
-    @Column(name = "cluster_description", length = 1000, columnDefinition = "NVARCHAR(1000)")
+    @Column(name = "cluster_description", length = 1000, columnDefinition = "VARCHAR(1000)")
     private String clusterDescription;
 
     @Column(name = "recency_avg", precision = 10, scale = 2)
@@ -55,6 +55,7 @@ public class CustomerCluster {
         this.createdDate = LocalDateTime.now();
     }
 }
+
 
 
 

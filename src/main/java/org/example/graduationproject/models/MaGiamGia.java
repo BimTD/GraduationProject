@@ -23,16 +23,16 @@ public class MaGiamGia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "ma_giam_gia", unique = true, columnDefinition = "NVARCHAR(50)")
+    @Column(name = "ma_giam_gia", unique = true, columnDefinition = "VARCHAR(50)")
     private String maGiamGia; // Mã code để người dùng nhập
 
-    @Column(name = "ten_ma_giam_gia", columnDefinition = "NVARCHAR(255)")
+    @Column(name = "ten_ma_giam_gia", columnDefinition = "VARCHAR(255)")
     private String tenMaGiamGia; // Tên mô tả mã giảm giá
 
-    @Column(name = "mo_ta", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "mo_ta", columnDefinition = "TEXT")
     private String moTa; // Mô tả chi tiết
 
-    @Column(name = "loai_giam_gia", columnDefinition = "NVARCHAR(20)")
+    @Column(name = "loai_giam_gia", columnDefinition = "VARCHAR(20)")
     private String loaiGiamGia; // "PERCENTAGE" (phần trăm) hoặc "FIXED" (số tiền cố định)
 
     @Column(name = "gia_tri_giam_gia", precision = 18, scale = 2)
@@ -56,7 +56,7 @@ public class MaGiamGia {
     @Column(name = "ngay_ket_thuc")
     private LocalDateTime ngayKetThuc; // Ngày kết thúc
 
-    @Column(name = "trang_thai", columnDefinition = "NVARCHAR(20)")
+    @Column(name = "trang_thai", columnDefinition = "VARCHAR(20)")
     private String trangThai = "ACTIVE"; // "ACTIVE", "INACTIVE", "EXPIRED"
 
     @Column(name = "ap_dung_cho_tat_ca")

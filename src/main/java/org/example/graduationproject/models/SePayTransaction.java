@@ -20,31 +20,31 @@ public class SePayTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "transaction_id", unique = true, columnDefinition = "NVARCHAR(100)")
+    @Column(name = "transaction_id", unique = true, columnDefinition = "VARCHAR(100)")
     private String transactionId; // ID giao dịch từ SePay
 
-    @Column(name = "order_id", columnDefinition = "NVARCHAR(50)")
+    @Column(name = "order_id", columnDefinition = "VARCHAR(50)")
     private String orderId; // ID đơn hàng trong hệ thống
 
     @Column(name = "amount", precision = 18, scale = 2)
     private BigDecimal amount; // Số tiền giao dịch
 
-    @Column(name = "description", columnDefinition = "NVARCHAR(500)")
+    @Column(name = "description", columnDefinition = "VARCHAR(500)")
     private String description; // Mô tả giao dịch
 
-    @Column(name = "bank_account", columnDefinition = "NVARCHAR(50)")
+    @Column(name = "bank_account", columnDefinition = "VARCHAR(50)")
     private String bankAccount; // Số tài khoản ngân hàng
 
-    @Column(name = "bank_name", columnDefinition = "NVARCHAR(100)")
+    @Column(name = "bank_name", columnDefinition = "VARCHAR(100)")
     private String bankName; // Tên ngân hàng
 
-    @Column(name = "qr_code_url", columnDefinition = "NVARCHAR(500)")
+    @Column(name = "qr_code_url", columnDefinition = "VARCHAR(500)")
     private String qrCodeUrl; // URL QR code
 
-    @Column(name = "status", columnDefinition = "NVARCHAR(20)")
+    @Column(name = "status", columnDefinition = "VARCHAR(20)")
     private String status; // PENDING, SUCCESS, FAILED, CANCELLED
 
-    @Column(name = "webhook_data", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "webhook_data", columnDefinition = "TEXT")
     private String webhookData; // Dữ liệu webhook từ SePay
 
     @Column(name = "created_at")

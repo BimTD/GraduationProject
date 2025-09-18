@@ -20,7 +20,7 @@ public class MauSac {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(columnDefinition = "NVARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(100)")
     private String maMau;
 
     @ManyToOne

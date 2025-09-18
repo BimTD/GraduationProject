@@ -25,31 +25,31 @@ public class HoaDon {
 
     private LocalDateTime ngayTao;
 
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String ghiChu;
 
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String trangThai;
 
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String loaiThanhToan;
 
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String daLayTien;
 
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String diaChiGiaoHang;
 
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String tenNguoiNhan;
 
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String soDienThoaiGiaoHang;
 
     private BigDecimal tongTien;
 
     // Thông tin mã giảm giá
-    @Column(name = "ma_giam_gia_su_dung", columnDefinition = "NVARCHAR(50)")
+    @Column(name = "ma_giam_gia_su_dung", columnDefinition = "VARCHAR(50)")
     private String maGiamGiaSuDung; // Mã giảm giá đã sử dụng
 
     @Column(name = "gia_tri_giam_gia", precision = 18, scale = 2)

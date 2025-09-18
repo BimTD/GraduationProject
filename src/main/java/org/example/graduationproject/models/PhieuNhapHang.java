@@ -21,16 +21,16 @@ public class PhieuNhapHang {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(columnDefinition = "NVARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(100)")
     private String soChungTu;
     
     private LocalDateTime ngayTao;
     private BigDecimal tongTien;
     
-    @Column(columnDefinition = "NVARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String nguoiLapPhieu;
     
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String ghiChu;
 
     @ManyToOne

@@ -20,16 +20,16 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", columnDefinition = "NVARCHAR(255)")
+    @Column(name = "title", columnDefinition = "VARCHAR(255)")
     private String title;
 
-    @Column(name = "message", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "message", columnDefinition = "TEXT")
     private String message;
 
-    @Column(name = "type", columnDefinition = "NVARCHAR(50)")
+    @Column(name = "type", columnDefinition = "VARCHAR(50)")
     private String type; // ORDER_CREATED, ORDER_STATUS_CHANGED, etc.
 
-    @Column(name = "is_read", columnDefinition = "BIT")
+    @Column(name = "is_read", columnDefinition = "BOOLEAN")
     private Boolean isRead = false;
 
     @Column(name = "created_at")
@@ -43,7 +43,7 @@ public class Notification {
     @JsonBackReference
     private User user; // User nhận thông báo
 
-    @Column(name = "admin_created", columnDefinition = "BIT")
+    @Column(name = "admin_created", columnDefinition = "BOOLEAN")
     private Boolean adminCreated = false; // true nếu admin tạo thông báo cho user
 
     // Constructor cho thông báo order

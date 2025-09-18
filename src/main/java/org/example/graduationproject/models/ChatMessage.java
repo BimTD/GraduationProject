@@ -23,10 +23,10 @@ public class ChatMessage {
     @JoinColumn(name = "user_id")
     private User user;
     
-    @Column(name = "message", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "message", columnDefinition = "TEXT")
     private String message;
     
-    @Column(name = "response", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "response", columnDefinition = "TEXT")
     private String response;
     
     @Enumerated(EnumType.STRING)
@@ -43,6 +43,7 @@ public class ChatMessage {
         USER, BOT
     }
 }
+
 
 
 

@@ -26,25 +26,25 @@ public class MarketingTactic {
     @Column(name = "name", length = 100, nullable = false)
     private String name; // Tên chiến thuật (unique identifier)
 
-    @Column(name = "title", length = 255, nullable = false, columnDefinition = "NVARCHAR(255)")
+    @Column(name = "title", length = 255, nullable = false, columnDefinition = "VARCHAR(255)")
     private String title; // Tiêu đề hiển thị
 
-    @Column(name = "description", length = 2000, columnDefinition = "NVARCHAR(2000)")
+    @Column(name = "description", length = 2000, columnDefinition = "VARCHAR(2000)")
     private String description; // Mô tả chi tiết
 
     @Column(name = "priority", length = 20, nullable = false)
     private String priority; // HIGH, MEDIUM, LOW
 
-    @Column(name = "category", length = 100, nullable = false, columnDefinition = "NVARCHAR(100)")
+    @Column(name = "category", length = 100, nullable = false, columnDefinition = "VARCHAR(100)")
     private String category; // Loại chiến thuật
 
-    @Column(name = "estimated_impact", length = 50, columnDefinition = "NVARCHAR(50)")
+    @Column(name = "estimated_impact", length = 50, columnDefinition = "VARCHAR(50)")
     private String estimatedImpact; // High Impact, Medium Impact, Low Impact
 
-    @Column(name = "estimated_cost", length = 50, columnDefinition = "NVARCHAR(50)")
+    @Column(name = "estimated_cost", length = 50, columnDefinition = "VARCHAR(50)")
     private String estimatedCost; // High Cost, Medium Cost, Low Cost
 
-    @Column(name = "time_to_implement", length = 50, columnDefinition = "NVARCHAR(50)")
+    @Column(name = "time_to_implement", length = 50, columnDefinition = "VARCHAR(50)")
     private String timeToImplement; // 1-2 weeks, 2-4 weeks, 4-8 weeks
 
     @Column(name = "budget_required", precision = 18, scale = 2)
@@ -65,10 +65,10 @@ public class MarketingTactic {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    @Column(name = "created_by", length = 100, columnDefinition = "NVARCHAR(100)")
+    @Column(name = "created_by", length = 100, columnDefinition = "VARCHAR(100)")
     private String createdBy; // Người tạo
 
-    @Column(name = "notes", length = 1000, columnDefinition = "NVARCHAR(1000)")
+    @Column(name = "notes", length = 1000, columnDefinition = "VARCHAR(1000)")
     private String notes; // Ghi chú thêm
 
     // Constructor cho việc tạo mới

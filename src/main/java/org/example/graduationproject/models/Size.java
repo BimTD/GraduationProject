@@ -20,7 +20,7 @@ public class Size {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(columnDefinition = "NVARCHAR(50)")
+    @Column(columnDefinition = "VARCHAR(50)")
     private String tenSize;
 
     @ManyToOne

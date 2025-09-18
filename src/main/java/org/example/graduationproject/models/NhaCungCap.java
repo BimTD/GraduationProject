@@ -20,19 +20,19 @@ public class NhaCungCap {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(columnDefinition = "NVARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String ten;
     
-    @Column(columnDefinition = "NVARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String email;
     
-    @Column(columnDefinition = "NVARCHAR(20)")
+    @Column(columnDefinition = "VARCHAR(20)")
     private String sdt;
     
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String thongTin;
     
-    @Column(columnDefinition = "NVARCHAR(500)")
+    @Column(columnDefinition = "VARCHAR(500)")
     private String diaChi;
 
     @OneToMany(mappedBy = "nhaCungCap")
