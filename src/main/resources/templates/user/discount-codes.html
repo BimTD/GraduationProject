@@ -26,12 +26,12 @@
 <!--breadcrumbs area end-->
 
 <!--discount codes area start -->
-<div class="discount_codes_area mt-60">
+<div class="discount_codes_area">
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <div class="discount_codes_header">
-                    <h2>Mã giảm giá hiện có</h2>
+                    <h2>🎟️ Mã giảm giá</h2>
                     <p>Chọn mã giảm giá phù hợp và tiết kiệm cho đơn hàng của bạn</p>
                 </div>
             </div>
@@ -39,57 +39,61 @@
         
         <div class="row" id="discount-codes-container">
             <!-- Discount codes from Thymeleaf -->
-            <div th:each="discount : ${discountCodes}" class="col-lg-6 col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title" th:text="${discount.tenMaGiamGia}">Tên mã giảm giá</h5>
-                        <span class="badge badge-primary" th:text="${discount.maGiamGia}">SALE10</span>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text" th:text="${discount.moTa}">Mô tả mã giảm giá</p>
-                        
-                        <div class="row">
-                            <div class="col-6">
-                                <strong>Loại:</strong>
-                                <span th:text="${discount.loaiGiamGia == 'PERCENTAGE'} ? 'Phần trăm' : 'Số tiền cố định'">Phần trăm</span>
-                            </div>
-                            <div class="col-6">
-                                <strong>Giá trị:</strong>
-                                <span th:if="${discount.loaiGiamGia == 'PERCENTAGE'}" th:text="${discount.giaTriGiamGia} + '%'">10%</span>
-                                <span th:if="${discount.loaiGiamGia != 'PERCENTAGE'}" th:text="${#numbers.formatDecimal(discount.giaTriGiamGia, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">100,000 VNĐ</span>
-                            </div>
-                        </div>
-                        
-                        <div class="row mt-2">
-                            <div class="col-6">
-                                <strong>Trạng thái:</strong>
-                                <span class="badge" th:classappend="${discount.trangThai == 'ACTIVE'} ? 'badge-success' : 'badge-secondary'" th:text="${discount.trangThai}">ACTIVE</span>
-                            </div>
-                            <div class="col-6">
-                                <strong>Hết hạn:</strong>
-                                <span th:text="${#temporals.format(discount.ngayKetThuc, 'dd/MM/yyyy')}">31/12/2024</span>
-                            </div>
-                        </div>
-                        
-                        <div class="row mt-2">
-                            <div class="col-6">
-                                <strong>Đơn tối thiểu:</strong>
-                                <span th:if="${discount.giaTriToiThieu != null}" th:text="${#numbers.formatDecimal(discount.giaTriToiThieu, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">100,000 VNĐ</span>
-                                <span th:if="${discount.giaTriToiThieu == null}">Không có</span>
-                            </div>
-                            <div class="col-6">
-                                <strong>Đã sử dụng:</strong>
-                                <span th:if="${discount.soLuongSuDung != null}" th:text="${discount.soLuongDaSuDung} + '/' + ${discount.soLuongSuDung} + ' lần'">2/10 lần</span>
-                                <span th:if="${discount.soLuongSuDung == null}">Không giới hạn</span>
-                            </div>
+            <div th:each="discount : ${discountCodes}" class="col-lg-4 col-md-6 mb-4">
+                <div class="discount_card" th:classappend="${discount.trangThai == 'ACTIVE'} ? 'active' : 'inactive'">
+                    <div class="discount_card_header">
+                        <div class="discount_code_badge" th:text="${discount.maGiamGia}">SALE10</div>
+                        <div class="discount_status" th:classappend="${discount.trangThai == 'ACTIVE'} ? 'status_active' : 'status_inactive'">
+                            <i class="fa fa-circle"></i>
+                            <span th:text="${discount.trangThai == 'ACTIVE'} ? 'Đang hoạt động' : 'Không hoạt động'">Đang hoạt động</span>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <button class="btn btn-outline-primary btn-sm" th:data-code="${discount.maGiamGia}" onclick="copyDiscountCode(this.dataset.code)">
-                            <i class="fa fa-copy"></i> Copy mã
+                    
+                    <div class="discount_card_body">
+                        <h5 class="discount_title" th:text="${discount.tenMaGiamGia}">Tên mã giảm giá</h5>
+                        <p class="discount_description" th:text="${discount.moTa}">Mô tả mã giảm giá</p>
+                        
+                        <div class="discount_value">
+                            <div class="value_icon">
+                                <i th:if="${discount.loaiGiamGia == 'PERCENTAGE'}" class="fa fa-percentage"></i>
+                                <i th:if="${discount.loaiGiamGia != 'PERCENTAGE'}" class="fa fa-money-bill-wave"></i>
+                            </div>
+                            <div class="value_text">
+                                <span class="value_amount" th:if="${discount.loaiGiamGia == 'PERCENTAGE'}" th:text="${discount.giaTriGiamGia} + '%'">10%</span>
+                                <span class="value_amount" th:if="${discount.loaiGiamGia != 'PERCENTAGE'}" th:text="${#numbers.formatDecimal(discount.giaTriGiamGia, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">100,000 VNĐ</span>
+                                <span class="value_type" th:text="${discount.loaiGiamGia == 'PERCENTAGE'} ? 'Giảm theo phần trăm' : 'Giảm số tiền cố định'">Giảm theo phần trăm</span>
+                            </div>
+                        </div>
+                        
+                        <div class="discount_details">
+                            <div class="detail_item">
+                                <i class="fa fa-calendar-alt"></i>
+                                <span class="detail_label">Hết hạn:</span>
+                                <span class="detail_value" th:text="${#temporals.format(discount.ngayKetThuc, 'dd/MM/yyyy')}">31/12/2024</span>
+                            </div>
+                            
+                            <div class="detail_item" th:if="${discount.giaTriToiThieu != null}">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span class="detail_label">Đơn tối thiểu:</span>
+                                <span class="detail_value" th:text="${#numbers.formatDecimal(discount.giaTriToiThieu, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">100,000 VNĐ</span>
+                            </div>
+                            
+                            <div class="detail_item" th:if="${discount.soLuongSuDung != null}">
+                                <i class="fa fa-users"></i>
+                                <span class="detail_label">Đã sử dụng:</span>
+                                <span class="detail_value" th:text="${discount.soLuongDaSuDung} + '/' + ${discount.soLuongSuDung} + ' lần'">2/10 lần</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="discount_card_footer">
+                        <button class="btn_copy" th:data-code="${discount.maGiamGia}" onclick="copyDiscountCode(this.dataset.code)">
+                            <i class="fa fa-copy"></i>
+                            <span>Copy mã</span>
                         </button>
-                        <button class="btn btn-primary btn-sm ml-2" th:data-code="${discount.maGiamGia}" onclick="useDiscountCode(this.dataset.code)" th:disabled="${discount.trangThai != 'ACTIVE'}">
-                            <i class="fa fa-shopping-cart"></i> Sử dụng ngay
+                        <button class="btn_use" th:data-code="${discount.maGiamGia}" onclick="useDiscountCode(this.dataset.code)" th:disabled="${discount.trangThai != 'ACTIVE'}">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>Sử dụng ngay</span>
                         </button>
                     </div>
                 </div>
@@ -98,12 +102,17 @@
         
         <!-- Empty state -->
         <div class="row" th:if="${#lists.isEmpty(discountCodes)}">
-            <div class="col-12 text-center">
-                <div class="empty-state">
-                    <i class="fa fa-ticket-alt" style="font-size: 64px; color: #ccc; margin-bottom: 20px;"></i>
+            <div class="col-12">
+                <div class="empty_state">
+                    <div class="empty_icon">
+                        <i class="fa fa-ticket-alt"></i>
+                    </div>
                     <h3>Không có mã giảm giá nào</h3>
                     <p>Hiện tại chưa có mã giảm giá nào khả dụng. Vui lòng quay lại sau!</p>
-                    <a href="/home" class="btn btn-primary">Tiếp tục mua sắm</a>
+                    <a href="/home" class="btn_continue_shopping">
+                        <i class="fa fa-arrow-left"></i>
+                        <span>Tiếp tục mua sắm</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -117,135 +126,313 @@
 
 <script th:src="@{fe/js/plugins.js}"></script>
 <script th:src="@{fe/js/main.js}"></script>
+<script th:src="@{/js/chatbot.js}"></script>
 
 <style>
+/* Discount Codes Area */
 .discount_codes_area {
-    padding: 60px 0;
+    padding: 80px 0;
+    background: #f8f9fa;
+    min-height: 70vh;
 }
 
 .discount_codes_header {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 60px;
 }
 
 .discount_codes_header h2 {
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 700;
     color: #333;
     margin-bottom: 15px;
+    font-family: "Playfair Display", serif;
 }
 
 .discount_codes_header p {
     font-size: 16px;
     color: #666;
     margin: 0;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.card {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+/* Discount Card */
+.discount_card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+.discount_card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
-.card-header {
-    background: #f8f9fa;
-    border-bottom: 1px solid #e0e0e0;
-    padding: 15px 20px;
+.discount_card.active {
+    border: 2px solid #ff6a28;
 }
 
-.card-title {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
+.discount_card.inactive {
+    opacity: 0.7;
+    filter: grayscale(0.3);
 }
 
-.badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.badge-primary {
-    background-color: #007bff;
-    color: white;
-}
-
-.badge-success {
-    background-color: #28a745;
-    color: white;
-}
-
-.badge-secondary {
-    background-color: #6c757d;
-    color: white;
-}
-
-.card-body {
+/* Card Header */
+.discount_card_header {
+    background: linear-gradient(135deg, #ff6a28 0%, #ff8c42 100%);
     padding: 20px;
+    color: white;
+    position: relative;
 }
 
-.card-footer {
-    background: #f8f9fa;
-    border-top: 1px solid #e0e0e0;
-    padding: 15px 20px;
+.discount_code_badge {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.btn {
-    padding: 8px 16px;
-    border-radius: 4px;
+.discount_status {
+    display: flex;
+    align-items: center;
     font-size: 14px;
     font-weight: 500;
+}
+
+.discount_status i {
+    margin-right: 8px;
+    font-size: 8px;
+}
+
+.status_active i {
+    color: #4CAF50;
+}
+
+.status_inactive i {
+    color: #f44336;
+}
+
+/* Card Body */
+.discount_card_body {
+    padding: 25px;
+    flex: 1;
+}
+
+.discount_title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+    font-family: "Playfair Display", serif;
+}
+
+.discount_description {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* Discount Value */
+.discount_value {
+    display: flex;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.value_icon {
+    width: 50px;
+    height: 50px;
+    background: #ff6a28;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: white;
+    font-size: 20px;
+}
+
+.value_text {
+    flex: 1;
+}
+
+.value_amount {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #ff6a28;
+    margin-bottom: 5px;
+}
+
+.value_type {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Discount Details */
+.discount_details {
+    margin-bottom: 20px;
+}
+
+.detail_item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.detail_item i {
+    width: 20px;
+    color: #ff6a28;
+    margin-right: 10px;
+}
+
+.detail_label {
+    font-weight: 500;
+    color: #666;
+    margin-right: 8px;
+    min-width: 100px;
+}
+
+.detail_value {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Card Footer */
+.discount_card_footer {
+    padding: 20px 25px;
+    background: #f8f9fa;
+    display: flex;
+    gap: 10px;
+}
+
+.btn_copy, .btn_use {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn_copy {
+    background: white;
+    color: #ff6a28;
+    border: 2px solid #ff6a28;
+}
+
+.btn_copy:hover {
+    background: #ff6a28;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn_use {
+    background: #ff6a28;
+    color: white;
+}
+
+.btn_use:hover:not(:disabled) {
+    background: #e55a1f;
+    transform: translateY(-2px);
+}
+
+.btn_use:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Empty State */
+.empty_state {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.empty_icon {
+    font-size: 80px;
+    color: #ddd;
+    margin-bottom: 30px;
+}
+
+.empty_state h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+    font-family: "Playfair Display", serif;
+}
+
+.empty_state p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 30px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn_continue_shopping {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #ff6a28;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
     transition: all 0.3s ease;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+.btn_continue_shopping:hover {
+    background: #e55a1f;
     color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
 }
 
-.btn-primary:hover:not(:disabled) {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-
-.btn-outline-primary {
-    background-color: transparent;
-    border-color: #007bff;
-    color: #007bff;
-}
-
-.btn-outline-primary:hover {
-    background-color: #007bff;
-    color: white;
-}
-
-.btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.empty-state {
-    padding: 60px 20px;
-}
-
-.empty-state h3 {
-    color: #666;
-    margin-bottom: 15px;
-}
-
-.empty-state p {
-    color: #999;
-    margin-bottom: 30px;
+/* Responsive */
+@media (max-width: 768px) {
+    .discount_codes_area {
+        padding: 40px 0;
+    }
+    
+    .discount_codes_header h2 {
+        font-size: 28px;
+    }
+    
+    .discount_card_footer {
+        flex-direction: column;
+    }
+    
+    .btn_copy, .btn_use {
+        width: 100%;
+    }
 }
 </style>
 
@@ -253,9 +440,9 @@
 // Hàm copy mã giảm giá
 function copyDiscountCode(code) {
     navigator.clipboard.writeText(code).then(() => {
-        showNotification(`Đã copy mã giảm giá: ${code}`, 'success');
+        showNotification(`✅ Đã copy mã giảm giá: ${code}`, 'success');
     }).catch(err => {
-        showNotification('Không thể copy mã giảm giá', 'error');
+        showNotification('❌ Không thể copy mã giảm giá', 'error');
     });
 }
 
@@ -267,42 +454,126 @@ function useDiscountCode(code) {
 // Hàm hiển thị thông báo
 function showNotification(message, type) {
     const notification = document.createElement('div');
-    notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'}`;
+    notification.className = 'discount_notification';
     notification.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
         z-index: 9999;
-        min-width: 300px;
+        min-width: 320px;
         max-width: 500px;
-        padding: 15px 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 20px 25px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
         transform: translateX(100%);
-        transition: transform 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: ${type === 'success' ? 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)' : 'linear-gradient(135deg, #f44336 0%, #d32f2f 100%)'};
+        color: white;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
     `;
+    
     notification.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span>${message}</span>
-            <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; font-size: 20px; cursor: pointer; opacity: 0.7;">&times;</button>
+            <span style="flex: 1; margin-right: 15px;">${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" style="
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: white;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">
+                ×
+            </button>
         </div>
     `;
     
     document.body.appendChild(notification);
     
+    // Animation in
     setTimeout(() => {
         notification.style.transform = 'translateX(0)';
     }, 100);
     
+    // Auto remove after 4 seconds
     setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
+        notification.style.opacity = '0';
         setTimeout(() => {
             if (document.body.contains(notification)) {
                 document.body.removeChild(notification);
             }
-        }, 300);
-    }, 5000);
+        }, 400);
+    }, 4000);
 }
+
+// Thêm hiệu ứng hover cho các card
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.discount_card');
+    
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Thêm hiệu ứng click cho buttons
+    const buttons = document.querySelectorAll('.btn_copy, .btn_use');
+    buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Tạo hiệu ứng ripple
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                pointer-events: none;
+            `;
+            
+            this.style.position = 'relative';
+            this.style.overflow = 'hidden';
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+    
+    // Thêm CSS animation cho ripple effect
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+});
 </script>
 </body>
 </html>

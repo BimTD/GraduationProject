@@ -32,4 +32,24 @@ public interface AbandonedCartService {
      * @return Map chứa thống kê
      */
     java.util.Map<String, Object> getAbandonedCartStats();
+    
+    /**
+     * Lấy danh sách giỏ hàng cần gửi email thông báo
+     * @param cutoffTime Thời gian cutoff
+     * @return Danh sách giỏ hàng
+     */
+    List<GioHang> getCartsForEmailNotification(LocalDateTime cutoffTime);
+    
+    /**
+     * Lưu danh sách giỏ hàng
+     * @param carts Danh sách giỏ hàng
+     */
+    void saveCarts(List<GioHang> carts);
+    
+    /**
+     * Dọn dẹp giỏ hàng đã gửi email quá lâu
+     * @param cutoffMinutes Số phút để xác định giỏ hàng cần dọn dẹp
+     * @return Số lượng giỏ hàng đã được dọn dẹp
+     */
+    int cleanupEmailSentCarts(int cutoffMinutes);
 }

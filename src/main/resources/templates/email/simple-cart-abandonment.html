@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng của bạn đang chờ bạn!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .cart-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛒 Giỏ hàng của bạn đang chờ bạn!</h1>
+    </div>
+    
+    <div class="content">
+        <p>Xin chào <strong th:text="${userName}">Khách hàng</strong>!</p>
+        
+        <p>Chúng tôi nhận thấy bạn đã thêm sản phẩm vào giỏ hàng nhưng chưa hoàn tất đơn hàng. 
+           Đừng để những sản phẩm yêu thích của bạn bị bỏ lỡ!</p>
+        
+        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; margin: 15px 0; border-radius: 5px; text-align: center;">
+            <strong>⏰ Giỏ hàng của bạn sẽ được lưu trong 10 phút tới!</strong><br>
+            Hãy hoàn tất đơn hàng trước khi giỏ hàng bị xóa.
+        </div>
+        
+        <div class="cart-info">
+            <h3>Thông tin giỏ hàng</h3>
+            <p><strong>Mã giỏ hàng:</strong> <span th:text="${cartId}">#12345</span></p>
+            <p><strong>Ngày tạo:</strong> <span th:text="${cartCreatedDate}">01/01/2024 10:30</span></p>
+            <p><strong>Tổng sản phẩm:</strong> <span th:text="${totalItems}">3</span> sản phẩm</p>
+            <p><strong>Tổng tiền:</strong> <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')}">1,500,000</span> VNĐ</p>
+        </div>
+        
+         <div th:if="${cartItems != null and !cartItems.isEmpty()}">
+             <h3>Sản phẩm trong giỏ hàng:</h3>
+             <ul>
+                 <li th:each="item : ${cartItems}">
+                     <span th:text="${item.sanPhamBienThe.sanPham.ten}">Tên sản phẩm</span> - 
+                     <span th:text="${item.sanPhamBienThe.mauSac.maMau}">Màu</span> - 
+                     <span th:text="${item.sanPhamBienThe.size.tenSize}">Size</span> | 
+                     Số lượng: <span th:text="${item.soLuong}">1</span> | 
+                     Giá: <span th:text="${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT')}">500,000</span> VNĐ
+                 </li>
+             </ul>
+         </div>
+         
+         <!-- Mã giảm giá -->
+         <div th:if="${discountCodes != null and !discountCodes.isEmpty()}" style="background-color: #e8f5e8; border: 1px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 5px;">
+             <h3 style="color: #2e7d32; margin-top: 0;">🎁 Mã giảm giá dành cho bạn!</h3>
+             <p style="margin-bottom: 10px;">Chúng tôi có một số mã giảm giá đặc biệt dành cho bạn:</p>
+             <div th:each="code : ${discountCodes}" style="background-color: white; border: 1px solid #4caf50; padding: 10px; margin: 8px 0; border-radius: 3px;">
+                 <div style="display: flex; justify-content: space-between; align-items: center;">
+                     <div>
+                         <strong style="color: #2e7d32;" th:text="${code.tenMaGiamGia}">Tên mã giảm giá</strong>
+                         <div style="font-size: 12px; color: #666;" th:text="${code.moTa}">Mô tả mã giảm giá</div>
+                     </div>
+                     <div style="text-align: right;">
+                         <div style="font-weight: bold; color: #2e7d32; font-size: 16px;" th:text="${code.maGiamGia}">MAGIAMGIA</div>
+                         <div style="font-size: 12px; color: #666;">
+                             <span th:if="${code.loaiGiamGia == 'PERCENTAGE'}" th:text="${code.giaTriGiamGia} + '%'">10%</span>
+                             <span th:if="${code.loaiGiamGia == 'FIXED'}" th:text="${#numbers.formatDecimal(code.giaTriGiamGia, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">50,000 VNĐ</span>
+                         </div>
+                     </div>
+                 </div>
+                 <div style="font-size: 11px; color: #888; margin-top: 5px;">
+                     <span th:if="${code.giaTriToiThieu != null}">
+                         Áp dụng cho đơn hàng từ <span th:text="${#numbers.formatDecimal(code.giaTriToiThieu, 0, 'COMMA', 0, 'POINT')}">500,000</span> VNĐ
+                     </span>
+                     <span th:if="${code.ngayKetThuc != null}">
+                         | Hết hạn: <span th:text="${#temporals.format(code.ngayKetThuc, 'dd/MM/yyyy')}">31/12/2024</span>
+                     </span>
+                 </div>
+             </div>
+             <p style="margin-top: 10px; font-size: 14px;">
+                 <a href="${discountCodesUrl}" style="color: #2e7d32; text-decoration: none; font-weight: bold;">Xem tất cả mã giảm giá →</a>
+             </p>
+         </div>
+         <p>Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi!</p>
+    </div>
+</body>
+</html>

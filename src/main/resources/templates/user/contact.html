@@ -14,9 +14,9 @@
             <div class="col-12">
                 <div class="breadcrumb_content">
                     <ul>
-                        <li><a href="index.html">home</a></li>
+                        <li><a href="index.html">Trang chủ</a></li>
                         <li>/</li>
-                        <li>contact us</li>
+                        <li>Liên hệ</li>
                     </ul>
                 </div>
             </div>
@@ -32,38 +32,38 @@
         <div class="row">
             <div class="col-lg-6 col-md-12">
                 <div class="contact_message content">
-                    <h3>contact us</h3>
-                    <p>Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare quam littera gothica, quam nunc putamus parum claram anteposuerit litterarum formas human. qui sequitur mutationem consuetudium lectorum. Mirum est notare quam</p>
+                    <h3>Liên hệ</h3>
+                    <p>Trái với quan niệm phổ biến, Lorem Ipsum không chỉ đơn thuần là một đoạn văn bản ngẫu nhiên. Nó có nguồn gốc từ một tác phẩm văn học Latin cổ điển từ năm 45 trước Công nguyên, tức là đã hơn 2000 năm tuổi.</p>
                     <ul>
                         <li><i class="fa fa-map-marker"></i> Địa chỉ: Số 167, đường Nguyễn Trác, phường Yên Nghĩa, quận Hà Đông, Hà Nội</li>
-                        <li><i class="fa fa-phone"></i> <a href="tel:02422180336">0242.2180.336</a></li>
-                        <li><i class="fa fa-envelope-o"></i> <a href="mailto:info@phenikaa-uni.edu.vn">info@phenikaa-uni.edu.vn</a></li>
-                        <li><i class="fa fa-mobile"></i> <a href="tel:0946511010">094.651.1010</a></li>
+                        <li><i class="fa fa-phone"></i> <a href="tel:02422180336">0982.172.169</a></li>
+                        <li><i class="fa fa-envelope-o"></i> <a href="mailto:info@phenikaa-uni.edu.vn">tranduybim2906@gmail.com</a></li>
+                        <li><i class="fa fa-mobile"></i> <a href="tel:0946511010">0982.172.169</a></li>
                     </ul>
                 </div>
             </div>
             <div class="col-lg-6 col-md-12">
                 <div class="contact_message form">
-                    <h3>Tell us your project</h3>
+                    <h3>Hãy cho chúng tôi biết dự án của bạn</h3>
 
                     <form id="contact-form" th:action="@{/contact}" method="post">
                         <p>
-                            <label> Your Name (required)</label>
-                            <input name="name" placeholder="Name *" type="text" required>
+                            <label> Tên của bạn (bắt buộc)</label>
+                            <input name="name" placeholder="Tên *" type="text" required>
                         </p>
                         <p>
-                            <label>  Your Email (required)</label>
+                            <label>  Email của bạn (bắt buộc)</label>
                             <input name="email" placeholder="Email *" type="email" required>
                         </p>
                         <p>
-                            <label>  Subject</label>
-                            <input name="subject" placeholder="Subject *" type="text" required>
+                            <label>  Chủ đề</label>
+                            <input name="subject" placeholder="Chủ đề *" type="text" required>
                         </p>
                         <div class="contact_textarea">
-                            <label>  Your Message</label>
-                            <textarea placeholder="Message *" name="message" class="form-control2" required></textarea>
+                            <label>  Thông điệp của chúng tôi</label>
+                            <textarea placeholder="Thông điệp *" name="message" class="form-control2" required></textarea>
                         </div>
-                        <button type="submit"> Send</button>
+                        <button type="submit"> Gửi</button>
                         <!-- Success Message -->
                         <div th:if="${successMessage}" class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
                             <i class="fa fa-check-circle"></i> <span th:text="${successMessage}"></span>
@@ -107,6 +107,7 @@
 
 <script th:src="@{/fe/js/plugins.js}"></script>
 <script th:src="@{/fe/js/main.js}"></script>
+<script th:src="@{/js/chatbot.js}"></script>
 
 </body>
 </html>

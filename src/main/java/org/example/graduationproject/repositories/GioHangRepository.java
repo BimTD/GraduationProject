@@ -24,4 +24,7 @@ public interface GioHangRepository extends JpaRepository<GioHang, Integer> {
     // Tìm giỏ hàng active cũ hơn thời gian cutoff (có sản phẩm)
     @Query("SELECT DISTINCT g FROM GioHang g LEFT JOIN g.chiTietGioHangs c WHERE g.trangThai = 'active' AND g.ngayCapNhat < :cutoffTime AND c IS NOT NULL")
     List<GioHang> findActiveCartsWithItemsOlderThan(@Param("cutoffTime") LocalDateTime cutoffTime);
+    
+    // Tìm giỏ hàng theo trạng thái và thời gian cập nhật
+    List<GioHang> findByTrangThaiAndNgayCapNhatBefore(String trangThai, LocalDateTime cutoffTime);
 }

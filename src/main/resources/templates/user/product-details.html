@@ -77,9 +77,9 @@
                             </ul>
                         </div>
                         <div class="product_price">
-                            <span class="current_price" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">0 VNĐ</span>
+                            <span class="current_price" th:text="${#numbers.formatDecimal(product.price * (100 - (product.discount != null ? product.discount : 0)) / 100, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">0 VNĐ</span>
                             <span class="old_price" th:if="${product.discount != null and product.discount > 0}" 
-                                  th:text="${#numbers.formatDecimal(product.price * (100 - product.discount) / 100, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                                  th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
                         </div>
                         <div class="product_desc">
                             <p th:text="${product.description}">Product description</p>
@@ -378,6 +378,7 @@
 <script th:src="@{/fe/js/main.js}"></script>
 <script th:src="@{/fe/js/quick-view.js}"></script>
 <script th:src="@{/fe/js/product-details.js}"></script>
+<script th:src="@{/js/chatbot.js}"></script>
 
 
 </body>

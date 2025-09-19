@@ -33,6 +33,20 @@ public class GioHangServiceImpl implements GioHangService {
 
     @Autowired
     private AuthenticationService authenticationService;
+    
+    /**
+     * Tính giá cuối cùng của sản phẩm sau khi áp dụng promotion (theo phần trăm)
+     */
+    private BigDecimal calculateFinalPrice(SanPhamBienThe variant) {
+        BigDecimal giaBan = variant.getSanPham().getGiaBan();
+        BigDecimal khuyenMai = variant.getSanPham().getKhuyenMai() != null ? 
+            variant.getSanPham().getKhuyenMai() : BigDecimal.ZERO;
+        
+        // Tính giá sau khi giảm theo phần trăm
+        // Giá cuối = giaBan * (100 - khuyenMai) / 100
+        BigDecimal phanTramGiam = BigDecimal.valueOf(100).subtract(khuyenMai);
+        return giaBan.multiply(phanTramGiam).divide(BigDecimal.valueOf(100));
+    }
 
     @Override
     public GioHang getOrCreateActiveCart(User user) {
@@ -69,11 +83,15 @@ public class GioHangServiceImpl implements GioHangService {
             // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
             Optional<ChiTietGioHang> existingItem = chiTietGioHangRepository.findByGioHangAndSanPhamBienThe(cart, variant);
             
+            // Tính giá cuối cùng với promotion
+            BigDecimal giaCuoiCung = calculateFinalPrice(variant);
+            
             if (existingItem.isPresent()) {
                 // Cập nhật số lượng
                 ChiTietGioHang item = existingItem.get();
                 item.setSoLuong(item.getSoLuong() + addToCartDTO.getQuantity());
-                item.setThanhTien(item.getGiaBan().multiply(BigDecimal.valueOf(item.getSoLuong())));
+                item.setGiaBan(giaCuoiCung); // Cập nhật giá đã áp dụng promotion
+                item.setThanhTien(giaCuoiCung.multiply(BigDecimal.valueOf(item.getSoLuong())));
                 chiTietGioHangRepository.save(item);
             } else {
                 // Thêm mới vào giỏ hàng
@@ -81,8 +99,8 @@ public class GioHangServiceImpl implements GioHangService {
                 newItem.setGioHang(cart);
                 newItem.setSanPhamBienThe(variant);
                 newItem.setSoLuong(addToCartDTO.getQuantity());
-                newItem.setGiaBan(variant.getSanPham().getGiaBan());
-                newItem.setThanhTien(variant.getSanPham().getGiaBan().multiply(BigDecimal.valueOf(addToCartDTO.getQuantity())));
+                newItem.setGiaBan(giaCuoiCung); // Sử dụng giá đã áp dụng promotion
+                newItem.setThanhTien(giaCuoiCung.multiply(BigDecimal.valueOf(addToCartDTO.getQuantity())));
                 chiTietGioHangRepository.save(newItem);
             }
             
@@ -112,8 +130,12 @@ public class GioHangServiceImpl implements GioHangService {
                 return false;
             }
             
+            // Tính giá cuối cùng với promotion
+            BigDecimal giaCuoiCung = calculateFinalPrice(item.getSanPhamBienThe());
+            
             item.setSoLuong(quantity);
-            item.setThanhTien(item.getGiaBan().multiply(BigDecimal.valueOf(quantity)));
+            item.setGiaBan(giaCuoiCung); // Cập nhật giá đã áp dụng promotion
+            item.setThanhTien(giaCuoiCung.multiply(BigDecimal.valueOf(quantity)));
             chiTietGioHangRepository.save(item);
             
             return true;

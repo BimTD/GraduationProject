@@ -74,4 +74,51 @@ public class AbandonedCartServiceImpl implements AbandonedCartService {
         
         return stats;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<GioHang> getCartsForEmailNotification(LocalDateTime cutoffTime) {
+        // Lấy giỏ hàng active, có sản phẩm, chưa gửi email, và cũ hơn cutoffTime
+        List<GioHang> carts = gioHangRepository.findActiveCartsWithItemsOlderThan(cutoffTime);
+        
+        // Force load chi tiết giỏ hàng để tránh LazyInitializationException
+        for (GioHang cart : carts) {
+            if (cart.getChiTietGioHangs() != null) {
+                cart.getChiTietGioHangs().size(); // Force load collection
+            }
+        }
+        
+        return carts;
+    }
+
+    @Override
+    @Transactional
+    public void saveCarts(List<GioHang> carts) {
+        if (!carts.isEmpty()) {
+            gioHangRepository.saveAll(carts);
+        }
+    }
+
+    @Override
+    @Transactional
+    public int cleanupEmailSentCarts(int cutoffMinutes) {
+        LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(cutoffMinutes);
+        
+        // Lấy giỏ hàng đã gửi email và cũ hơn cutoffTime
+        List<GioHang> emailSentCarts = gioHangRepository.findByTrangThaiAndNgayCapNhatBefore("email_sent", cutoffTime);
+        
+        int cleanedCount = 0;
+        for (GioHang cart : emailSentCarts) {
+            cart.setTrangThai("abandoned");
+            cart.setNgayCapNhat(LocalDateTime.now());
+            cleanedCount++;
+        }
+        
+        if (!emailSentCarts.isEmpty()) {
+            gioHangRepository.saveAll(emailSentCarts);
+            System.out.println("Đã chuyển " + cleanedCount + " giỏ hàng đã gửi email sang trạng thái abandoned");
+        }
+        
+        return cleanedCount;
+    }
 }

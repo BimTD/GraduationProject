@@ -30,7 +30,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="text-xl font-semibold mb-4" th:text="${editMode} ? 'Edit Product' : 'Create Product'"></div>
+            <div class="text-xl font-semibold mb-4" th:text="${editMode} ? 'Sửa sản phẩm' : 'Thêm sản phẩm'"></div>
             <form method="post" th:action="${editMode} ? @{/admin/product/update} : @{/admin/productForm}" th:object="${product}" class="bg-white rounded-lg shadow p-6 mt-4">
                 <!-- Hidden field for product ID in edit mode -->
                 <input th:if="${editMode}" th:field="*{id}" type="hidden">

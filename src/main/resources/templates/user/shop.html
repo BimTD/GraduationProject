@@ -195,9 +195,9 @@
 
                                 <div class="product_content grid_content">
                                     <h3><a th:href="@{'/product-details/' + ${product.id}}" th:text="${product.ten}">Tên sản phẩm</a></h3>
-                                    <span class="current_price" th:text="${#numbers.formatDecimal(product.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá</span>
+                                    <span class="current_price" th:text="${#numbers.formatDecimal(product.giaBan * (100 - (product.khuyenMai != null ? product.khuyenMai : 0)) / 100, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá</span>
                                     <span class="old_price" th:if="${product.khuyenMai != null and product.khuyenMai > 0}" 
-                                          th:text="${#numbers.formatDecimal(product.giaBan * (100 - product.khuyenMai) / 100, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá cũ</span>
+                                          th:text="${#numbers.formatDecimal(product.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá cũ</span>
                                 </div>
 
                                 <div class="product_content list_content">
@@ -212,9 +212,9 @@
                                         </ul>
                                     </div>
                                     <div class="product_price">
-                                        <span class="current_price" th:text="${#numbers.formatDecimal(product.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá</span>
+                                        <span class="current_price" th:text="${#numbers.formatDecimal(product.giaBan * (100 - (product.khuyenMai != null ? product.khuyenMai : 0)) / 100, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá</span>
                                         <span class="old_price" th:if="${product.khuyenMai != null and product.khuyenMai > 0}" 
-                                              th:text="${#numbers.formatDecimal(product.giaBan * (100 - product.khuyenMai) / 100, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá cũ</span>
+                                              th:text="${#numbers.formatDecimal(product.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá cũ</span>
                                     </div>
                                     <div class="product_desc">
                                         <p th:text="${product.moTa}">Product description</p>
@@ -336,6 +336,7 @@
 <script th:src="@{/fe/js/quick-view.js}"></script>
 <script th:src="@{/fe/js/price-filter.js}"></script>
 <script th:src="@{/fe/js/sort-filter.js}"></script>
+<script th:src="@{/js/chatbot.js}"></script>
 
 <script>
 $(document).ready(function() {
