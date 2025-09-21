@@ -263,8 +263,25 @@
                             <div class="cart_total">
                                 <p>Tổng cộng <span id="totalAmount" th:text="${#numbers.formatDecimal(#aggregates.sum(cart.chiTietGioHangs.![thanhTien]), 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span></p>
                             </div>
+                            <!-- Thông báo hết hạn thanh toán -->
+                            <div th:if="${expiredMessage}" class="alert alert-warning" role="alert">
+                                <i class="fa fa-exclamation-triangle"></i>
+                                <span th:text="${expiredMessage}"></span>
+                            </div>
+                            
+                            <div th:if="${isPaymentExpired}" class="alert alert-info" role="alert">
+                                <i class="fa fa-info-circle"></i>
+                                <strong>Giỏ hàng mới đã được tạo!</strong><br>
+                                Thời gian thanh toán giỏ hàng trước đó đã hết hạn. Giỏ hàng cũ đã được lưu trữ và bạn có thể thêm sản phẩm mới vào giỏ hàng này.
+                            </div>
+                            
                             <div class="checkout_btn">
-                                <a href="#" class="btn btn-primary" id="checkoutBtn" onclick="goToCheckout()">Thanh toán</a>
+                                <a href="#" class="btn btn-primary" id="checkoutBtn" 
+                                   th:classappend="${isPaymentExpired} ? 'btn-info' : ''"
+                                   th:onclick="goToCheckout()"
+                                   th:style="${isPaymentExpired} ? '' : ''">
+                                   <span th:text="${isPaymentExpired} ? 'Thêm sản phẩm để thanh toán' : 'Thanh toán'"></span>
+                                </a>
                             </div>
                         </div>
                     </div>

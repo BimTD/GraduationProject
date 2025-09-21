@@ -84,6 +84,12 @@ public class CheckoutController extends BaseController {
                 model.addAttribute("finalTotal", originalTotal);
             }
             
+        } catch (org.example.graduationproject.exceptions.ValidationException e) {
+            // Nếu thời gian thanh toán hết hạn, redirect về cart với thông báo
+            if (e.getMessage().contains("Thời gian thanh toán đã hết hạn")) {
+                return "redirect:/cart?expired=true";
+            }
+            return "redirect:/cart";
         } catch (Exception e) {
             return "redirect:/cart";
         }

@@ -79,7 +79,7 @@ public class AbandonedCartServiceImpl implements AbandonedCartService {
     @Transactional(readOnly = true)
     public List<GioHang> getCartsForEmailNotification(LocalDateTime cutoffTime) {
         // Lấy giỏ hàng active, có sản phẩm, chưa gửi email, và cũ hơn cutoffTime
-        List<GioHang> carts = gioHangRepository.findActiveCartsWithItemsOlderThan(cutoffTime);
+        List<GioHang> carts = gioHangRepository.findCartsForEmailNotification(cutoffTime);
         
         // Force load chi tiết giỏ hàng để tránh LazyInitializationException
         for (GioHang cart : carts) {
@@ -105,7 +105,7 @@ public class AbandonedCartServiceImpl implements AbandonedCartService {
         LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(cutoffMinutes);
         
         // Lấy giỏ hàng đã gửi email và cũ hơn cutoffTime
-        List<GioHang> emailSentCarts = gioHangRepository.findByTrangThaiAndNgayCapNhatBefore("email_sent", cutoffTime);
+        List<GioHang> emailSentCarts = gioHangRepository.findEmailSentCartsOlderThan(cutoffTime);
         
         int cleanedCount = 0;
         for (GioHang cart : emailSentCarts) {

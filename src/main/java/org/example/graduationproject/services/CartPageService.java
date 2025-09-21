@@ -6,6 +6,9 @@ public interface CartPageService {
     
     // Business logic methods for controller
     CartPageResponseDTO getCartPageDataWithValidation();
+    
+    // Kiểm tra thời gian hết hạn thanh toán
+    boolean isCartPaymentExpired();
 }
 
 

@@ -54,6 +54,11 @@ public class CheckoutServiceImpl implements CheckoutService {
             throw new ValidationException("Giỏ hàng trống");
         }
 
+        // Kiểm tra thời gian hết hạn thanh toán
+        if (gioHangService.isCartPaymentExpired(cart)) {
+            throw new ValidationException("Thời gian thanh toán đã hết hạn. Vui lòng thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm.");
+        }
+
         return new CheckoutResponseDTO(true, "Lấy dữ liệu checkout thành công", cart, user);
     }
 
@@ -84,6 +89,12 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         if (checkoutDTO.getDiaChiGiaoHang() == null || checkoutDTO.getDiaChiGiaoHang().trim().isEmpty()) {
             throw new ValidationException("Địa chỉ giao hàng không được để trống");
+        }
+
+        // Kiểm tra thời gian hết hạn thanh toán
+        GioHang cart = gioHangService.getActiveCart(user);
+        if (gioHangService.isCartPaymentExpired(cart)) {
+            throw new ValidationException("Thời gian thanh toán đã hết hạn. Vui lòng thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm.");
         }
 
         // Tạo đơn hàng

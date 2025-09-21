@@ -20,4 +20,8 @@ public interface GioHangService {
     CartResponseDTO updateCartItemQuantityWithValidation(UpdateCartItemDTO updateCartItemDTO);
     CartResponseDTO removeFromCartWithValidation(RemoveCartItemDTO removeCartItemDTO);
     CartResponseDTO getCartItemCount();
+    
+    // Kiểm tra thời gian hết hạn thanh toán
+    boolean isCartPaymentExpired(GioHang cart);
+    boolean canUserCheckout(User user);
 }

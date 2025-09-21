@@ -50,16 +50,39 @@ public class GioHangServiceImpl implements GioHangService {
 
     @Override
     public GioHang getOrCreateActiveCart(User user) {
-        Optional<GioHang> existingCart = gioHangRepository.findByUserAndTrangThai(user, "active");
+        // Tìm giỏ hàng active hoặc đã gửi email (người dùng vẫn có thể thanh toán)
+        Optional<GioHang> existingCart = gioHangRepository.findByUserAndActiveOrEmailSent(user);
         
         if (existingCart.isPresent()) {
-            return existingCart.get();
+            GioHang cart = existingCart.get();
+            
+            // Kiểm tra xem giỏ hàng có hết hạn thanh toán không
+            if (isCartPaymentExpired(cart)) {
+                // Nếu hết hạn, chuyển giỏ hàng cũ sang abandoned và tạo giỏ hàng mới
+                cart.setTrangThai("abandoned");
+                cart.setNgayCapNhat(LocalDateTime.now());
+                gioHangRepository.save(cart);
+                System.out.println("Đã chuyển giỏ hàng hết hạn sang abandoned cho user: " + user.getEmail());
+                
+                // Tạo giỏ hàng mới
+                GioHang newCart = new GioHang();
+                newCart.setUser(user);
+                newCart.setTrangThai("active");
+                newCart.setEmailSent(false);
+                newCart.setNgayTao(LocalDateTime.now());
+                newCart.setNgayCapNhat(LocalDateTime.now());
+                
+                return gioHangRepository.save(newCart);
+            }
+            
+            return cart;
         }
 
         // Tạo giỏ hàng mới
         GioHang newCart = new GioHang();
         newCart.setUser(user);
         newCart.setTrangThai("active");
+        newCart.setEmailSent(false);
         newCart.setNgayTao(LocalDateTime.now());
         newCart.setNgayCapNhat(LocalDateTime.now());
         
@@ -170,7 +193,8 @@ public class GioHangServiceImpl implements GioHangService {
 
     @Override
     public GioHang getActiveCart(User user) {
-        return gioHangRepository.findByUserAndTrangThai(user, "active").orElse(null);
+        // Tìm giỏ hàng active hoặc đã gửi email (người dùng vẫn có thể thanh toán)
+        return gioHangRepository.findByUserAndActiveOrEmailSent(user).orElse(null);
     }
     
     @Override
@@ -300,5 +324,32 @@ public class GioHangServiceImpl implements GioHangService {
         } catch (Exception e) {
             throw new RuntimeException("Đã xảy ra lỗi không mong muốn", e);
         }
+    }
+
+    @Override
+    public boolean isCartPaymentExpired(GioHang cart) {
+        if (cart == null || !cart.getEmailSent() || cart.getEmailSentAt() == null) {
+            return false; // Chưa gửi email thì không hết hạn
+        }
+        
+        // Kiểm tra xem đã quá 2 phút kể từ khi gửi email chưa
+        LocalDateTime expirationTime = cart.getEmailSentAt().plusMinutes(2);
+        return LocalDateTime.now().isAfter(expirationTime);
+    }
+
+    @Override
+    public boolean canUserCheckout(User user) {
+        GioHang cart = getActiveCart(user);
+        if (cart == null) {
+            return false; // Không có giỏ hàng
+        }
+        
+        // Nếu chưa gửi email thì có thể thanh toán
+        if (!cart.getEmailSent()) {
+            return true;
+        }
+        
+        // Nếu đã gửi email thì kiểm tra thời gian hết hạn
+        return !isCartPaymentExpired(cart);
     }
 }

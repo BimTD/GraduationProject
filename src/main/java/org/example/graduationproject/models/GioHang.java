@@ -32,6 +32,12 @@ public class GioHang {
     @Column(columnDefinition = "VARCHAR(50)")
     private String trangThai; // "active", "ordered", "abandoned"
 
+    @Column(name = "email_sent", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean emailSent = false; // Đánh dấu đã gửi email thông báo
+
+    @Column(name = "email_sent_at")
+    private LocalDateTime emailSentAt; // Thời điểm gửi email thông báo
+
     @OneToMany(mappedBy = "gioHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private java.util.List<ChiTietGioHang> chiTietGioHangs;

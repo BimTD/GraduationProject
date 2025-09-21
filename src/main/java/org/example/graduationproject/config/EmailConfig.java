@@ -62,3 +62,4 @@ public class EmailConfig {
         return templateResolver;
     }
 }
+

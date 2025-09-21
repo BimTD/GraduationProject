@@ -62,8 +62,9 @@ public class CartAbandonmentEmailScheduler {
                             // Gửi email thông báo
                             emailService.sendCartAbandonmentEmail(cart.getUser(), cart);
                             
-                            // Đánh dấu đã gửi email (có thể thêm field emailSent vào GioHang)
-                            cart.setTrangThai("email_sent");
+                            // Đánh dấu đã gửi email và lưu thời điểm gửi
+                            cart.setEmailSent(true);
+                            cart.setEmailSentAt(LocalDateTime.now());
                             cart.setNgayCapNhat(LocalDateTime.now());
                             
                             emailSent++;

@@ -34,7 +34,30 @@ public class CartPageServiceImpl implements CartPageService {
         GioHang cart = gioHangService.getActiveCart(user);
         return new CartPageResponseDTO(true, "Lấy dữ liệu giỏ hàng thành công", cart, user);
     }
+
+    @Override
+    public boolean isCartPaymentExpired() {
+        if (!authenticationService.isAuthenticated()) {
+            return false;
+        }
+        
+        User user = authenticationService.getCurrentUser();
+        if (user == null) {
+            return false;
+        }
+
+        GioHang cart = gioHangService.getActiveCart(user);
+        if (cart == null) {
+            return false;
+        }
+        
+        // Hiển thị thông báo hết hạn nếu giỏ hàng trống (giỏ hàng mới được tạo)
+        boolean isEmpty = cart.getChiTietGioHangs() == null || cart.getChiTietGioHangs().isEmpty();
+        
+        return isEmpty;
+    }
 }
+
 
 
 
