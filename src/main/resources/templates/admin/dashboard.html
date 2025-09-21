@@ -140,8 +140,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div class="text-center">
-                                <h4 class="mb-1 text-lg" th:text="${potentialAbandonedCarts}">0</h4>
-                                <p class="text-slate-500 dark:text-zink-200 text-sm">Có thể bỏ dở (>24h)</p>
+
                             </div>
                             <div class="text-center">
                                 <h4 class="mb-1 text-lg" th:text="${#numbers.formatDecimal(abandonmentRate, 1, 'COMMA', 1, 'POINT')} + '%'">0%</h4>
