@@ -118,7 +118,12 @@ public class MaGiamGia {
 
     // Phương thức tính giá trị giảm giá
     public BigDecimal calculateDiscountAmount(BigDecimal orderTotal) {
-        if (!isActive() || orderTotal.compareTo(this.giaTriToiThieu) < 0) {
+        if (!isActive()) {
+            return BigDecimal.ZERO;
+        }
+        
+        // Kiểm tra giá trị tối thiểu nếu có
+        if (this.giaTriToiThieu != null && orderTotal.compareTo(this.giaTriToiThieu) < 0) {
             return BigDecimal.ZERO;
         }
 

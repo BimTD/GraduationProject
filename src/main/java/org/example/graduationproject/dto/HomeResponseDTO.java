@@ -9,6 +9,7 @@ public class HomeResponseDTO {
     private Map<String, List<Object>> sanPhamNamTheoLoai;
     private Map<String, List<Object>> sanPhamNuTheoLoai;
     private List<Object> products;
+    private List<Object> newestProducts;
 
     public HomeResponseDTO() {}
 
@@ -24,6 +25,16 @@ public class HomeResponseDTO {
         this.sanPhamNamTheoLoai = sanPhamNamTheoLoai;
         this.sanPhamNuTheoLoai = sanPhamNuTheoLoai;
         this.products = products;
+    }
+
+    public HomeResponseDTO(boolean success, String message, Map<String, List<Object>> sanPhamNamTheoLoai, 
+                          Map<String, List<Object>> sanPhamNuTheoLoai, List<Object> products, List<Object> newestProducts) {
+        this.success = success;
+        this.message = message;
+        this.sanPhamNamTheoLoai = sanPhamNamTheoLoai;
+        this.sanPhamNuTheoLoai = sanPhamNuTheoLoai;
+        this.products = products;
+        this.newestProducts = newestProducts;
     }
 
     // Getters and Setters
@@ -65,6 +76,14 @@ public class HomeResponseDTO {
 
     public void setProducts(List<Object> products) {
         this.products = products;
+    }
+
+    public List<Object> getNewestProducts() {
+        return newestProducts;
+    }
+
+    public void setNewestProducts(List<Object> newestProducts) {
+        this.newestProducts = newestProducts;
     }
 }
 

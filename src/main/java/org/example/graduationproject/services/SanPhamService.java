@@ -41,6 +41,10 @@ public interface SanPhamService {
     // Method dành cho admin - hiển thị tất cả sản phẩm (cả active và inactive)
     Page<SanPham> getProductsWithFiltersForAdmin(String search, Integer categoryId, String gender, int page, int size);
     
+    // Method để lấy sản phẩm mới nhất
+    List<SanPham> getNewestProducts(int limit);
+    Page<SanPham> getNewestProductsPaging(int page, int size);
+    
     Optional<ProductDTO> getProductDTOById(Integer id);
     
     void deleteProductById(Integer id);
@@ -50,4 +54,6 @@ public interface SanPhamService {
     void toggleProductActiveStatus(Integer id, boolean active);
     
     boolean isProductNameAvailable(String name, Integer excludeId);
+    
+    List<SanPham> getProductsBySupplierId(Integer supplierId);
 }

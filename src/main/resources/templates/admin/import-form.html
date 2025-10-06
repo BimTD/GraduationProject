@@ -129,12 +129,8 @@
               <!-- Chọn sản phẩm -->
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tên sản phẩm</label>
-                <select id="productSelect" class="form-select w-full">
-                  <option value="">Chọn sản phẩm...</option>
-                  <option th:each="product : ${products}" 
-                          th:value="${product.id}" 
-                          th:data-import-price="${product.giaNhap}"
-                          th:text="${product.ten}">Tên sản phẩm</option>
+                <select id="productSelect" class="form-select w-full" disabled>
+                  <option value="">Vui lòng chọn nhà cung cấp trước...</option>
                 </select>
               </div>
               
@@ -199,15 +195,6 @@
             </div>
           </div>
 
-          <!-- Dữ liệu biến thể sản phẩm (ẩn) -->
-          <div id="productVariantsData" style="display: none;">
-            <div th:each="variant : ${variants}" 
-                 th:data-product-id="${variant.sanPham.id}"
-                 th:data-variant-id="${variant.id}"
-                 th:data-color-name="${variant.mauSac.maMau}"
-                 th:data-size-name="${variant.size.tenSize}">
-            </div>
-          </div>
 
           <div class="navigation-buttons">
             <button type="button" id="prevBtn" class="btn btn-secondary">

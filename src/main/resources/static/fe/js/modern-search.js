@@ -239,6 +239,17 @@ class ModernSearch {
 
         let html = '';
 
+        // Show bestselling products first
+        html += `
+            <div class="bestselling-products">
+                <h4>Sản phẩm bán chạy nhất</h4>
+                <div class="bestselling-loading">
+                    <div class="spinner"></div>
+                    <p>Đang tải sản phẩm bán chạy...</p>
+                </div>
+            </div>
+        `;
+
         // Show search history
         if (this.searchHistory.length > 0) {
             html += `
@@ -268,13 +279,12 @@ class ModernSearch {
             `;
         }
 
-        if (html) {
-            this.suggestionsContainer.innerHTML = html;
-            this.bindDefaultSuggestionEvents();
-            this.showSuggestions();
-        } else {
-            this.hideSuggestions();
-        }
+        this.suggestionsContainer.innerHTML = html;
+        this.bindDefaultSuggestionEvents();
+        this.showSuggestions();
+        
+        // Load bestselling products
+        this.loadBestsellingProducts();
     }
 
     bindSuggestionEvents() {
@@ -334,7 +344,7 @@ class ModernSearch {
     }
 
     handleKeyNavigation(e) {
-        const suggestions = this.suggestionsContainer.querySelectorAll('.suggestion-item, .history-item, .popular-tag');
+        const suggestions = this.suggestionsContainer.querySelectorAll('.suggestion-item, .history-item, .popular-tag, .bestselling-item');
         const current = document.activeElement;
         let currentIndex = -1;
 
@@ -486,6 +496,89 @@ class ModernSearch {
         } catch (error) {
             console.error('Error loading popular searches:', error);
         }
+    }
+
+    async loadBestsellingProducts() {
+        try {
+            const response = await fetch('/api/search/bestsellers?limit=6');
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.suggestions && data.suggestions.length > 0) {
+                    this.displayBestsellingProducts(data.suggestions);
+                } else {
+                    this.hideBestsellingLoading();
+                }
+            } else {
+                this.hideBestsellingLoading();
+            }
+        } catch (error) {
+            console.error('Error loading bestselling products:', error);
+            this.hideBestsellingLoading();
+        }
+    }
+
+    displayBestsellingProducts(products) {
+        const bestsellingContainer = this.suggestionsContainer.querySelector('.bestselling-products');
+        if (!bestsellingContainer) return;
+
+        let html = '<h4>Sản phẩm bán chạy nhất</h4>';
+        html += '<div class="bestselling-list">';
+        
+        products.forEach((product, index) => {
+            const imageUrl = product.imageUrl || '/fe/img/product/product15.jpg';
+            const price = product.giaBan || '0 VNĐ';
+            const productId = product.id || product.productId || product.sanPhamId;
+            
+            html += `
+                <div class="bestselling-item" data-product-id="${productId}">
+                    <img src="${imageUrl}" alt="${product.ten}" class="bestselling-image" 
+                         onerror="this.src='/fe/img/product/product15.jpg'">
+                    <div class="bestselling-content">
+                        <div class="bestselling-title">${product.ten}</div>
+                        <div class="bestselling-price">${price}</div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        bestsellingContainer.innerHTML = html;
+        
+        // Bind click events for bestselling products
+        this.bindBestsellingEvents();
+    }
+
+    hideBestsellingLoading() {
+        const bestsellingContainer = this.suggestionsContainer.querySelector('.bestselling-products');
+        if (bestsellingContainer) {
+            const loadingDiv = bestsellingContainer.querySelector('.bestselling-loading');
+            if (loadingDiv) {
+                loadingDiv.style.display = 'none';
+            }
+        }
+    }
+
+    bindBestsellingEvents() {
+        const bestsellingItems = this.suggestionsContainer.querySelectorAll('.bestselling-item');
+        
+        bestsellingItems.forEach((item) => {
+            const productId = item.dataset.productId;
+            
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (productId && productId !== 'undefined' && productId !== 'null') {
+                    this.navigateToProduct(productId);
+                } else {
+                    console.error('Invalid product ID:', productId);
+                    alert('Không thể tìm thấy sản phẩm này');
+                }
+            });
+            
+            // Add cursor pointer
+            item.style.cursor = 'pointer';
+        });
     }
 
     addToHistory(query) {

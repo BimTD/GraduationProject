@@ -48,9 +48,13 @@ public class HomeServiceImpl implements HomeService {
             // Cũng cung cấp danh sách sản phẩm đơn giản
             List<SanPham> products = sanPhamService.getAll();
             List<Object> productsAsObjects = products.stream().map(s -> (Object) s).collect(Collectors.toList());
+            
+            // Lấy sản phẩm mới nhất (6 sản phẩm)
+            List<SanPham> newestProducts = sanPhamService.getNewestProducts(6);
+            List<Object> newestProductsAsObjects = newestProducts.stream().map(s -> (Object) s).collect(Collectors.toList());
 
             return new HomeResponseDTO(true, "Lấy dữ liệu trang chủ thành công", 
-                                     sanPhamNamTheoLoai, sanPhamNuTheoLoai, productsAsObjects);
+                                     sanPhamNamTheoLoai, sanPhamNuTheoLoai, productsAsObjects, newestProductsAsObjects);
 
         } catch (Exception e) {
             e.printStackTrace();

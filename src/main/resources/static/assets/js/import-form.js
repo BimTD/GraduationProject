@@ -16,21 +16,72 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadProductsAndVariants() {
-        // Lấy danh sách sản phẩm từ select
-        const productSelect = document.getElementById('productSelect');
-        if (productSelect) {
-            products = Array.from(productSelect.options).map(option => ({
-                id: option.value,
-                name: option.textContent,
-                importPrice: option.dataset.importPrice || '0'
-            }));
-        }
-
+        // Không cần load sản phẩm ở đây nữa, sẽ load theo nhà cung cấp
+        products = [];
+        
         // Lấy danh sách biến thể từ HTML (sẽ được cập nhật động)
         const variantSelect = document.getElementById('variantSelect');
         if (variantSelect) {
             variants = [];
         }
+    }
+    
+    function loadProductsForSupplier(supplierId) {
+        console.log('Loading products for supplier ID:', supplierId);
+        // Gọi API để lấy sản phẩm theo nhà cung cấp
+        fetch(`/admin/import/products/${supplierId}`)
+            .then(response => {
+                console.log('Products API response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Products API response data:', data);
+                products = data;
+                updateProductSelect();
+            })
+            .catch(error => {
+                console.error('Error loading products:', error);
+                products = [];
+                updateProductSelect();
+            });
+    }
+    
+    function updateProductSelect() {
+        const productSelect = document.getElementById('productSelect');
+        if (!productSelect) return;
+        
+        console.log('Updating product select with products:', products);
+        
+        // Clear existing options
+        productSelect.innerHTML = '<option value="">Chọn sản phẩm...</option>';
+        
+        if (products.length === 0) {
+            // No products available for this supplier
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = 'Không có sản phẩm nào cho nhà cung cấp này';
+            productSelect.appendChild(option);
+            productSelect.disabled = true;
+            console.log('No products available for supplier');
+        } else {
+            // Add products from the selected supplier
+            products.forEach(product => {
+                console.log('Adding product to select:', product);
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = product.name;
+                option.dataset.importPrice = product.importPrice || '0';
+                productSelect.appendChild(option);
+            });
+            productSelect.disabled = false;
+            console.log('Products added to select, count:', products.length);
+        }
+        
+        // Reset form
+        resetProductForm();
     }
 
     function setupEventListeners() {
@@ -103,20 +154,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const productSelect = document.getElementById('productSelect');
         const variantSelect = document.getElementById('variantSelect');
         const importPrice = document.getElementById('importPrice');
+        const importQuantity = document.getElementById('importQuantity');
+        
+        console.log('Product changed, value:', productSelect.value);
+        console.log('Available products:', products);
         
         if (productSelect.value) {
             // Lấy thông tin sản phẩm được chọn
-            const selectedProduct = products.find(p => p.id === productSelect.value);
+            const selectedProduct = products.find(p => String(p.id) === String(productSelect.value));
+            console.log('Selected product:', selectedProduct);
+            
             if (selectedProduct) {
                 // Cập nhật giá nhập
                 const price = parseFloat(selectedProduct.importPrice);
                 importPrice.value = formatCurrency(price);
                 
-                // Cập nhật danh sách biến thể
+                // Cập nhật danh sách biến thể (sẽ enable/disable variant select trong function này)
+                console.log('Calling updateVariants with productId:', selectedProduct.id);
                 updateVariants(selectedProduct.id);
-                
-                // Enable variant select
-                variantSelect.disabled = false;
+            } else {
+                console.error('Product not found in products array');
             }
         } else {
             // Reset form
@@ -132,27 +189,66 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateVariants(productId) {
         const variantSelect = document.getElementById('variantSelect');
         
-        // Lấy tất cả biến thể của sản phẩm này từ phần ẩn
-        const productVariants = Array.from(document.querySelectorAll(`#productVariantsData [data-product-id="${productId}"]`));
+        console.log('updateVariants called with productId:', productId, 'type:', typeof productId);
         
-        variantSelect.innerHTML = '<option value="">Chọn biến thể...</option>';
-        
-        if (productVariants.length > 0) {
-            productVariants.forEach(variant => {
-                const option = document.createElement('option');
-                option.value = variant.dataset.variantId;
-                option.textContent = `${variant.dataset.colorName} - ${variant.dataset.sizeName}`;
-                option.dataset.colorName = variant.dataset.colorName;
-                option.dataset.sizeName = variant.dataset.sizeName;
-                variantSelect.appendChild(option);
-            });
-        } else {
-            // Nếu không có biến thể, tạo option mặc định
-            const option = document.createElement('option');
-            option.value = 'default';
-            option.textContent = 'Không có biến thể';
-            variantSelect.appendChild(option);
+        // Validate productId
+        if (!productId || productId === '') {
+            console.error('Invalid productId:', productId);
+            variantSelect.innerHTML = '<option value="">Lỗi: ID sản phẩm không hợp lệ</option>';
+            variantSelect.disabled = true;
+            return;
         }
+        
+        // Reset dropdown
+        variantSelect.innerHTML = '<option value="">Đang tải biến thể...</option>';
+        variantSelect.disabled = true;
+        
+        // Gọi API để lấy biến thể theo sản phẩm
+        const url = `/admin/import/variants/${productId}`;
+        console.log('Fetching variants from URL:', url);
+        
+        fetch(url)
+            .then(response => {
+                console.log('Variants API response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Variants API response data:', data);
+                variantSelect.innerHTML = '<option value="">Chọn biến thể...</option>';
+                
+                if (data.length > 0) {
+                    data.forEach(variant => {
+                        const option = document.createElement('option');
+                        option.value = variant.id;
+                        option.textContent = `${variant.colorName} - ${variant.sizeName}`;
+                        option.dataset.colorName = variant.colorName;
+                        option.dataset.sizeName = variant.sizeName;
+                        option.dataset.stock = variant.stock;
+                        variantSelect.appendChild(option);
+                    });
+                    variantSelect.disabled = false;
+                    console.log('Variants loaded successfully, count:', data.length);
+                } else {
+                    // Nếu không có biến thể, tạo option mặc định
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'Không có biến thể cho sản phẩm này';
+                    variantSelect.appendChild(option);
+                    variantSelect.disabled = true;
+                    console.log('No variants found for product');
+                }
+                
+                // Validate form sau khi load xong biến thể
+                validateForm();
+            })
+            .catch(error => {
+                console.error('Error loading variants:', error);
+                variantSelect.innerHTML = '<option value="">Lỗi khi tải biến thể</option>';
+                variantSelect.disabled = true;
+            });
     }
 
     function handleVariantChange() {
@@ -168,15 +264,25 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const isValid = productSelect.value && 
                        variantSelect.value && 
+                       variantSelect.value !== '' &&
                        importQuantity.value && 
                        parseInt(importQuantity.value) > 0;
         
+        console.log('validateForm called');
+        console.log('productSelect.value:', productSelect.value);
+        console.log('variantSelect.value:', variantSelect.value);
+        console.log('importQuantity.value:', importQuantity.value);
+        console.log('isValid:', isValid);
+        console.log('importDetails.length:', importDetails.length);
+        
         if (addDetailBtn) {
             addDetailBtn.disabled = !isValid;
+            console.log('addDetailBtn.disabled:', addDetailBtn.disabled);
         }
         
         if (nextBtnStep2) {
             nextBtnStep2.disabled = importDetails.length === 0;
+            console.log('nextBtnStep2.disabled:', nextBtnStep2.disabled);
         }
     }
 
@@ -186,12 +292,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const importPrice = document.getElementById('importPrice');
         const importQuantity = document.getElementById('importQuantity');
         
-        if (!productSelect.value || !variantSelect.value || !importQuantity.value) {
+        console.log('addImportDetail called');
+        console.log('productSelect.value:', productSelect.value);
+        console.log('variantSelect.value:', variantSelect.value);
+        console.log('importQuantity.value:', importQuantity.value);
+        
+        if (!productSelect.value || !variantSelect.value || variantSelect.value === '' || !importQuantity.value || parseInt(importQuantity.value) <= 0) {
+            console.log('Validation failed - missing required fields or invalid quantity');
             return;
         }
         
-        const selectedProduct = products.find(p => p.id === productSelect.value);
+        const selectedProduct = products.find(p => String(p.id) === String(productSelect.value));
+        console.log('selectedProduct:', selectedProduct);
+        
+        if (!selectedProduct) {
+            console.error('Selected product not found in products array');
+            return;
+        }
+        
         const selectedVariant = variantSelect.options[variantSelect.selectedIndex];
+        console.log('selectedVariant:', selectedVariant);
         
         const detail = {
             id: Date.now(), // Unique ID for removal
@@ -204,7 +324,10 @@ document.addEventListener('DOMContentLoaded', function() {
             totalPrice: calculateTotalPrice(importPrice.value, importQuantity.value)
         };
         
+        console.log('Adding detail:', detail);
         importDetails.push(detail);
+        console.log('importDetails after adding:', importDetails);
+        
         updateImportDetailsList();
         resetProductForm();
         validateForm();
@@ -276,12 +399,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const importPrice = document.getElementById('importPrice');
         const importQuantity = document.getElementById('importQuantity');
         
+        console.log('resetProductForm called');
+        
         productSelect.value = '';
         variantSelect.innerHTML = '<option value="">Chọn biến thể...</option>';
         variantSelect.disabled = true;
         importPrice.value = '';
         importQuantity.value = '';
         
+        console.log('Form reset completed');
         validateForm();
     }
 
@@ -317,6 +443,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show supplier details
         showSupplierDetails(supplierId);
+        
+        // Load products for this supplier
+        loadProductsForSupplier(supplierId);
         
         // Enable next button
         const nextBtn = document.getElementById('nextBtn');

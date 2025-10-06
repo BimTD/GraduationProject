@@ -29,17 +29,20 @@ public class UserController extends BaseController {
                 model.addAttribute("sanPhamNamTheoLoai", response.getSanPhamNamTheoLoai());
                 model.addAttribute("sanPhamNuTheoLoai", response.getSanPhamNuTheoLoai());
                 model.addAttribute("products", response.getProducts());
+                model.addAttribute("newestProducts", response.getNewestProducts());
             } else {
                 // Fallback nếu có lỗi
                 model.addAttribute("sanPhamNamTheoLoai", Map.of());
                 model.addAttribute("sanPhamNuTheoLoai", Map.of());
                 model.addAttribute("products", List.of());
+                model.addAttribute("newestProducts", List.of());
             }
         } catch (Exception e) {
             // Fallback nếu có exception
             model.addAttribute("sanPhamNamTheoLoai", Map.of());
             model.addAttribute("sanPhamNuTheoLoai", Map.of());
             model.addAttribute("products", List.of());
+            model.addAttribute("newestProducts", List.of());
         }
         
         return "user/home";

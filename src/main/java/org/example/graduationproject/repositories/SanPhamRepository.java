@@ -104,4 +104,11 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
     
     // Methods for filtering products by category and status
     Page<SanPham> findByLoai_IdAndTrangThaiHoatDongTrue(Integer loaiId, Pageable pageable);
+    
+    // Method for getting products by supplier
+    List<SanPham> findByNhaCungCapId(Integer nhaCungCapId);
+    
+    // Method for getting newest products
+    Page<SanPham> findByTrangThaiHoatDongTrueOrderByNgayTaoDesc(Pageable pageable);
+    List<SanPham> findTop6ByTrangThaiHoatDongTrueOrderByNgayTaoDesc();
 }

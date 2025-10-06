@@ -127,4 +127,20 @@ public class SearchApiController {
                 .body(new SearchResponseDTO(false, "Lỗi lấy lịch sử: " + e.getMessage()));
         }
     }
+
+    /**
+     * API lấy danh sách sản phẩm bán chạy nhất
+     */
+    @GetMapping("/bestsellers")
+    public ResponseEntity<SearchResponseDTO> getBestsellingProducts(
+            @RequestParam(value = "limit", defaultValue = "8") int limit) {
+        
+        try {
+            SearchResponseDTO response = searchService.getBestsellingProducts(limit);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                .body(new SearchResponseDTO(false, "Lỗi lấy sản phẩm bán chạy: " + e.getMessage()));
+        }
+    }
 }

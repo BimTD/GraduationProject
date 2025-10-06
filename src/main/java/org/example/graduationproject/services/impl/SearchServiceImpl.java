@@ -4,7 +4,10 @@ import jakarta.persistence.TypedQuery;
 import org.example.graduationproject.dto.SearchResponseDTO;
 import org.example.graduationproject.dto.SearchSuggestionDTO;
 import org.example.graduationproject.models.SanPham;
+import org.example.graduationproject.models.HoaDon;
+import org.example.graduationproject.models.ChiTietHoaDon;
 import org.example.graduationproject.repositories.SanPhamRepository;
+import org.example.graduationproject.repositories.HoaDonRepository;
 import org.example.graduationproject.services.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +28,9 @@ public class SearchServiceImpl implements SearchService {
 
     @Autowired
     private SanPhamRepository sanPhamRepository;
+    
+    @Autowired
+    private HoaDonRepository hoaDonRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -365,5 +371,42 @@ public class SearchServiceImpl implements SearchService {
     private String formatPrice(BigDecimal price) {
         if (price == null) return "0 VNĐ";
         return new java.text.DecimalFormat("#,###").format(price) + " VNĐ";
+    }
+
+    @Override
+    public SearchResponseDTO getBestsellingProducts(int limit) {
+        try {
+            // Lấy tất cả đơn hàng đã hoàn thành
+            List<HoaDon> completedOrders = hoaDonRepository.findByTrangThai("COMPLETED");
+            
+            // Tính tổng số lượng bán cho mỗi sản phẩm
+            Map<SanPham, Long> productSales = completedOrders.stream()
+                    .flatMap(order -> order.getChiTietHoaDons().stream())
+                    .collect(Collectors.groupingBy(
+                        chiTiet -> chiTiet.getSanPhamBienThe().getSanPham(),
+                        Collectors.summingLong(ChiTietHoaDon::getSoLuong)
+                    ));
+            
+            // Sắp xếp theo số lượng bán giảm dần và lấy top products
+            List<SanPham> bestsellingProducts = productSales.entrySet().stream()
+                    .sorted(Map.Entry.<SanPham, Long>comparingByValue().reversed())
+                    .limit(limit)
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+            
+            // Chuyển đổi sang DTO
+            List<SearchSuggestionDTO> suggestions = bestsellingProducts.stream()
+                    .map(this::convertToSuggestionDTO)
+                    .collect(Collectors.toList());
+            
+            // Cast to List<Object> để phù hợp với constructor
+            List<Object> suggestionsAsObject = new ArrayList<>(suggestions);
+            
+            return new SearchResponseDTO(true, "Lấy " + suggestions.size() + " sản phẩm bán chạy thành công", suggestionsAsObject);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new SearchResponseDTO(false, "Lỗi lấy sản phẩm bán chạy: " + e.getMessage());
+        }
     }
 }

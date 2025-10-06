@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,13 +106,55 @@ public class ImportController {
     @GetMapping("/import/create")
     public String createImportForm(Model model) {
         List<NhaCungCap> suppliers = nhaCungCapService.getAllNhaCungCap();
-        List<SanPham> products = sanPhamService.getAll();
+        // Không cần load tất cả sản phẩm ở đây nữa, sẽ load theo nhà cung cấp được chọn
         List<SanPhamBienThe> variants = sanPhamBienTheService.getAllSanPhamBienThe();
         
         model.addAttribute("suppliers", suppliers);
-        model.addAttribute("products", products);
         model.addAttribute("variants", variants);
         return "admin/import-form";
+    }
+
+    @GetMapping("/import/products/{supplierId}")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getProductsBySupplier(@PathVariable("supplierId") Integer supplierId) {
+        try {
+            List<SanPham> products = sanPhamService.getProductsBySupplierId(supplierId);
+            List<Map<String, Object>> productList = new ArrayList<>();
+            
+            for (SanPham product : products) {
+                Map<String, Object> productMap = new HashMap<>();
+                productMap.put("id", product.getId());
+                productMap.put("name", product.getTen());
+                productMap.put("importPrice", product.getGiaNhap());
+                productList.add(productMap);
+            }
+            
+            return ResponseEntity.ok(productList);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ArrayList<>());
+        }
+    }
+
+    @GetMapping("/import/variants/{productId}")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getVariantsByProduct(@PathVariable("productId") Integer productId) {
+        try {
+            List<SanPhamBienThe> variants = sanPhamBienTheService.findBySanPhamId(productId);
+            List<Map<String, Object>> variantList = new ArrayList<>();
+            
+            for (SanPhamBienThe variant : variants) {
+                Map<String, Object> variantMap = new HashMap<>();
+                variantMap.put("id", variant.getId());
+                variantMap.put("colorName", variant.getMauSac() != null ? variant.getMauSac().getMaMau() : "N/A");
+                variantMap.put("sizeName", variant.getSize() != null ? variant.getSize().getTenSize() : "N/A");
+                variantMap.put("stock", variant.getSoLuongTon() != null ? variant.getSoLuongTon() : 0);
+                variantList.add(variantMap);
+            }
+            
+            return ResponseEntity.ok(variantList);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ArrayList<>());
+        }
     }
 
     @PostMapping("/import/create")

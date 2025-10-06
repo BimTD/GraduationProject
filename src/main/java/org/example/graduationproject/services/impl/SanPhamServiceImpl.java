@@ -468,4 +468,24 @@ public class SanPhamServiceImpl implements SanPhamService {
             return !sanPhamRepository.existsByTenIgnoreCase(name.trim());
         }
     }
+    
+    @Override
+    public List<SanPham> getProductsBySupplierId(Integer supplierId) {
+        return sanPhamRepository.findByNhaCungCapId(supplierId);
+    }
+    
+    @Override
+    public List<SanPham> getNewestProducts(int limit) {
+        if (limit <= 0) {
+            return sanPhamRepository.findTop6ByTrangThaiHoatDongTrueOrderByNgayTaoDesc();
+        }
+        Pageable pageable = PageRequest.of(0, limit);
+        return sanPhamRepository.findByTrangThaiHoatDongTrueOrderByNgayTaoDesc(pageable).getContent();
+    }
+    
+    @Override
+    public Page<SanPham> getNewestProductsPaging(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return sanPhamRepository.findByTrangThaiHoatDongTrueOrderByNgayTaoDesc(pageable);
+    }
 }

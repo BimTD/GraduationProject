@@ -40,4 +40,9 @@ public interface SearchService {
      * Lấy lịch sử tìm kiếm
      */
     SearchResponseDTO getSearchHistory(int limit);
+    
+    /**
+     * Lấy danh sách sản phẩm bán chạy nhất
+     */
+    SearchResponseDTO getBestsellingProducts(int limit);
 }
