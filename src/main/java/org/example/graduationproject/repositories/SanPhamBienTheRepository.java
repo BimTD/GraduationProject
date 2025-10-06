@@ -15,10 +15,10 @@ public interface SanPhamBienTheRepository extends JpaRepository<SanPhamBienThe, 
     
     List<SanPhamBienThe> findBySanPhamId(Integer sanPhamId);
     
-    @Query("SELECT spbt FROM SanPhamBienThe spbt WHERE spbt.sanPham.ten LIKE %:search% OR spbt.mauSac.maMau LIKE %:search% OR spbt.size.tenSize LIKE %:search% OR spbt.sanPham.loai.ten LIKE %:search%")
+    @Query("SELECT spbt FROM SanPhamBienThe spbt WHERE spbt.sanPham.ten LIKE %:search%")
     List<SanPhamBienThe> searchByKeyword(@Param("search") String search);
 
-    @Query("SELECT spbt FROM SanPhamBienThe spbt WHERE spbt.sanPham.ten LIKE %:search% OR spbt.mauSac.maMau LIKE %:search% OR spbt.size.tenSize LIKE %:search% OR spbt.sanPham.loai.ten LIKE %:search%")
+    @Query("SELECT spbt FROM SanPhamBienThe spbt WHERE spbt.sanPham.ten LIKE %:search%")
     Page<SanPhamBienThe> searchByKeywordPaging(@Param("search") String search, Pageable pageable);
     
     @Query("SELECT spbt FROM SanPhamBienThe spbt WHERE spbt.sanPham.id = :sanPhamId")

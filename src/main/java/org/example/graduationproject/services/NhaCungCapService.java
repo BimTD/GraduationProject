@@ -17,4 +17,8 @@ public interface NhaCungCapService {
     NhaCungCap save(NhaCungCap nhaCungCap);
     Optional<NhaCungCap> findById(Integer id);
     void deleteById(Integer id);
+    
+    // Validation methods
+    boolean isTenAvailable(String ten, Integer excludeId);
+    boolean isSdtAvailable(String sdt, Integer excludeId);
 } 

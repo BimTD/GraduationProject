@@ -123,22 +123,13 @@ public class SearchServiceImpl implements SearchService {
             
             List<Predicate> predicates = new ArrayList<>();
             
-            // Tìm kiếm theo từ khóa với fuzzy search
+            // Tìm kiếm theo từ khóa - CHỈ TÌM THEO TÊN SẢN PHẨM
             if (query != null && !query.trim().isEmpty()) {
                 String trimmedQuery = query.trim().toLowerCase();
                 String searchTerm = "%" + trimmedQuery + "%";
                 
-                // Tìm kiếm trong nhiều trường
-                Join<SanPham, Object> loaiJoin = root.join("loai", JoinType.LEFT);
-                Join<SanPham, Object> nhanHieuJoin = root.join("nhanHieu", JoinType.LEFT);
-                
-                predicates.add(cb.or(
-                    cb.like(cb.lower(root.get("ten")), searchTerm),
-                    cb.like(cb.lower(root.get("moTa")), searchTerm),
-                    cb.like(cb.lower(root.get("tag")), searchTerm),
-                    cb.like(cb.lower(loaiJoin.get("ten")), searchTerm),
-                    cb.like(cb.lower(nhanHieuJoin.get("ten")), searchTerm)
-                ));
+                // Chỉ tìm kiếm trong trường tên sản phẩm
+                predicates.add(cb.like(cb.lower(root.get("ten")), searchTerm));
             }
             
             // Lọc theo danh mục
@@ -211,11 +202,8 @@ public class SearchServiceImpl implements SearchService {
             List<Predicate> countPredicates = new ArrayList<>();
             if (query != null && !query.trim().isEmpty()) {
                 String searchTerm = "%" + query.trim().toLowerCase() + "%";
-                countPredicates.add(cb.or(
-                    cb.like(cb.lower(countRoot.get("ten")), searchTerm),
-                    cb.like(cb.lower(countRoot.get("moTa")), searchTerm),
-                    cb.like(cb.lower(countRoot.get("tag")), searchTerm)
-                ));
+                // Chỉ đếm theo tên sản phẩm
+                countPredicates.add(cb.like(cb.lower(countRoot.get("ten")), searchTerm));
             }
             if (categoryId != null) {
                 Join<SanPham, Object> categoryJoin = countRoot.join("loai");

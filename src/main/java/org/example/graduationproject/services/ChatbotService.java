@@ -25,7 +25,7 @@ public class ChatbotService {
     public ChatbotService(ChatMessageRepository chatMessageRepository,
                          ProductInfoService productInfoService,
                          @Value("${gemini.api.key}") String apiKey,
-                         @Value("${gemini.model.name:gemini-1.5-flash}") String modelName,
+                         @Value("${gemini.model.name:gemini-2.5-flash}") String modelName,
                          @Value("${gemini.max.tokens:1000}") int maxTokens,
                          @Value("${gemini.temperature:0.7}") double temperature) {
         this.chatMessageRepository = chatMessageRepository;

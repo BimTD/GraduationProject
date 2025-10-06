@@ -1,0 +1,219 @@
+/* Supplier Form Validation Styles */
+.form-input.error,
+.form-select.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-input.success,
+.form-select.success {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.field-error {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.field-error.text-green-600 {
+    color: #059669 !important;
+    font-weight: 500;
+}
+
+.field-error.text-red-600 {
+    color: #dc2626 !important;
+    font-weight: 500;
+}
+
+/* Form validation summary */
+.validation-summary {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.validation-summary.error {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+}
+
+.validation-summary ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.validation-summary li {
+    color: #dc2626;
+    margin-bottom: 0.25rem;
+}
+
+/* Submit button states */
+#supplierForm button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#supplierForm button[type="submit"].loading {
+    position: relative;
+    color: transparent;
+}
+
+#supplierForm button[type="submit"].loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Required field indicator */
+.required::after {
+    content: " *";
+    color: #dc2626;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group.has-error .form-input,
+.form-group.has-error .form-select {
+    border-color: #ef4444;
+}
+
+.form-group.has-success .form-input,
+.form-group.has-success .form-select {
+    border-color: #10b981;
+}
+
+/* Real-time validation feedback */
+.form-input:focus.error,
+.form-select:focus.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-input:focus.success,
+.form-select:focus.success {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Supplier specific validation styles */
+.supplier-validation-success {
+    color: #059669;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+}
+
+.supplier-validation-error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+}
+
+/* Phone number validation specific styles */
+.phone-validation-error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+}
+
+.phone-validation-success {
+    color: #059669;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+}
+
+/* Name validation specific styles */
+.name-validation-error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+}
+
+.name-validation-success {
+    color: #059669;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+}
+
+/* Supplier form specific styling */
+#supplierForm .form-group {
+    position: relative;
+}
+
+#supplierForm .form-group .field-error {
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+/* Ensure proper spacing for validation messages */
+#supplierForm .form-group {
+    margin-bottom: 2rem;
+}
+
+/* Success state styling */
+.form-group.has-success .form-input {
+    border-color: #10b981;
+    background-color: rgba(16, 185, 129, 0.05);
+}
+
+.form-group.has-success .field-error.text-green-600 {
+    color: #059669 !important;
+}
+
+/* Error state styling */
+.form-group.has-error .form-input {
+    border-color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+.form-group.has-error .field-error.text-red-600 {
+    color: #dc2626 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .validation-summary {
+        margin: 0 1rem 1rem 1rem;
+    }
+    
+    #supplierForm .form-group {
+        margin-bottom: 2.5rem;
+    }
+}

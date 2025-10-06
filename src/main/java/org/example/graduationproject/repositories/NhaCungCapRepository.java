@@ -7,4 +7,10 @@ import org.springframework.data.domain.Pageable;
 
 public interface NhaCungCapRepository extends JpaRepository<NhaCungCap, Integer> {
     Page<NhaCungCap> findByTenContainingIgnoreCase(String ten, Pageable pageable);
+    
+    // Methods for checking uniqueness
+    boolean existsByTenIgnoreCase(String ten);
+    boolean existsByTenIgnoreCaseAndIdNot(String ten, Integer id);
+    boolean existsBySdt(String sdt);
+    boolean existsBySdtAndIdNot(String sdt, Integer id);
 } 

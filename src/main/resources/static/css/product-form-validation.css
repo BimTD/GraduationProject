@@ -1,0 +1,171 @@
+/* Product Form Validation Styles */
+.form-input.error,
+.form-select.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-input.success,
+.form-select.success {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.field-error {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.name-error {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+}
+
+.name-error.text-green-600 {
+    color: #059669;
+}
+
+.name-error.text-red-600 {
+    color: #dc2626;
+}
+
+/* Loading state for name validation */
+.name-checking {
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Form validation summary */
+.validation-summary {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.validation-summary.error {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+}
+
+.validation-summary ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.validation-summary li {
+    color: #dc2626;
+    margin-bottom: 0.25rem;
+}
+
+/* Submit button states */
+#submitBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#submitBtn.loading {
+    position: relative;
+    color: transparent;
+}
+
+#submitBtn.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Image upload validation */
+.upload-error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.upload-success {
+    color: #059669;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Required field indicator */
+.required::after {
+    content: " *";
+    color: #dc2626;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group.has-error .form-input,
+.form-group.has-error .form-select {
+    border-color: #ef4444;
+}
+
+.form-group.has-success .form-input,
+.form-group.has-success .form-select {
+    border-color: #10b981;
+}
+
+/* Real-time validation feedback */
+.form-input:focus.error,
+.form-select:focus.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-input:focus.success,
+.form-select:focus.success {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Price validation specific styles */
+.price-comparison-error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+}
+
+.price-comparison-success {
+    color: #059669;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+}
+
+/* Price field highlighting when comparison is invalid */
+.form-group.price-invalid .form-input {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-group.price-valid .form-input {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}

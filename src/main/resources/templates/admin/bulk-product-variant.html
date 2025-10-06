@@ -40,13 +40,29 @@
                           th:object="${bulkDTO}" method="post" class="space-y-6">
                         
                         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                            <!-- Danh Mục -->
+                            <div>
+                                <label for="categoryId" class="block text-sm font-medium text-slate-700 dark:text-zink-100 mb-2">
+                                    <i class="mr-1">📂</i> Danh Mục
+                                </label>
+                                <select id="categoryId" 
+                                        class="form-input border-slate-200 focus:border-custom-500 focus:ring-custom-500 category-filter">
+                                    <option value="">Tất cả danh mục</option>
+                                    <option th:each="category : ${categories}" 
+                                            th:value="${category.id}" 
+                                            th:text="${category.ten}">
+                                    </option>
+                                </select>
+                                <p class="text-xs text-slate-500 mt-1">Chọn danh mục để lọc sản phẩm</p>
+                            </div>
+
                             <!-- Sản Phẩm -->
-                            <div class="lg:col-span-2">
+                            <div>
                                 <label for="sanPhamId" class="block text-sm font-medium text-slate-700 dark:text-zink-100 mb-2">
-                                    Sản Phẩm <span class="text-red-500">*</span>
+                                    <i class="mr-1">📦</i> Sản Phẩm <span class="text-red-500">*</span>
                                 </label>
                                 <select th:field="*{sanPhamId}" id="sanPhamId" 
-                                        class="form-input border-slate-200 focus:border-custom-500 focus:ring-custom-500" required>
+                                        class="form-input border-slate-200 focus:border-custom-500 focus:ring-custom-500 product-select" required>
                                     <option value="">Chọn sản phẩm</option>
                                     <option th:each="product : ${products}" 
                                             th:value="${product.id}" 
@@ -54,6 +70,10 @@
                                             th:selected="${bulkDTO.sanPhamId == product.id}">
                                     </option>
                                 </select>
+                                <div id="productLoading" class="hidden mt-2 product-loading">
+                                    <i class="animate-spin">⟳</i> Đang tải sản phẩm...
+                                </div>
+                                <p class="text-xs text-slate-500 mt-1">Sản phẩm sẽ được lọc theo danh mục đã chọn</p>
                             </div>
 
                             <!-- Màu Sắc -->
@@ -125,17 +145,72 @@
         </div>
     </div>
 
+    <style>
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .product-loading {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #3b82f6;
+            font-size: 0.875rem;
+        }
+        
+        .category-filter {
+            transition: all 0.3s ease;
+        }
+        
+        .category-filter:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .product-select {
+            transition: all 0.3s ease;
+        }
+        
+        .product-select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .form-section {
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-section h6 {
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+    
     <div th:replace="~{admin/fragments/script :: script}"></div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.getElementById('categoryId');
     const sanPhamSelect = document.getElementById('sanPhamId');
     const colorContainer = document.getElementById('colorContainer');
     const sizeContainer = document.getElementById('sizeContainer');
     const soLuongTonInput = document.getElementById('soLuongTon');
     const previewContainer = document.getElementById('previewContainer');
     const submitBtn = document.getElementById('submitBtn');
+    const productLoading = document.getElementById('productLoading');
 
     // Select all buttons
     const selectAllColors = document.getElementById('selectAllColors');
@@ -145,6 +220,71 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentColorCheckboxes = [];
     let currentSizeCheckboxes = [];
+    let allProducts = []; // Lưu trữ tất cả sản phẩm ban đầu
+
+    // Lưu trữ tất cả sản phẩm ban đầu
+    function initializeProducts() {
+        allProducts = Array.from(sanPhamSelect.options).map(option => ({
+            value: option.value,
+            text: option.textContent,
+            element: option
+        }));
+    }
+
+    // Filter sản phẩm theo danh mục
+    function filterProductsByCategory(categoryId) {
+        productLoading.classList.remove('hidden');
+        
+        if (categoryId === '' || categoryId === '0') {
+            // Hiển thị tất cả sản phẩm
+            updateProductSelect(allProducts);
+            productLoading.classList.add('hidden');
+        } else {
+            // Lấy sản phẩm theo danh mục
+            fetch(`/admin/product-variant/get-products-by-category/${categoryId}`)
+                .then(response => response.json())
+                .then(products => {
+                    const productOptions = products.map(product => ({
+                        value: product.id,
+                        text: product.ten,
+                        element: null
+                    }));
+                    updateProductSelect(productOptions);
+                    productLoading.classList.add('hidden');
+                })
+                .catch(error => {
+                    console.error('Error loading products by category:', error);
+                    alert('Có lỗi xảy ra khi tải sản phẩm theo danh mục!');
+                    productLoading.classList.add('hidden');
+                });
+        }
+    }
+
+    // Cập nhật dropdown sản phẩm
+    function updateProductSelect(products) {
+        // Xóa tất cả options hiện tại (trừ option đầu tiên)
+        while (sanPhamSelect.children.length > 1) {
+            sanPhamSelect.removeChild(sanPhamSelect.lastChild);
+        }
+        
+        // Thêm các sản phẩm mới
+        products.forEach(product => {
+            const option = document.createElement('option');
+            option.value = product.value;
+            option.textContent = product.text;
+            sanPhamSelect.appendChild(option);
+        });
+        
+        // Reset selection và clear color/size containers
+        sanPhamSelect.value = '';
+        resetColorAndSizeContainers();
+    }
+
+    // Event listener cho danh mục
+    categorySelect.addEventListener('change', function() {
+        const selectedCategoryId = this.value;
+        filterProductsByCategory(selectedCategoryId);
+    });
 
     // Load available colors and sizes when product is selected
     sanPhamSelect.addEventListener('change', function() {
@@ -363,7 +503,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Initialize preview
+    // Initialize
+    initializeProducts();
     updatePreview();
 });
 </script>

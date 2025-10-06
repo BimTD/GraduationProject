@@ -57,7 +57,7 @@ public class ProductController {
         List<Loai> categories = loaiRepository.findAll();
         model.addAttribute("categories", categories);
         
-        Page<SanPham> productPage = sanPhamService.getProductsWithFilters(search, categoryId, gender, page, size);
+        Page<SanPham> productPage = sanPhamService.getProductsWithFiltersForAdmin(search, categoryId, gender, page, size);
         
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("productPage", productPage);
@@ -169,5 +169,23 @@ public class ProductController {
             redirectAttributes.addFlashAttribute("error", "Lỗi khi xóa sản phẩm: " + e.getMessage());
         }
         return "redirect:/admin/product";
+    }
+
+    @GetMapping("/product/check-name")
+    @ResponseBody
+    public java.util.Map<String, Object> checkProductName(@RequestParam("name") String name, 
+                                                          @RequestParam(value = "id", required = false) Integer id) {
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        
+        try {
+            boolean isAvailable = sanPhamService.isProductNameAvailable(name, id);
+            response.put("available", isAvailable);
+            response.put("message", isAvailable ? "Tên sản phẩm có thể sử dụng" : "Tên sản phẩm đã tồn tại");
+        } catch (Exception e) {
+            response.put("available", false);
+            response.put("message", "Lỗi khi kiểm tra tên sản phẩm: " + e.getMessage());
+        }
+        
+        return response;
     }
 }

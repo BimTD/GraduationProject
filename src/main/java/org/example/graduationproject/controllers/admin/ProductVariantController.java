@@ -4,6 +4,7 @@ import org.example.graduationproject.dto.BulkProductVariantDTO;
 import org.example.graduationproject.dto.ProductVariantDTO;
 import org.example.graduationproject.models.*;
 import org.example.graduationproject.repositories.SanPhamRepository;
+import org.example.graduationproject.repositories.LoaiRepository;
 import org.example.graduationproject.services.MauSacService;
 import org.example.graduationproject.services.SanPhamBienTheService;
 import org.example.graduationproject.services.SizeService;
@@ -31,6 +32,9 @@ public class ProductVariantController {
 
     @Autowired
     private SanPhamRepository sanPhamRepository;
+
+    @Autowired
+    private LoaiRepository loaiRepository;
 
     @Autowired
     private MauSacService mauSacService;
@@ -171,11 +175,13 @@ public class ProductVariantController {
         model.addAttribute("currentPage", "product-variant");
 
         List<SanPham> products = sanPhamRepository.findAll();
+        List<Loai> categories = loaiRepository.findAll();
 
         BulkProductVariantDTO bulkDTO = new BulkProductVariantDTO();
         bulkDTO.setSoLuongTon(0);
         
         model.addAttribute("products", products);
+        model.addAttribute("categories", categories);
         model.addAttribute("bulkDTO", bulkDTO);
 
         return "admin/bulk-product-variant";
@@ -186,6 +192,16 @@ public class ProductVariantController {
     @ResponseBody
     public BulkProductVariantDTO getAvailableOptions(@PathVariable Integer sanPhamId) {
         return sanPhamBienTheService.getAvailableColorsAndSizesForProduct(sanPhamId);
+    }
+    
+    // Endpoint để lấy sản phẩm theo danh mục (AJAX)
+    @GetMapping("/product-variant/get-products-by-category/{categoryId}")
+    @ResponseBody
+    public List<SanPham> getProductsByCategory(@PathVariable Integer categoryId) {
+        if (categoryId == null || categoryId == 0) {
+            return sanPhamRepository.findAll();
+        }
+        return sanPhamRepository.findByLoai_IdAndTrangThaiHoatDongTrue(categoryId, org.springframework.data.domain.Pageable.unpaged()).getContent();
     }
     
     // Endpoint để xử lý tạo biến thể hàng loạt

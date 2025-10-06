@@ -126,13 +126,11 @@ public class ShopServiceImpl implements ShopService {
                                            BigDecimal minPrice, BigDecimal maxPrice) {
         List<Predicate> predicates = new ArrayList<>();
         
-        // 1. Điều kiện tìm kiếm theo tên sản phẩm và mô tả
+        // 1. Điều kiện tìm kiếm - CHỈ TÌM THEO TÊN SẢN PHẨM
         if (search != null && !search.trim().isEmpty()) {
             String searchTerm = "%" + search.trim().toLowerCase() + "%";
-            predicates.add(cb.or(
-                cb.like(cb.lower(root.get("ten")), searchTerm),
-                cb.like(cb.lower(root.get("moTa")), searchTerm)
-            ));
+            // Chỉ tìm kiếm trong trường tên sản phẩm
+            predicates.add(cb.like(cb.lower(root.get("ten")), searchTerm));
         }
         
         // 2. Điều kiện lọc theo danh mục (category)

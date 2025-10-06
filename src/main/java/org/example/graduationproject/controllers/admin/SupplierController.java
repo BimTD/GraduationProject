@@ -70,15 +70,26 @@ public class SupplierController {
 
     @PostMapping("/add")
     public String addSupplier(@ModelAttribute("supplier") NhaCungCap nhaCungCap, RedirectAttributes redirectAttributes) {
-        nhaCungCapService.save(nhaCungCap);
-        redirectAttributes.addFlashAttribute("success", "Đã thêm nhà cung cấp thành công!");
+        try {
+            nhaCungCapService.save(nhaCungCap);
+            redirectAttributes.addFlashAttribute("success", "Đã thêm nhà cung cấp thành công!");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("showForm", true);
+        }
         return "redirect:/admin/supplier";
     }
 
     @PostMapping("/update")
     public String updateSupplier(@ModelAttribute("supplier") NhaCungCap nhaCungCap, RedirectAttributes redirectAttributes) {
-        nhaCungCapService.save(nhaCungCap);
-        redirectAttributes.addFlashAttribute("success", "Cập nhật nhà cung cấp thành công!");
+        try {
+            nhaCungCapService.save(nhaCungCap);
+            redirectAttributes.addFlashAttribute("success", "Cập nhật nhà cung cấp thành công!");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("showForm", true);
+            redirectAttributes.addFlashAttribute("editId", nhaCungCap.getId());
+        }
         return "redirect:/admin/supplier";
     }
 
@@ -92,5 +103,41 @@ public class SupplierController {
         nhaCungCapService.deleteById(id);
         redirectAttributes.addFlashAttribute("success", "Nhà cung cấp đã bị xóa thành công!");
         return "redirect:/admin/supplier";
+    }
+
+    @GetMapping("/check-ten")
+    @ResponseBody
+    public java.util.Map<String, Object> checkTen(@RequestParam("ten") String ten, 
+                                                  @RequestParam(value = "id", required = false) Integer id) {
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        
+        try {
+            boolean isAvailable = nhaCungCapService.isTenAvailable(ten, id);
+            response.put("available", isAvailable);
+            response.put("message", isAvailable ? "Tên nhà cung cấp có thể sử dụng" : "Tên nhà cung cấp đã tồn tại");
+        } catch (Exception e) {
+            response.put("available", false);
+            response.put("message", "Lỗi khi kiểm tra tên nhà cung cấp: " + e.getMessage());
+        }
+        
+        return response;
+    }
+
+    @GetMapping("/check-sdt")
+    @ResponseBody
+    public java.util.Map<String, Object> checkSdt(@RequestParam("sdt") String sdt, 
+                                                  @RequestParam(value = "id", required = false) Integer id) {
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        
+        try {
+            boolean isAvailable = nhaCungCapService.isSdtAvailable(sdt, id);
+            response.put("available", isAvailable);
+            response.put("message", isAvailable ? "Số điện thoại có thể sử dụng" : "Số điện thoại đã tồn tại");
+        } catch (Exception e) {
+            response.put("available", false);
+            response.put("message", "Lỗi khi kiểm tra số điện thoại: " + e.getMessage());
+        }
+        
+        return response;
     }
 }

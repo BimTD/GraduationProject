@@ -39,20 +39,20 @@
                     <!-- Cột trái -->
                     <div class="space-y-4">
                         <div class="grid gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Tên</label>
+                            <div class="form-group">
+                                <label class="block text-sm font-medium mb-1 required">Tên</label>
                                 <input th:field="*{ten}" type="text" maxlength="100" class="form-input w-full" placeholder="Tên sản phẩm" required>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Giá bán</label>
+                            <div class="form-group">
+                                <label class="block text-sm font-medium mb-1 required">Giá bán</label>
                                 <input th:field="*{giaBan}" type="number" step="0.01" min="0" class="form-input w-full" placeholder="Giá bán" required>
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Giá nhập</label>
+                            <div class="form-group">
+                                <label class="block text-sm font-medium mb-1 required">Giá nhập</label>
                                 <input th:field="*{giaNhap}" type="number" step="0.01" min="0" class="form-input w-full" placeholder="Giá nhập" required>
                             </div>
                         </div>
@@ -63,8 +63,8 @@
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Giới tính</label>
+                            <div class="form-group">
+                                <label class="block text-sm font-medium mb-1 required">Giới tính</label>
                                 <select th:field="*{gioiTinh}" class="form-select w-full" required>
                                     <option value="">Chọn giới tính</option>
                                     <option value="1">Nam</option>
@@ -74,8 +74,8 @@
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Danh mục</label>
+                            <div class="form-group">
+                                <label class="block text-sm font-medium mb-1 required">Danh mục</label>
                                 <select th:field="*{loaiId}" class="form-select w-full" required>
                                     <option value="">Chọn danh mục</option>
                                     <option th:each="loai : ${loais}" th:value="${loai.id}" th:text="${loai.ten}" th:selected="${loai.id} == *{loaiId}"></option>
@@ -83,8 +83,8 @@
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Nhãn hiệu</label>
+                            <div class="form-group">
+                                <label class="block text-sm font-medium mb-1 required">Nhãn hiệu</label>
                                 <select th:field="*{nhanHieuId}" class="form-select w-full" required>
                                     <option value="">Chọn nhãn hiệu</option>
                                     <option th:each="nhanHieu : ${nhanHieus}" th:value="${nhanHieu.id}" th:text="${nhanHieu.ten}" th:selected="${nhanHieu.id} == *{nhanHieuId}"></option>
@@ -142,8 +142,8 @@
                             </div>
                         </div>
                         <div class="grid gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Nhà cung cấp</label>
+                            <div class="form-group">
+                                <label class="block text-sm font-medium mb-1 required">Nhà cung cấp</label>
                                 <select th:field="*{nhaCungCapId}" class="form-select w-full" required>
                                     <option value="">Chọn nhà cung cấp</option>
                                     <option th:each="nhaCungCap : ${nhaCungCaps}" th:value="${nhaCungCap.id}" th:text="${nhaCungCap.ten}" th:selected="${nhaCungCap.id} == *{nhaCungCapId}"></option>
@@ -173,6 +173,7 @@
 </div>
 
 <link rel="stylesheet" th:href="@{/assets/css/product-upload.css}">
+<link rel="stylesheet" th:href="@{/css/product-form-validation.css}">
 <script th:src="@{/assets/js/product-upload.js}"></script>
   <div th:replace="~{admin/fragments/script :: script}"></div>
 
