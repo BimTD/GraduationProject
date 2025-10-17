@@ -46,7 +46,7 @@ public class ProductVariantController {
     public String productVariant(Model model,
                                 @RequestParam(value = "search", required = false) String search,
                                 @RequestParam(value = "page", defaultValue = "0") int page,
-                                @RequestParam(value = "size", defaultValue = "10") int size) {
+                                @RequestParam(value = "size", defaultValue = "50") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 

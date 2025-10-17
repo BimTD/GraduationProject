@@ -41,23 +41,23 @@
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>Họ <span>*</span></label>
-                                        <input type="text" id="ho" name="ho" 
-                                               th:value="${user.hoTen != null ? user.hoTen.split(' ')[0] : ''}" 
+                                        <input type="text" id="ho" name="ho"
+                                               th:value="${user.hoTen != null ? user.hoTen.split(' ')[0] : ''}"
                                                placeholder="Nhập họ" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>Tên <span>*</span></label>
-                                        <input type="text" id="ten" name="ten" 
-                                               th:value="${user.hoTen != null ? user.hoTen.split(' ').length > 1 ? user.hoTen.split(' ')[1] : '' : ''}" 
+                                        <input type="text" id="ten" name="ten"
+                                               th:value="${user.hoTen != null ? user.hoTen.split(' ').length > 1 ? user.hoTen.split(' ')[1] : '' : ''}"
                                                placeholder="Nhập tên" required>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Tên công ty</label>
-                                        <input type="text" id="tenCongTy" name="tenCongTy" 
+                                        <input type="text" id="tenCongTy" name="tenCongTy"
                                                placeholder="Nhập tên công ty (không bắt buộc)">
                                     </div>
                                 </div>
@@ -76,48 +76,48 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Địa chỉ <span>*</span></label>
-                                        <input type="text" id="diaChi1" name="diaChi1" 
-                                               th:value="${user.diaChi}" 
+                                        <input type="text" id="diaChi1" name="diaChi1"
+                                               th:value="${user.diaChi}"
                                                placeholder="Số nhà và tên đường" required>
-                                        <input type="text" id="diaChi2" name="diaChi2" 
-                                               placeholder="Căn hộ, phòng, đơn vị (không bắt buộc)" 
+                                        <input type="text" id="diaChi2" name="diaChi2"
+                                               placeholder="Căn hộ, phòng, đơn vị (không bắt buộc)"
                                                style="margin-top: 10px;">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>Thành phố <span>*</span></label>
-                                        <input type="text" id="thanhPho" name="thanhPho" 
+                                        <input type="text" id="thanhPho" name="thanhPho"
                                                placeholder="Nhập thành phố" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>Tỉnh / Huyện <span>*</span></label>
-                                        <input type="text" id="tinhHuyen" name="tinhHuyen" 
+                                        <input type="text" id="tinhHuyen" name="tinhHuyen"
                                                placeholder="Nhập tỉnh/huyện" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>Số điện thoại <span>*</span></label>
-                                        <input type="tel" id="soDienThoai" name="soDienThoai" 
-                                               th:value="${user.soDienThoai}" 
+                                        <input type="tel" id="soDienThoai" name="soDienThoai"
+                                               th:value="${user.soDienThoai}"
                                                placeholder="Nhập số điện thoại" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>Email <span>*</span></label>
-                                        <input type="email" id="email" name="email" 
-                                               th:value="${user.email}" 
+                                        <input type="email" id="email" name="email"
+                                               th:value="${user.email}"
                                                placeholder="Nhập email" required>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Ghi chú</label>
-                                        <textarea id="ghiChu" name="ghiChu" rows="3" 
+                                        <textarea id="ghiChu" name="ghiChu" rows="3"
                                                   placeholder="Ghi chú về đơn hàng (không bắt buộc)"></textarea>
                                     </div>
                                 </div>
@@ -125,13 +125,13 @@
                         </form>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-4">
                     <div class="order_summary">
                         <div class="order_header">
                             <h3>ĐƠN HÀNG CỦA BẠN</h3>
                         </div>
-                        
+
                         <div class="order_items" th:if="${cart != null and cart.chiTietGioHangs != null}">
                             <div class="order_item" th:each="item : ${cart.chiTietGioHangs}">
                                 <div class="item_info">
@@ -141,7 +141,7 @@
                                 <div class="item_price" th:text="${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">100,000 VNĐ</div>
                             </div>
                         </div>
-                        
+
                         <div class="order_total">
                             <div class="total_row">
                                 <span>Tạm tính:</span>
@@ -161,12 +161,12 @@
                                 <span id="total-amount" th:text="${finalTotal != null ? #numbers.formatDecimal(finalTotal, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : #numbers.formatDecimal(#aggregates.sum(cart.chiTietGioHangs.![thanhTien]), 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
                             </div>
                         </div>
-                        
+
                         <!-- Mã giảm giá section - Hỗ trợ nhiều mã -->
                         <div class="discount_section" th:if="${discountCodes != null or discountCode != null}">
                             <div class="discount_info">
                                 <h4>Mã giảm giá đã áp dụng</h4>
-                                
+
                                 <!-- Hiển thị nhiều mã giảm giá -->
                                 <div th:if="${discountCodes != null}" class="applied_discounts_list">
                                     <div th:each="code, iterStat : ${appliedDiscountCodes}" class="applied_discount_item">
@@ -178,13 +178,13 @@
                                         <span class="total_discount_amount" th:text="'-' + ${#numbers.formatDecimal(totalDiscountAmount, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">-50,000 VNĐ</span>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Hiển thị 1 mã giảm giá (tương thích ngược) -->
                                 <div th:if="${discountCode != null and discountCodes == null}" class="applied_discount">
                                     <span class="discount_code" th:text="${discountCode}">SALE10</span>
                                     <span class="discount_amount" th:text="'-' + ${#numbers.formatDecimal(discountAmount, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">-50,000 VNĐ</span>
                                 </div>
-                                
+
                                 <div class="discount_actions">
                                     <a href="/cart" class="btn-edit-discount">
                                         <i class="fa fa-edit"></i> Chỉnh sửa mã giảm giá
@@ -192,7 +192,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Thêm mã giảm giá section -->
                         <div class="add_discount_section" th:if="${discountCode == null and discountCodes == null}">
                             <div class="add_discount_info">
@@ -209,13 +209,13 @@
                                 <div id="newDiscountMessage" class="discount-message" style="margin-top: 10px; display: none;"></div>
                             </div>
                         </div>
-                        
+
                         <div class="payment_section">
                             <div class="account_option">
                                 <input type="radio" id="createAccount" name="createAccount" value="true">
                                 <label for="createAccount">Tạo tài khoản?</label>
                             </div>
-                            
+
                             <div class="payment_method">
                                 <label>Phương thức thanh toán:</label>
                                 <div class="payment_option">
@@ -228,7 +228,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- SePay QR Code Section -->
                         <div id="sepay-qr-section" class="sepay-qr-section" style="display: none;">
                             <div class="qr-container">
@@ -241,13 +241,13 @@
                                     <p><strong>Mô tả:</strong> <span id="qr-description">Thanh toán đơn hàng</span></p>
                                     <p><strong>Trạng thái:</strong> <span id="qr-status">Đang chờ thanh toán</span></p>
                                 </div>
-<!--                                <div class="qr-actions">-->
-<!--                                    <button type="button" id="check-payment-status" class="btn-check-status">Kiểm tra thanh toán</button>-->
-<!--                                    <button type="button" id="cancel-payment" class="btn-cancel-payment">Hủy thanh toán</button>-->
-<!--                                </div>-->
+                                <!--                                <div class="qr-actions">-->
+                                <!--                                    <button type="button" id="check-payment-status" class="btn-check-status">Kiểm tra thanh toán</button>-->
+                                <!--                                    <button type="button" id="cancel-payment" class="btn-cancel-payment">Hủy thanh toán</button>-->
+                                <!--                                </div>-->
                             </div>
                         </div>
-                        
+
                         <div class="checkout_btn">
                             <button type="button" id="place-order-btn" class="btn-checkout">
                                 ĐẶT HÀNG NGAY
@@ -270,931 +270,931 @@
 <script th:src="@{/js/chatbot.js}"></script>
 
 <style>
-.discount_section {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 15px 0;
-}
+    .discount_section {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+    }
 
-.discount_info h4 {
-    color: #28a745;
-    margin: 0 0 10px 0;
-    font-size: 16px;
-    font-weight: 600;
-}
+    .discount_info h4 {
+        color: #28a745;
+        margin: 0 0 10px 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
 
-.applied_discount {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid #d4edda;
-}
+    .applied_discount {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        border: 1px solid #d4edda;
+    }
 
-.discount_code {
-    font-weight: 600;
-    color: #155724;
-    background-color: #d4edda;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 14px;
-}
+    .discount_code {
+        font-weight: 600;
+        color: #155724;
+        background-color: #d4edda;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
 
-.discount_amount {
-    font-weight: 600;
-    color: #28a745;
-    font-size: 16px;
-}
+    .discount_amount {
+        font-weight: 600;
+        color: #28a745;
+        font-size: 16px;
+    }
 
-.total_row.discount {
-    border-top: 1px solid #e5e5e5;
-    padding: 8px 0;
-}
+    .total_row.discount {
+        border-top: 1px solid #e5e5e5;
+        padding: 8px 0;
+    }
 
-.total_row.discount span:first-child {
-    color: #28a745;
-    font-weight: 500;
-}
+    .total_row.discount span:first-child {
+        color: #28a745;
+        font-weight: 500;
+    }
 
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    min-width: 300px;
-    max-width: 500px;
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-}
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        max-width: 500px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    }
 
-.notification.show {
-    transform: translateX(0);
-}
+    .notification.show {
+        transform: translateX(0);
+    }
 
-.notification.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
+    .notification.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
 
-.notification.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
+    .notification.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
 
-.notification.info {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-}
+    .notification.info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
 
-.notification-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    .notification-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-.notification-close {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: inherit;
-    opacity: 0.7;
-    margin-left: 10px;
-}
+    .notification-close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: inherit;
+        opacity: 0.7;
+        margin-left: 10px;
+    }
 
-.notification-close:hover {
-    opacity: 1;
-}
+    .notification-close:hover {
+        opacity: 1;
+    }
 
-.add_discount_section {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 15px 0;
-}
+    .add_discount_section {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+    }
 
-.add_discount_info h4 {
-    color: #333;
-    margin: 0 0 15px 0;
-    font-size: 16px;
-    font-weight: 600;
-}
+    .add_discount_info h4 {
+        color: #333;
+        margin: 0 0 15px 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
 
-.discount_input_group {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
+    .discount_input_group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
 
-.discount_input_group input {
-    flex: 1;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-}
+    .discount_input_group input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
 
-.discount_input_group button {
-    padding: 10px 20px;
-    background: #ff6a28;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
+    .discount_input_group button {
+        padding: 10px 20px;
+        background: #ff6a28;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
 
-.discount_input_group button:hover:not(:disabled) {
-    background: #e55a1f;
-    transform: translateY(-1px);
-}
+    .discount_input_group button:hover:not(:disabled) {
+        background: #e55a1f;
+        transform: translateY(-1px);
+    }
 
-.discount_input_group button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    transform: none;
-}
+    .discount_input_group button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+    }
 
-.discount_actions {
-    margin-top: 15px;
-}
+    .discount_actions {
+        margin-top: 15px;
+    }
 
-.btn-remove-discount {
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
+    .btn-remove-discount {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
 
-.btn-remove-discount:hover {
-    background: #c82333;
-    transform: translateY(-1px);
-}
+    .btn-remove-discount:hover {
+        background: #c82333;
+        transform: translateY(-1px);
+    }
 
-.discount_links {
-    margin-top: 10px;
-}
+    .discount_links {
+        margin-top: 10px;
+    }
 
-.view-discounts-link {
-    color: #ff6a28;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: all 0.3s ease;
-}
+    .view-discounts-link {
+        color: #ff6a28;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s ease;
+    }
 
-.view-discounts-link:hover {
-    color: #e55a1f;
-    text-decoration: underline;
-}
+    .view-discounts-link:hover {
+        color: #e55a1f;
+        text-decoration: underline;
+    }
 
-/* Styles cho danh sách nhiều mã giảm giá */
-.applied_discounts_list {
-    margin-bottom: 15px;
-}
+    /* Styles cho danh sách nhiều mã giảm giá */
+    .applied_discounts_list {
+        margin-bottom: 15px;
+    }
 
-.applied_discount_item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-    padding: 8px 12px;
-    margin-bottom: 8px;
-    border-radius: 5px;
-    border: 1px solid #d4edda;
-}
+    .applied_discount_item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        border-radius: 5px;
+        border: 1px solid #d4edda;
+    }
 
-.discount_total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f8f9fa;
-    padding: 10px 12px;
-    border-radius: 5px;
-    border: 1px solid #e9ecef;
-    font-weight: 600;
-    margin-top: 10px;
-}
+    .discount_total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f9fa;
+        padding: 10px 12px;
+        border-radius: 5px;
+        border: 1px solid #e9ecef;
+        font-weight: 600;
+        margin-top: 10px;
+    }
 
-.total_discount_amount {
-    color: #28a745;
-    font-size: 16px;
-}
+    .total_discount_amount {
+        color: #28a745;
+        font-size: 16px;
+    }
 
-.btn-edit-discount {
-    background: #ff6a28;
-    color: white;
-    text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-    font-size: 14px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: all 0.3s ease;
-}
+    .btn-edit-discount {
+        background: #ff6a28;
+        color: white;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s ease;
+    }
 
-.btn-edit-discount:hover {
-    background: #e55a1f;
-    color: white;
-    text-decoration: none;
-    transform: translateY(-1px);
-}
+    .btn-edit-discount:hover {
+        background: #e55a1f;
+        color: white;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
 
-/* SePay QR Code Styles */
-.sepay-qr-section {
-    background-color: #f8f9fa;
-    border: 2px solid #007bff;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 20px 0;
-    text-align: center;
-}
+    /* SePay QR Code Styles */
+    .sepay-qr-section {
+        background-color: #f8f9fa;
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: center;
+    }
 
-.qr-container h4 {
-    color: #007bff;
-    margin-bottom: 15px;
-    font-size: 18px;
-    font-weight: 600;
-}
+    .qr-container h4 {
+        color: #007bff;
+        margin-bottom: 15px;
+        font-size: 18px;
+        font-weight: 600;
+    }
 
-.qr-code-container {
-    margin: 15px 0;
-    padding: 15px;
-    background-color: white;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-}
+    .qr-code-container {
+        margin: 15px 0;
+        padding: 15px;
+        background-color: white;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
 
-.qr-info {
-    margin: 15px 0;
-    text-align: left;
-    background-color: white;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-}
+    .qr-info {
+        margin: 15px 0;
+        text-align: left;
+        background-color: white;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
 
-.qr-info p {
-    margin: 8px 0;
-    font-size: 14px;
-}
+    .qr-info p {
+        margin: 8px 0;
+        font-size: 14px;
+    }
 
-.qr-info strong {
-    color: #495057;
-}
+    .qr-info strong {
+        color: #495057;
+    }
 
-.qr-actions {
-    margin-top: 15px;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
+    .qr-actions {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
 
-.btn-check-status {
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
+    .btn-check-status {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
 
-.btn-check-status:hover {
-    background: #218838;
-    transform: translateY(-1px);
-}
+    .btn-check-status:hover {
+        background: #218838;
+        transform: translateY(-1px);
+    }
 
-.btn-cancel-payment {
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
+    .btn-cancel-payment {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
 
-.btn-cancel-payment:hover {
-    background: #c82333;
-    transform: translateY(-1px);
-}
+    .btn-cancel-payment:hover {
+        background: #c82333;
+        transform: translateY(-1px);
+    }
 
-.payment_option {
-    margin-bottom: 10px;
-}
+    .payment_option {
+        margin-bottom: 10px;
+    }
 
-.payment_option input[type="radio"] {
-    margin-right: 8px;
-}
+    .payment_option input[type="radio"] {
+        margin-right: 8px;
+    }
 
-.payment_option label {
-    cursor: pointer;
-    font-weight: 500;
-    color: #495057;
-}
+    .payment_option label {
+        cursor: pointer;
+        font-weight: 500;
+        color: #495057;
+    }
 </style>
 
 <script>
-// ===== GLOBAL VARIABLES =====
-let appliedDiscountCodes = []; // Danh sách mã giảm giá đã áp dụng
-let totalDiscountAmount = 0; // Tổng số tiền giảm giá
-let originalSubtotal = 0;
-let currentSePayTransaction = null; // Giao dịch SePay hiện tại
-let paymentStatusInterval = null; // Interval để kiểm tra trạng thái thanh toán
+    // ===== GLOBAL VARIABLES =====
+    let appliedDiscountCodes = []; // Danh sách mã giảm giá đã áp dụng
+    let totalDiscountAmount = 0; // Tổng số tiền giảm giá
+    let originalSubtotal = 0;
+    let currentSePayTransaction = null; // Giao dịch SePay hiện tại
+    let paymentStatusInterval = null; // Interval để kiểm tra trạng thái thanh toán
 
-// ===== GLOBAL FUNCTIONS =====
+    // ===== GLOBAL FUNCTIONS =====
 
-// Hàm format tiền tệ
-function formatCurrency(amount) {
-    if (isNaN(amount) || amount <= 0) {
-        return '0 VNĐ';
+    // Hàm format tiền tệ
+    function formatCurrency(amount) {
+        if (isNaN(amount) || amount <= 0) {
+            return '0 VNĐ';
+        }
+        return new Intl.NumberFormat('vi-VN', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(amount) + ' VNĐ';
     }
-    return new Intl.NumberFormat('vi-VN', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    }).format(amount) + ' VNĐ';
-}
 
-// Hàm khởi tạo mã giảm giá từ Thymeleaf data
-function initializeDiscountFromURL() {
-    // Lưu subtotal gốc
-    const subtotalElement = document.getElementById('subtotal-amount');
-    if (subtotalElement) {
-        const subtotalText = subtotalElement.textContent;
-        originalSubtotal = parseFloat(subtotalText.replace(/[^\d]/g, ''));
-        console.log('Original subtotal:', originalSubtotal);
+    // Hàm khởi tạo mã giảm giá từ Thymeleaf data
+    function initializeDiscountFromURL() {
+        // Lưu subtotal gốc
+        const subtotalElement = document.getElementById('subtotal-amount');
+        if (subtotalElement) {
+            const subtotalText = subtotalElement.textContent;
+            originalSubtotal = parseFloat(subtotalText.replace(/[^\d]/g, ''));
+            console.log('Original subtotal:', originalSubtotal);
+        }
+
+        // Kiểm tra xem có mã giảm giá được áp dụng không (từ Thymeleaf)
+        const discountRow = document.getElementById('discount-row');
+        if (discountRow && discountRow.style.display !== 'none') {
+            const discountAmountElement = document.getElementById('discount-amount');
+
+            if (discountAmountElement) {
+                const discountAmountText = discountAmountElement.textContent;
+                totalDiscountAmount = parseFloat(discountAmountText.replace(/[^\d]/g, ''));
+
+                console.log('Applied discount amount from Thymeleaf:', totalDiscountAmount);
+            }
+        }
+
+        // Lấy danh sách mã giảm giá từ Thymeleaf (nếu có)
+        const appliedDiscountsList = document.querySelector('.applied_discounts_list');
+        if (appliedDiscountsList) {
+            const discountItems = appliedDiscountsList.querySelectorAll('.applied_discount_item');
+            discountItems.forEach(item => {
+                const codeElement = item.querySelector('.discount_code');
+                if (codeElement) {
+                    appliedDiscountCodes.push(codeElement.textContent);
+                }
+            });
+            console.log('Applied discount codes from Thymeleaf:', appliedDiscountCodes);
+        }
     }
-    
-    // Kiểm tra xem có mã giảm giá được áp dụng không (từ Thymeleaf)
-    const discountRow = document.getElementById('discount-row');
-    if (discountRow && discountRow.style.display !== 'none') {
+
+    // Hàm cập nhật hiển thị mã giảm giá
+    function updateDiscountDisplay() {
+        const discountRow = document.getElementById('discount-row');
         const discountAmountElement = document.getElementById('discount-amount');
-        
-        if (discountAmountElement) {
-            const discountAmountText = discountAmountElement.textContent;
-            totalDiscountAmount = parseFloat(discountAmountText.replace(/[^\d]/g, ''));
-            
-            console.log('Applied discount amount from Thymeleaf:', totalDiscountAmount);
-        }
-    }
-    
-    // Lấy danh sách mã giảm giá từ Thymeleaf (nếu có)
-    const appliedDiscountsList = document.querySelector('.applied_discounts_list');
-    if (appliedDiscountsList) {
-        const discountItems = appliedDiscountsList.querySelectorAll('.applied_discount_item');
-        discountItems.forEach(item => {
-            const codeElement = item.querySelector('.discount_code');
-            if (codeElement) {
-                appliedDiscountCodes.push(codeElement.textContent);
+
+        if (appliedDiscountCodes.length > 0 && totalDiscountAmount > 0) {
+            discountRow.style.display = 'block';
+            if (discountAmountElement) {
+                discountAmountElement.textContent = '-' + formatCurrency(totalDiscountAmount);
             }
-        });
-        console.log('Applied discount codes from Thymeleaf:', appliedDiscountCodes);
-    }
-}
-
-// Hàm cập nhật hiển thị mã giảm giá
-function updateDiscountDisplay() {
-    const discountRow = document.getElementById('discount-row');
-    const discountAmountElement = document.getElementById('discount-amount');
-    
-    if (appliedDiscountCodes.length > 0 && totalDiscountAmount > 0) {
-        discountRow.style.display = 'block';
-        if (discountAmountElement) {
-            discountAmountElement.textContent = '-' + formatCurrency(totalDiscountAmount);
-        }
-    } else {
-        discountRow.style.display = 'none';
-    }
-}
-
-// Hàm cập nhật tổng tiền sau giảm giá (không cần thiết vì đã được tính từ server)
-function updateTotalWithDiscount() {
-    // Tổng tiền đã được tính từ server và hiển thị qua Thymeleaf
-    console.log('Total already calculated by server');
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const placeOrderBtn = document.getElementById('place-order-btn');
-    const checkoutForm = document.getElementById('checkout-form');
-    
-    // Khởi tạo mã giảm giá từ Thymeleaf data
-    initializeDiscountFromURL();
-    
-    // Xử lý áp dụng mã giảm giá mới
-    const applyNewDiscountBtn = document.getElementById('applyNewDiscountBtn');
-    const newDiscountCodeInput = document.getElementById('newDiscountCodeInput');
-    
-    if (applyNewDiscountBtn) {
-        applyNewDiscountBtn.addEventListener('click', applyNewDiscountCode);
-    }
-    
-    if (newDiscountCodeInput) {
-        newDiscountCodeInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                applyNewDiscountCode();
-            }
-        });
-    }
-    
-    // Xử lý đặt hàng
-    placeOrderBtn.addEventListener('click', function() {
-        if (!validateForm()) {
-            return;
-        }
-        
-        const selectedPaymentMethod = document.querySelector('input[name="loaiThanhToan"]:checked').value;
-        
-        // Nếu chọn SePay, tạo giao dịch trước
-        if (selectedPaymentMethod === 'SEPAY') {
-            createSePayPayment();
         } else {
-            processNormalCheckout();
+            discountRow.style.display = 'none';
         }
-    });
-    
-    // Xử lý thanh toán bình thường
-    function processNormalCheckout() {
-        // Disable button để tránh double click
-        placeOrderBtn.disabled = true;
-        placeOrderBtn.textContent = 'Đang xử lý...';
-        
-        // Lấy dữ liệu từ form
-        const formData = {
-            ho: document.getElementById('ho').value,
-            ten: document.getElementById('ten').value,
-            tenCongTy: document.getElementById('tenCongTy').value,
-            quocGia: document.getElementById('quocGia').value,
-            diaChi1: document.getElementById('diaChi1').value,
-            diaChi2: document.getElementById('diaChi2').value,
-            thanhPho: document.getElementById('thanhPho').value,
-            tinhHuyen: document.getElementById('tinhHuyen').value,
-            soDienThoai: document.getElementById('soDienThoai').value,
-            email: document.getElementById('email').value,
-            ghiChu: document.getElementById('ghiChu').value,
-            loaiThanhToan: document.querySelector('input[name="loaiThanhToan"]:checked').value,
-            phiGiaoHang: 0, // Phí giao hàng miễn phí
-            tongTien: originalSubtotal, // Tổng tiền gốc (trước giảm giá)
-            
-            // Thông tin mã giảm giá (hỗ trợ nhiều mã)
-            maGiamGia: appliedDiscountCodes.length > 0 ? appliedDiscountCodes[0] : null, // Mã đầu tiên (tương thích ngược)
-            maGiamGiaList: appliedDiscountCodes, // Danh sách tất cả mã giảm giá
-            giaTriGiamGia: totalDiscountAmount,
-            tongTienSauGiamGia: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, '')), // Tổng tiền sau giảm giá
-            
-            // Tạo địa chỉ giao hàng đầy đủ
-            diaChiGiaoHang: document.getElementById('diaChi1').value + 
-                           (document.getElementById('diaChi2').value ? ', ' + document.getElementById('diaChi2').value : '') + 
-                           ', ' + document.getElementById('thanhPho').value + 
-                           ', ' + document.getElementById('tinhHuyen').value + 
-                           ', ' + document.getElementById('quocGia').value,
-            
-            // Tên người nhận
-            tenNguoiNhan: document.getElementById('ho').value + ' ' + document.getElementById('ten').value
-        };
-        
-        // Gọi API đặt hàng
-        fetch('/checkout/process', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Hiển thị thông báo thành công
-                showNotification(data.message, 'success');
-                
-                // Chuyển hướng đến trang đơn hàng sau 2 giây
-                setTimeout(() => {
-                    window.location.href = '/orders/' + data.orderId;
-                }, 2000);
-            } else {
-                showNotification(data.message, 'error');
-                // Reset button
-                placeOrderBtn.disabled = false;
-                placeOrderBtn.textContent = 'Đặt hàng ngay';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Có lỗi xảy ra khi đặt hàng', 'error');
-            // Reset button
-            placeOrderBtn.disabled = false;
-            placeOrderBtn.textContent = 'Đặt hàng ngay';
-        });
     }
-    
-    // Tạo giao dịch SePay
-    function createSePayPayment() {
-        // Disable button để tránh double click
-        placeOrderBtn.disabled = true;
-        placeOrderBtn.textContent = 'Đang tạo giao dịch...';
-        
-        // Lấy dữ liệu từ form
-        const formData = {
-            ho: document.getElementById('ho').value,
-            ten: document.getElementById('ten').value,
-            tenCongTy: document.getElementById('tenCongTy').value,
-            quocGia: document.getElementById('quocGia').value,
-            diaChi1: document.getElementById('diaChi1').value,
-            diaChi2: document.getElementById('diaChi2').value,
-            thanhPho: document.getElementById('thanhPho').value,
-            tinhHuyen: document.getElementById('tinhHuyen').value,
-            soDienThoai: document.getElementById('soDienThoai').value,
-            email: document.getElementById('email').value,
-            ghiChu: document.getElementById('ghiChu').value,
-            loaiThanhToan: 'SEPAY',
-            phiGiaoHang: 0,
-            tongTien: originalSubtotal,
-            maGiamGia: appliedDiscountCodes.length > 0 ? appliedDiscountCodes[0] : null,
-            maGiamGiaList: appliedDiscountCodes,
-            giaTriGiamGia: totalDiscountAmount,
-            tongTienSauGiamGia: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, '')),
-            diaChiGiaoHang: document.getElementById('diaChi1').value + 
-                           (document.getElementById('diaChi2').value ? ', ' + document.getElementById('diaChi2').value : '') + 
-                           ', ' + document.getElementById('thanhPho').value + 
-                           ', ' + document.getElementById('tinhHuyen').value + 
-                           ', ' + document.getElementById('quocGia').value,
-            tenNguoiNhan: document.getElementById('ho').value + ' ' + document.getElementById('ten').value
-        };
-        
-        // Tạo đơn hàng trước
-        fetch('/checkout/process', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Tạo giao dịch SePay
-                const sepayData = {
-                    orderId: data.orderId,
-                    amount: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, '')),
-                    description: 'Thanh toán đơn hàng #' + data.orderId
-                };
-                
-                return fetch('/checkout/create-sepay-payment', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(sepayData)
+
+    // Hàm cập nhật tổng tiền sau giảm giá (không cần thiết vì đã được tính từ server)
+    function updateTotalWithDiscount() {
+        // Tổng tiền đã được tính từ server và hiển thị qua Thymeleaf
+        console.log('Total already calculated by server');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const placeOrderBtn = document.getElementById('place-order-btn');
+        const checkoutForm = document.getElementById('checkout-form');
+
+        // Khởi tạo mã giảm giá từ Thymeleaf data
+        initializeDiscountFromURL();
+
+        // Xử lý áp dụng mã giảm giá mới
+        const applyNewDiscountBtn = document.getElementById('applyNewDiscountBtn');
+        const newDiscountCodeInput = document.getElementById('newDiscountCodeInput');
+
+        if (applyNewDiscountBtn) {
+            applyNewDiscountBtn.addEventListener('click', applyNewDiscountCode);
+        }
+
+        if (newDiscountCodeInput) {
+            newDiscountCodeInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    applyNewDiscountCode();
+                }
+            });
+        }
+
+        // Xử lý đặt hàng
+        placeOrderBtn.addEventListener('click', function() {
+            if (!validateForm()) {
+                return;
+            }
+
+            const selectedPaymentMethod = document.querySelector('input[name="loaiThanhToan"]:checked').value;
+
+            // Nếu chọn SePay, tạo giao dịch trước
+            if (selectedPaymentMethod === 'SEPAY') {
+                createSePayPayment();
+            } else {
+                processNormalCheckout();
+            }
+        });
+
+        // Xử lý thanh toán bình thường
+        function processNormalCheckout() {
+            // Disable button để tránh double click
+            placeOrderBtn.disabled = true;
+            placeOrderBtn.textContent = 'Đang xử lý...';
+
+            // Lấy dữ liệu từ form
+            const formData = {
+                ho: document.getElementById('ho').value,
+                ten: document.getElementById('ten').value,
+                tenCongTy: document.getElementById('tenCongTy').value,
+                quocGia: document.getElementById('quocGia').value,
+                diaChi1: document.getElementById('diaChi1').value,
+                diaChi2: document.getElementById('diaChi2').value,
+                thanhPho: document.getElementById('thanhPho').value,
+                tinhHuyen: document.getElementById('tinhHuyen').value,
+                soDienThoai: document.getElementById('soDienThoai').value,
+                email: document.getElementById('email').value,
+                ghiChu: document.getElementById('ghiChu').value,
+                loaiThanhToan: document.querySelector('input[name="loaiThanhToan"]:checked').value,
+                phiGiaoHang: 0, // Phí giao hàng miễn phí
+                tongTien: originalSubtotal, // Tổng tiền gốc (trước giảm giá)
+
+                // Thông tin mã giảm giá (hỗ trợ nhiều mã)
+                maGiamGia: appliedDiscountCodes.length > 0 ? appliedDiscountCodes[0] : null, // Mã đầu tiên (tương thích ngược)
+                maGiamGiaList: appliedDiscountCodes, // Danh sách tất cả mã giảm giá
+                giaTriGiamGia: totalDiscountAmount,
+                tongTienSauGiamGia: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, '')), // Tổng tiền sau giảm giá
+
+                // Tạo địa chỉ giao hàng đầy đủ
+                diaChiGiaoHang: document.getElementById('diaChi1').value +
+                    (document.getElementById('diaChi2').value ? ', ' + document.getElementById('diaChi2').value : '') +
+                    ', ' + document.getElementById('thanhPho').value +
+                    ', ' + document.getElementById('tinhHuyen').value +
+                    ', ' + document.getElementById('quocGia').value,
+
+                // Tên người nhận
+                tenNguoiNhan: document.getElementById('ho').value + ' ' + document.getElementById('ten').value
+            };
+
+            // Gọi API đặt hàng
+            fetch('/checkout/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Hiển thị thông báo thành công
+                        showNotification(data.message, 'success');
+
+                        // Chuyển hướng đến trang đơn hàng sau 2 giây
+                        setTimeout(() => {
+                            window.location.href = '/orders/' + data.orderId;
+                        }, 2000);
+                    } else {
+                        showNotification(data.message, 'error');
+                        // Reset button
+                        placeOrderBtn.disabled = false;
+                        placeOrderBtn.textContent = 'Đặt hàng ngay';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Có lỗi xảy ra khi đặt hàng', 'error');
+                    // Reset button
+                    placeOrderBtn.disabled = false;
+                    placeOrderBtn.textContent = 'Đặt hàng ngay';
                 });
-            } else {
-                throw new Error(data.message);
+        }
+
+        // Tạo giao dịch SePay
+        function createSePayPayment() {
+            // Disable button để tránh double click
+            placeOrderBtn.disabled = true;
+            placeOrderBtn.textContent = 'Đang tạo giao dịch...';
+
+            // Lấy dữ liệu từ form
+            const formData = {
+                ho: document.getElementById('ho').value,
+                ten: document.getElementById('ten').value,
+                tenCongTy: document.getElementById('tenCongTy').value,
+                quocGia: document.getElementById('quocGia').value,
+                diaChi1: document.getElementById('diaChi1').value,
+                diaChi2: document.getElementById('diaChi2').value,
+                thanhPho: document.getElementById('thanhPho').value,
+                tinhHuyen: document.getElementById('tinhHuyen').value,
+                soDienThoai: document.getElementById('soDienThoai').value,
+                email: document.getElementById('email').value,
+                ghiChu: document.getElementById('ghiChu').value,
+                loaiThanhToan: 'SEPAY',
+                phiGiaoHang: 0,
+                tongTien: originalSubtotal,
+                maGiamGia: appliedDiscountCodes.length > 0 ? appliedDiscountCodes[0] : null,
+                maGiamGiaList: appliedDiscountCodes,
+                giaTriGiamGia: totalDiscountAmount,
+                tongTienSauGiamGia: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, '')),
+                diaChiGiaoHang: document.getElementById('diaChi1').value +
+                    (document.getElementById('diaChi2').value ? ', ' + document.getElementById('diaChi2').value : '') +
+                    ', ' + document.getElementById('thanhPho').value +
+                    ', ' + document.getElementById('tinhHuyen').value +
+                    ', ' + document.getElementById('quocGia').value,
+                tenNguoiNhan: document.getElementById('ho').value + ' ' + document.getElementById('ten').value
+            };
+
+            // Tạo đơn hàng trước
+            fetch('/checkout/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Tạo giao dịch SePay
+                        const sepayData = {
+                            orderId: data.orderId,
+                            amount: parseFloat(document.getElementById('total-amount').textContent.replace(/[^\d]/g, '')),
+                            description: 'Thanh toán đơn hàng #' + data.orderId
+                        };
+
+                        return fetch('/checkout/create-sepay-payment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(sepayData)
+                        });
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .then(response => response.json())
+                .then(sepayData => {
+                    if (sepayData.success) {
+                        // Hiển thị QR code
+                        showSePayQR(sepayData.transaction);
+                        showNotification('Giao dịch SePay đã được tạo. Vui lòng quét QR code để thanh toán.', 'info');
+                    } else {
+                        throw new Error(sepayData.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Có lỗi xảy ra: ' + error.message, 'error');
+                    // Reset button
+                    placeOrderBtn.disabled = false;
+                    placeOrderBtn.textContent = 'Đặt hàng ngay';
+                });
+        }
+
+        // Validate form
+        function validateForm() {
+            const requiredFields = ['ho', 'ten', 'soDienThoai', 'diaChi1', 'thanhPho', 'tinhHuyen'];
+
+            for (let field of requiredFields) {
+                const value = document.getElementById(field).value.trim();
+                if (!value) {
+                    showNotification('Vui lòng điền đầy đủ thông tin bắt buộc', 'error');
+                    document.getElementById(field).focus();
+                    return false;
+                }
             }
-        })
-        .then(response => response.json())
-        .then(sepayData => {
-            if (sepayData.success) {
-                // Hiển thị QR code
-                showSePayQR(sepayData.transaction);
-                showNotification('Giao dịch SePay đã được tạo. Vui lòng quét QR code để thanh toán.', 'info');
-            } else {
-                throw new Error(sepayData.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Có lỗi xảy ra: ' + error.message, 'error');
-            // Reset button
-            placeOrderBtn.disabled = false;
-            placeOrderBtn.textContent = 'Đặt hàng ngay';
-        });
-    }
-    
-    // Validate form
-    function validateForm() {
-        const requiredFields = ['ho', 'ten', 'soDienThoai', 'diaChi1', 'thanhPho', 'tinhHuyen'];
-        
-        for (let field of requiredFields) {
-            const value = document.getElementById(field).value.trim();
-            if (!value) {
-                showNotification('Vui lòng điền đầy đủ thông tin bắt buộc', 'error');
-                document.getElementById(field).focus();
+
+            // Validate số điện thoại
+            const phone = document.getElementById('soDienThoai').value;
+            if (!/^[0-9]{10,11}$/.test(phone)) {
+                showNotification('Số điện thoại không hợp lệ', 'error');
+                document.getElementById('soDienThoai').focus();
                 return false;
             }
+
+            return true;
         }
-        
-        // Validate số điện thoại
-        const phone = document.getElementById('soDienThoai').value;
-        if (!/^[0-9]{10,11}$/.test(phone)) {
-            showNotification('Số điện thoại không hợp lệ', 'error');
-            document.getElementById('soDienThoai').focus();
-            return false;
-        }
-        
-        return true;
-    }
-    
-    // Hàm hiển thị thông báo
-    function showNotification(message, type) {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.innerHTML = `
+
+        // Hàm hiển thị thông báo
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
             <div class="notification-content">
                 <span class="notification-message">${message}</span>
                 <button class="notification-close">&times;</button>
             </div>
         `;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 100);
-        
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => {
-                if (document.body.contains(notification)) {
-                    document.body.removeChild(notification);
-                }
-            }, 300);
-        }, 5000);
-        
-        const closeBtn = notification.querySelector('.notification-close');
-        closeBtn.addEventListener('click', () => {
-            notification.classList.remove('show');
-            setTimeout(() => {
-                if (document.body.contains(notification)) {
-                    document.body.removeChild(notification);
-                }
-            }, 300);
-        });
-    }
-});
 
-// Hàm áp dụng mã giảm giá mới
-function applyNewDiscountCode() {
-    const newDiscountCodeInput = document.getElementById('newDiscountCodeInput');
-    const applyNewDiscountBtn = document.getElementById('applyNewDiscountBtn');
-    const newDiscountMessage = document.getElementById('newDiscountMessage');
-    
-    const discountCode = newDiscountCodeInput.value.trim();
-    
-    if (!discountCode) {
-        showNewDiscountMessage('Vui lòng nhập mã giảm giá', 'error');
-        return;
-    }
-    
-    // Disable button và input
-    applyNewDiscountBtn.disabled = true;
-    newDiscountCodeInput.disabled = true;
-    applyNewDiscountBtn.textContent = 'Đang xử lý...';
-    
-    // Tính tổng tiền hiện tại
-    const subtotalElement = document.getElementById('subtotal-amount');
-    let currentTotal = 0;
-    
-    if (subtotalElement) {
-        const subtotalText = subtotalElement.textContent;
-        currentTotal = parseFloat(subtotalText.replace(/[^\d]/g, ''));
-    }
-    
-    // Gọi API validate mã giảm giá
-    fetch(`/api/ma-giam-gia/validate?maGiamGia=${encodeURIComponent(discountCode)}&orderTotal=${currentTotal}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log('Discount validation response:', data);
-            
-            if (data.success && data.valid) {
-                // Mã giảm giá hợp lệ - chuyển hướng với mã mới
-                const newUrl = new URL(window.location);
-                newUrl.searchParams.set('discountCode', discountCode);
-                newUrl.searchParams.set('discountAmount', data.discountAmount);
-                window.location.href = newUrl.toString();
-            } else {
-                // Mã giảm giá không hợp lệ
-                showNewDiscountMessage(data.message || 'Mã giảm giá không hợp lệ', 'error');
-                
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+
+            const closeBtn = notification.querySelector('.notification-close');
+            closeBtn.addEventListener('click', () => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            });
+        }
+    });
+
+    // Hàm áp dụng mã giảm giá mới
+    function applyNewDiscountCode() {
+        const newDiscountCodeInput = document.getElementById('newDiscountCodeInput');
+        const applyNewDiscountBtn = document.getElementById('applyNewDiscountBtn');
+        const newDiscountMessage = document.getElementById('newDiscountMessage');
+
+        const discountCode = newDiscountCodeInput.value.trim();
+
+        if (!discountCode) {
+            showNewDiscountMessage('Vui lòng nhập mã giảm giá', 'error');
+            return;
+        }
+
+        // Disable button và input
+        applyNewDiscountBtn.disabled = true;
+        newDiscountCodeInput.disabled = true;
+        applyNewDiscountBtn.textContent = 'Đang xử lý...';
+
+        // Tính tổng tiền hiện tại
+        const subtotalElement = document.getElementById('subtotal-amount');
+        let currentTotal = 0;
+
+        if (subtotalElement) {
+            const subtotalText = subtotalElement.textContent;
+            currentTotal = parseFloat(subtotalText.replace(/[^\d]/g, ''));
+        }
+
+        // Gọi API validate mã giảm giá
+        fetch(`/api/ma-giam-gia/validate?maGiamGia=${encodeURIComponent(discountCode)}&orderTotal=${currentTotal}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Discount validation response:', data);
+
+                if (data.success && data.valid) {
+                    // Mã giảm giá hợp lệ - chuyển hướng với mã mới
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('discountCode', discountCode);
+                    newUrl.searchParams.set('discountAmount', data.discountAmount);
+                    window.location.href = newUrl.toString();
+                } else {
+                    // Mã giảm giá không hợp lệ
+                    showNewDiscountMessage(data.message || 'Mã giảm giá không hợp lệ', 'error');
+
+                    // Reset button
+                    applyNewDiscountBtn.disabled = false;
+                    newDiscountCodeInput.disabled = false;
+                    applyNewDiscountBtn.textContent = 'Áp dụng';
+                }
+            })
+            .catch(error => {
+                console.error('Error validating discount code:', error);
+                showNewDiscountMessage('Có lỗi xảy ra khi kiểm tra mã giảm giá', 'error');
+
                 // Reset button
                 applyNewDiscountBtn.disabled = false;
                 newDiscountCodeInput.disabled = false;
                 applyNewDiscountBtn.textContent = 'Áp dụng';
-            }
-        })
-        .catch(error => {
-            console.error('Error validating discount code:', error);
-            showNewDiscountMessage('Có lỗi xảy ra khi kiểm tra mã giảm giá', 'error');
-            
-            // Reset button
-            applyNewDiscountBtn.disabled = false;
-            newDiscountCodeInput.disabled = false;
-            applyNewDiscountBtn.textContent = 'Áp dụng';
-        });
-}
-
-// Hàm hủy mã giảm giá
-function removeDiscountCode() {
-    // Chuyển hướng về trang checkout không có mã giảm giá
-    const newUrl = new URL(window.location);
-    newUrl.searchParams.delete('discountCode');
-    newUrl.searchParams.delete('discountAmount');
-    window.location.href = newUrl.toString();
-}
-
-// Hàm hiển thị thông báo mã giảm giá mới
-function showNewDiscountMessage(message, type) {
-    const newDiscountMessage = document.getElementById('newDiscountMessage');
-    if (newDiscountMessage) {
-        newDiscountMessage.textContent = message;
-        newDiscountMessage.className = `discount-message ${type}`;
-        newDiscountMessage.style.display = 'block';
-        
-        // Tự động ẩn sau 5 giây
-        setTimeout(() => {
-            newDiscountMessage.style.display = 'none';
-        }, 5000);
+            });
     }
-}
 
-// ===== SEPAY FUNCTIONS =====
-
-// Hiển thị QR code SePay
-function showSePayQR(transaction) {
-    currentSePayTransaction = transaction;
-    
-    // Cập nhật thông tin QR
-    document.getElementById('sepay-qr-image').src = transaction.qrCodeUrl;
-    document.getElementById('qr-amount').textContent = formatCurrency(transaction.amount);
-    document.getElementById('qr-description').textContent = 'Thanh toán đơn hàng #' + transaction.orderId;
-    document.getElementById('qr-status').textContent = 'Đang chờ thanh toán';
-    
-    // Hiển thị section QR
-    document.getElementById('sepay-qr-section').style.display = 'block';
-    
-    // Ẩn nút đặt hàng
-    document.getElementById('place-order-btn').style.display = 'none';
-    
-    // Bắt đầu kiểm tra trạng thái thanh toán
-    startPaymentStatusCheck();
-}
-
-// Bắt đầu kiểm tra trạng thái thanh toán
-function startPaymentStatusCheck() {
-    if (paymentStatusInterval) {
-        clearInterval(paymentStatusInterval);
+    // Hàm hủy mã giảm giá
+    function removeDiscountCode() {
+        // Chuyển hướng về trang checkout không có mã giảm giá
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.delete('discountCode');
+        newUrl.searchParams.delete('discountAmount');
+        window.location.href = newUrl.toString();
     }
-    
-    paymentStatusInterval = setInterval(() => {
-        checkPaymentStatus();
-    }, 5000); // Kiểm tra mỗi 5 giây
-}
 
-// Dừng kiểm tra trạng thái thanh toán
-function stopPaymentStatusCheck() {
-    if (paymentStatusInterval) {
-        clearInterval(paymentStatusInterval);
-        paymentStatusInterval = null;
-    }
-}
+    // Hàm hiển thị thông báo mã giảm giá mới
+    function showNewDiscountMessage(message, type) {
+        const newDiscountMessage = document.getElementById('newDiscountMessage');
+        if (newDiscountMessage) {
+            newDiscountMessage.textContent = message;
+            newDiscountMessage.className = `discount-message ${type}`;
+            newDiscountMessage.style.display = 'block';
 
-// Kiểm tra trạng thái thanh toán
-function checkPaymentStatus() {
-    if (!currentSePayTransaction) return;
-    
-    fetch(`/checkout/sepay-status/${currentSePayTransaction.transactionId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.transaction) {
-                const transaction = data.transaction;
-                updatePaymentStatus(transaction.status);
-                
-                if (transaction.status === 'SUCCESS') {
-                    stopPaymentStatusCheck();
-                    showNotification('Thanh toán thành công!', 'success');
-                    setTimeout(() => {
-                        window.location.href = '/orders/' + transaction.orderId;
-                    }, 2000);
-                } else if (transaction.status === 'FAILED' || transaction.status === 'CANCELLED') {
-                    stopPaymentStatusCheck();
-                    showNotification('Thanh toán thất bại hoặc đã bị hủy.', 'error');
-                    hideSePayQR();
-                }
-            }
-        })
-        .catch(error => {
-            console.error('Error checking payment status:', error);
-        });
-}
-
-// Cập nhật trạng thái thanh toán
-function updatePaymentStatus(status) {
-    const statusElement = document.getElementById('qr-status');
-    if (statusElement) {
-        switch (status) {
-            case 'PENDING':
-                statusElement.textContent = 'Đang chờ thanh toán';
-                statusElement.style.color = '#ffc107';
-                break;
-            case 'SUCCESS':
-                statusElement.textContent = 'Thanh toán thành công';
-                statusElement.style.color = '#28a745';
-                break;
-            case 'FAILED':
-                statusElement.textContent = 'Thanh toán thất bại';
-                statusElement.style.color = '#dc3545';
-                break;
-            case 'CANCELLED':
-                statusElement.textContent = 'Đã hủy thanh toán';
-                statusElement.style.color = '#6c757d';
-                break;
-            default:
-                statusElement.textContent = 'Trạng thái không xác định';
-                statusElement.style.color = '#6c757d';
+            // Tự động ẩn sau 5 giây
+            setTimeout(() => {
+                newDiscountMessage.style.display = 'none';
+            }, 5000);
         }
     }
-}
 
-// Ẩn QR code SePay
-function hideSePayQR() {
-    document.getElementById('sepay-qr-section').style.display = 'none';
-    document.getElementById('place-order-btn').style.display = 'block';
-    document.getElementById('place-order-btn').disabled = false;
-    document.getElementById('place-order-btn').textContent = 'Đặt hàng ngay';
-    currentSePayTransaction = null;
-    stopPaymentStatusCheck();
-}
+    // ===== SEPAY FUNCTIONS =====
 
-// Hủy thanh toán SePay
-function cancelSePayPayment() {
-    if (!currentSePayTransaction) return;
-    
-    if (confirm('Bạn có chắc chắn muốn hủy thanh toán này?')) {
-        fetch(`/api/sepay/cancel/${currentSePayTransaction.transactionId}`, {
-            method: 'POST'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showNotification('Đã hủy thanh toán', 'info');
-                hideSePayQR();
-            } else {
-                showNotification('Không thể hủy thanh toán: ' + data.message, 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error cancelling payment:', error);
-            showNotification('Có lỗi xảy ra khi hủy thanh toán', 'error');
-        });
+    // Hiển thị QR code SePay
+    function showSePayQR(transaction) {
+        currentSePayTransaction = transaction;
+
+        // Cập nhật thông tin QR
+        document.getElementById('sepay-qr-image').src = transaction.qrCodeUrl;
+        document.getElementById('qr-amount').textContent = formatCurrency(transaction.amount);
+        document.getElementById('qr-description').textContent = 'Thanh toán đơn hàng #' + transaction.orderId;
+        document.getElementById('qr-status').textContent = 'Đang chờ thanh toán';
+
+        // Hiển thị section QR
+        document.getElementById('sepay-qr-section').style.display = 'block';
+
+        // Ẩn nút đặt hàng
+        document.getElementById('place-order-btn').style.display = 'none';
+
+        // Bắt đầu kiểm tra trạng thái thanh toán
+        startPaymentStatusCheck();
     }
-}
 
-// Event listeners cho SePay
-document.addEventListener('DOMContentLoaded', function() {
+    // Bắt đầu kiểm tra trạng thái thanh toán
+    function startPaymentStatusCheck() {
+        if (paymentStatusInterval) {
+            clearInterval(paymentStatusInterval);
+        }
+
+        paymentStatusInterval = setInterval(() => {
+            checkPaymentStatus();
+        }, 5000); // Kiểm tra mỗi 5 giây
+    }
+
+    // Dừng kiểm tra trạng thái thanh toán
+    function stopPaymentStatusCheck() {
+        if (paymentStatusInterval) {
+            clearInterval(paymentStatusInterval);
+            paymentStatusInterval = null;
+        }
+    }
+
     // Kiểm tra trạng thái thanh toán
-    const checkStatusBtn = document.getElementById('check-payment-status');
-    if (checkStatusBtn) {
-        checkStatusBtn.addEventListener('click', function() {
-            if (currentSePayTransaction) {
-                checkPaymentStatus();
-                showNotification('Đang kiểm tra trạng thái thanh toán...', 'info');
+    function checkPaymentStatus() {
+        if (!currentSePayTransaction) return;
+
+        fetch(`/checkout/sepay-status/${currentSePayTransaction.transactionId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.transaction) {
+                    const transaction = data.transaction;
+                    updatePaymentStatus(transaction.status);
+
+                    if (transaction.status === 'SUCCESS') {
+                        stopPaymentStatusCheck();
+                        showNotification('Thanh toán thành công!', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/orders/' + transaction.orderId;
+                        }, 2000);
+                    } else if (transaction.status === 'FAILED' || transaction.status === 'CANCELLED') {
+                        stopPaymentStatusCheck();
+                        showNotification('Thanh toán thất bại hoặc đã bị hủy.', 'error');
+                        hideSePayQR();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error checking payment status:', error);
+            });
+    }
+
+    // Cập nhật trạng thái thanh toán
+    function updatePaymentStatus(status) {
+        const statusElement = document.getElementById('qr-status');
+        if (statusElement) {
+            switch (status) {
+                case 'PENDING':
+                    statusElement.textContent = 'Đang chờ thanh toán';
+                    statusElement.style.color = '#ffc107';
+                    break;
+                case 'SUCCESS':
+                    statusElement.textContent = 'Thanh toán thành công';
+                    statusElement.style.color = '#28a745';
+                    break;
+                case 'FAILED':
+                    statusElement.textContent = 'Thanh toán thất bại';
+                    statusElement.style.color = '#dc3545';
+                    break;
+                case 'CANCELLED':
+                    statusElement.textContent = 'Đã hủy thanh toán';
+                    statusElement.style.color = '#6c757d';
+                    break;
+                default:
+                    statusElement.textContent = 'Trạng thái không xác định';
+                    statusElement.style.color = '#6c757d';
             }
-        });
+        }
     }
-    
-    // Hủy thanh toán
-    const cancelPaymentBtn = document.getElementById('cancel-payment');
-    if (cancelPaymentBtn) {
-        cancelPaymentBtn.addEventListener('click', function() {
-            cancelSePayPayment();
-        });
+
+    // Ẩn QR code SePay
+    function hideSePayQR() {
+        document.getElementById('sepay-qr-section').style.display = 'none';
+        document.getElementById('place-order-btn').style.display = 'block';
+        document.getElementById('place-order-btn').disabled = false;
+        document.getElementById('place-order-btn').textContent = 'Đặt hàng ngay';
+        currentSePayTransaction = null;
+        stopPaymentStatusCheck();
     }
-});
+
+    // Hủy thanh toán SePay
+    function cancelSePayPayment() {
+        if (!currentSePayTransaction) return;
+
+        if (confirm('Bạn có chắc chắn muốn hủy thanh toán này?')) {
+            fetch(`/api/sepay/cancel/${currentSePayTransaction.transactionId}`, {
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Đã hủy thanh toán', 'info');
+                        hideSePayQR();
+                    } else {
+                        showNotification('Không thể hủy thanh toán: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error cancelling payment:', error);
+                    showNotification('Có lỗi xảy ra khi hủy thanh toán', 'error');
+                });
+        }
+    }
+
+    // Event listeners cho SePay
+    document.addEventListener('DOMContentLoaded', function() {
+        // Kiểm tra trạng thái thanh toán
+        const checkStatusBtn = document.getElementById('check-payment-status');
+        if (checkStatusBtn) {
+            checkStatusBtn.addEventListener('click', function() {
+                if (currentSePayTransaction) {
+                    checkPaymentStatus();
+                    showNotification('Đang kiểm tra trạng thái thanh toán...', 'info');
+                }
+            });
+        }
+
+        // Hủy thanh toán
+        const cancelPaymentBtn = document.getElementById('cancel-payment');
+        if (cancelPaymentBtn) {
+            cancelPaymentBtn.addEventListener('click', function() {
+                cancelSePayPayment();
+            });
+        }
+    });
 </script>
 </body>
 </html>

@@ -272,6 +272,40 @@ public class MarketingController {
                     .body(Map.of("error", e.getMessage()));
         }
     }
+    
+    // ========== REPORT EXPORT ENDPOINTS ==========
+    
+    // Xuất báo cáo PDF cho marketing strategy
+    @GetMapping("/{clusterId}/export/pdf")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<byte[]> exportMarketingReportPdf(@PathVariable Integer clusterId) {
+        try {
+            byte[] pdfBytes = marketingService.exportMarketingReportToPdf(clusterId);
+            
+            return ResponseEntity.ok()
+                    .header("Content-Type", "application/pdf")
+                    .header("Content-Disposition", "attachment; filename=\"marketing-strategy-report-" + clusterId + ".pdf\"")
+                    .body(pdfBytes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    // Xuất báo cáo Excel cho marketing strategy
+    @GetMapping("/{clusterId}/export/excel")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<byte[]> exportMarketingReportExcel(@PathVariable Integer clusterId) {
+        try {
+            byte[] excelBytes = marketingService.exportMarketingReportToExcel(clusterId);
+            
+            return ResponseEntity.ok()
+                    .header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    .header("Content-Disposition", "attachment; filename=\"marketing-strategy-report-" + clusterId + ".xlsx\"")
+                    .body(excelBytes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
 
 

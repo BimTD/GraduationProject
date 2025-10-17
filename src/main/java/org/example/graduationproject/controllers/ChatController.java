@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,8 +43,15 @@ public class ChatController {
             User user = userRepository.findByUsername(principal.getName())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
             
-            // Tạo phản hồi từ AI
-            String aiResponse = chatbotService.generateResponse(request.getMessage(), user);
+            // Tạo phản hồi từ AI với timeout handling
+            String aiResponse;
+            try {
+                aiResponse = chatbotService.generateResponse(request.getMessage(), user);
+            } catch (Exception e) {
+                // Fallback response khi AI không hoạt động
+                aiResponse = "Xin lỗi, hệ thống AI đang bận. Vui lòng thử lại sau hoặc liên hệ hotline: 0982172169";
+                System.err.println("AI Service Error: " + e.getMessage());
+            }
             
             // Lưu tin nhắn người dùng
             ChatMessage userMessage = chatbotService.saveMessage(user, request.getMessage(), null);
@@ -63,7 +71,16 @@ public class ChatController {
             return response;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            
+            // Trả về response lỗi thay vì null
+            ChatResponseDTO errorResponse = new ChatResponseDTO();
+            errorResponse.setMessage(request.getMessage());
+            errorResponse.setResponse("Xin lỗi, có lỗi xảy ra. Vui lòng thử lại sau.");
+            errorResponse.setMessageType("BOT");
+            errorResponse.setCreatedAt(LocalDateTime.now());
+            errorResponse.setIsRead(false);
+            
+            return errorResponse;
         }
     }
     

@@ -28,10 +28,26 @@
                         <i data-lucide="arrow-left" class="size-4"></i>
                         Quay lại
                     </a>
-                    <button type="button" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-custom-500 border border-custom-500 rounded-md hover:bg-custom-600 hover:border-custom-600 focus:bg-custom-600 focus:border-custom-600 focus:text-white focus:outline-none focus:ring-2 focus:ring-custom-500 focus:ring-offset-2">
-                        <i data-lucide="download" class="size-4"></i>
-                        Xuất báo cáo
-                    </button>
+                    <div class="relative">
+                        <button type="button" id="exportReportBtn" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-200 bg-custom-500 border border-custom-500 rounded-md hover:bg-custom-600 hover:border-custom-600 focus:bg-custom-600 focus:border-custom-600 focus:text-white focus:outline-none focus:ring-2 focus:ring-custom-500 focus:ring-offset-2">
+                            <i data-lucide="download" class="size-4"></i>
+                            Xuất báo cáo
+                        </button>
+                        
+                        <!-- Dropdown menu -->
+                        <div id="exportDropdown" class="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-md shadow-lg z-10 hidden">
+                            <div class="py-1">
+                                <button type="button" id="exportPdfBtn" class="flex items-center gap-2 w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zink-200 dark:hover:bg-zink-600">
+                                    <i data-lucide="file-text" class="size-4 text-red-500"></i>
+                                    Xuất PDF
+                                </button>
+                                <button type="button" id="exportExcelBtn" class="flex items-center gap-2 w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-zink-200 dark:hover:bg-zink-600">
+                                    <i data-lucide="file-spreadsheet" class="size-4 text-green-500"></i>
+                                    Xuất Excel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -815,6 +831,98 @@
 document.addEventListener('DOMContentLoaded', function() {
     const clusterId = document.getElementById('clusterId').value;
     let currentTacticId = null;
+    
+    // ========== EXPORT REPORT FUNCTIONALITY ==========
+    
+    const exportReportBtn = document.getElementById('exportReportBtn');
+    const exportDropdown = document.getElementById('exportDropdown');
+    const exportPdfBtn = document.getElementById('exportPdfBtn');
+    const exportExcelBtn = document.getElementById('exportExcelBtn');
+    
+    // Toggle dropdown
+    exportReportBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        exportDropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!exportReportBtn.contains(e.target) && !exportDropdown.contains(e.target)) {
+            exportDropdown.classList.add('hidden');
+        }
+    });
+    
+    // Export PDF
+    exportPdfBtn.addEventListener('click', function() {
+        exportDropdown.classList.add('hidden');
+        exportReport('pdf');
+    });
+    
+    // Export Excel
+    exportExcelBtn.addEventListener('click', function() {
+        exportDropdown.classList.add('hidden');
+        exportReport('excel');
+    });
+    
+    function exportReport(format) {
+        const button = format === 'pdf' ? exportPdfBtn : exportExcelBtn;
+        const originalText = button.innerHTML;
+        
+        // Show loading state
+        button.innerHTML = '<i data-lucide="loader-2" class="size-4 animate-spin"></i> Đang xuất...';
+        button.disabled = true;
+        
+        // Create download link
+        const url = `/admin/marketing/${clusterId}/export/${format}`;
+        
+        // Create temporary link and trigger download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `marketing-strategy-report-${clusterId}.${format === 'pdf' ? 'pdf' : 'xlsx'}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Reset button state after a short delay
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.disabled = false;
+            
+            // Show success message
+            showNotification(`Báo cáo ${format.toUpperCase()} đã được tải xuống thành công!`, 'success');
+        }, 1000);
+    }
+    
+    function showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-md shadow-lg transition-all duration-300 transform translate-x-full ${
+            type === 'success' ? 'bg-green-500 text-white' : 
+            type === 'error' ? 'bg-red-500 text-white' : 
+            'bg-blue-500 text-white'
+        }`;
+        notification.innerHTML = `
+            <div class="flex items-center gap-2">
+                <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info'}" class="size-4"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
     
     // Modal elements
     const tacticModal = document.getElementById('tacticModal');

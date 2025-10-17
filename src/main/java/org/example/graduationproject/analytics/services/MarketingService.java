@@ -8,6 +8,7 @@ import org.example.graduationproject.analytics.repositories.MarketingObjectiveRe
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,9 @@ public class MarketingService {
     
     @Autowired
     private MarketingObjectiveRepository marketingObjectiveRepository;
+    
+    @Autowired
+    private MarketingReportService marketingReportService;
     
     // Đề xuất chiến thuật marketing cho từng cluster
     public Map<String, Object> getMarketingStrategies() {
@@ -460,6 +464,18 @@ public class MarketingService {
         objectiveMap.put("createdBy", objective.getCreatedBy());
         objectiveMap.put("notes", objective.getNotes());
         return objectiveMap;
+    }
+    
+    // ========== REPORT EXPORT METHODS ==========
+    
+    // Xuất báo cáo PDF
+    public byte[] exportMarketingReportToPdf(Integer clusterId) throws IOException {
+        return marketingReportService.exportMarketingReportToPdf(clusterId);
+    }
+    
+    // Xuất báo cáo Excel
+    public byte[] exportMarketingReportToExcel(Integer clusterId) throws IOException {
+        return marketingReportService.exportMarketingReportToExcel(clusterId);
     }
 }
 

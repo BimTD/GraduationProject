@@ -111,4 +111,16 @@ public interface SanPhamRepository extends JpaRepository<SanPham, Integer> {
     // Method for getting newest products
     Page<SanPham> findByTrangThaiHoatDongTrueOrderByNgayTaoDesc(Pageable pageable);
     List<SanPham> findTop6ByTrangThaiHoatDongTrueOrderByNgayTaoDesc();
+    
+    // Methods for chatbot intelligent search
+    List<SanPham> findByNhanHieuTenContainingIgnoreCaseAndTrangThaiHoatDong(String brandName, Boolean trangThaiHoatDong);
+    List<SanPham> findByBienThesMauSacMaMauContainingIgnoreCaseAndTrangThaiHoatDong(String colorName, Boolean trangThaiHoatDong);
+    List<SanPham> findByBienThesSizeTenSizeContainingIgnoreCaseAndTrangThaiHoatDong(String sizeName, Boolean trangThaiHoatDong);
+    List<SanPham> findByTagContainingIgnoreCaseAndTrangThaiHoatDong(String tagName, Boolean trangThaiHoatDong);
+    List<SanPham> findByGioiTinhAndTrangThaiHoatDong(Integer gioiTinh, Boolean trangThaiHoatDong);
+    List<SanPham> findByTrangThaiHoatDongTrueAndKhuyenMaiGreaterThanOrderByKhuyenMaiDesc(BigDecimal minDiscount);
+    
+    // Count methods for statistics
+    long countByLoaiTenAndTrangThaiHoatDong(String tenLoai, Boolean trangThaiHoatDong);
+    long countByNhanHieuTenAndTrangThaiHoatDong(String tenNhanHieu, Boolean trangThaiHoatDong);
 }
